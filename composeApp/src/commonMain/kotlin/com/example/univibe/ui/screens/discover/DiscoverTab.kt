@@ -1,0 +1,36 @@
+package com.example.univibe.ui.screens.discover
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Search as SearchOutlined
+import androidx.compose.runtime.Composable
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+
+/**
+ * Discover Tab Screen for Voyager Navigation
+ * 
+ * Browse and discover communities, events, study groups
+ */
+object DiscoverTab : Tab {
+    private fun readResolve(): Any = DiscoverTab
+
+    override val options: TabOptions
+        @Composable
+        get() {
+            val isSelected = LocalTabNavigator.current.current == this
+            val icon = if (isSelected) Icons.Filled.Search else SearchOutlined
+
+            return TabOptions(
+                index = 1u,
+                title = "Discover",
+                icon = icon
+            )
+        }
+
+    @Composable
+    override fun Content() {
+        DiscoverScreen()
+    }
+}
