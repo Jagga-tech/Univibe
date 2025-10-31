@@ -3,17 +3,30 @@ package com.example.univibe.ui.screens.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.ui.components.UniVibeTextField
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.screens.features.*
+import com.example.univibe.ui.screens.create.*
+import com.example.univibe.data.mock.MockPosts
+import com.example.univibe.data.mock.MockStories
+import com.example.univibe.domain.models.Post
+import com.example.univibe.ui.screens.detail.*
 
 /**
  * Data class representing a post in the feed.
@@ -72,7 +85,11 @@ fun HomeScreen(
     onNotificationClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {}
 ) {
+    val navigator = LocalNavigator.currentOrThrow
     var searchQuery by remember { mutableStateOf("") }
+    
+    // State for real posts from mock data
+    var posts by remember { mutableStateOf(MockPosts.posts) }
 
     LazyColumn(
         modifier = Modifier
@@ -87,12 +104,22 @@ fun HomeScreen(
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(Dimensions.Spacing.md)
             ) {
-                Text(
-                    text = "UniVibe",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(bottom = Dimensions.Spacing.sm)
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = Dimensions.Spacing.sm),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "UniVibe",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    IconButton(onClick = { navigator.push(NotificationsScreen) }) {
+                        Icon(Icons.Default.Notifications, contentDescription = "Notifications")
+                    }
+                }
 
                 UniVibeTextField(
                     value = searchQuery,
@@ -100,20 +127,21 @@ fun HomeScreen(
                     placeholder = "Search posts, people...",
                     leadingIcon = Icons.Default.Search,
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = false // Disabled to focus on feed, actual search requires routing
+                    enabled = true
                 )
             }
         }
 
-        // Stories row
-        if (stories.isNotEmpty()) {
-            item {
-                StoriesRow(
-                    stories = stories,
-                    onStoryClick = onStoryClick,
-                    onAddStoryClick = onAddStoryClick
-                )
-            }
+        // Stories row - using real stories from mock data
+        item {
+            StoriesRow(
+                storyGroups = MockStories.storyGroups,
+                onStoryClick = { storyGroup ->
+                    val startIndex = MockStories.storyGroups.indexOf(storyGroup)
+                    navigator.push(StoryViewerScreen(MockStories.storyGroups, startIndex))
+                },
+                onAddStoryClick = { /* TODO: Add story */ }
+            )
         }
 
         // Quick access grid
@@ -121,7 +149,15 @@ fun HomeScreen(
             item {
                 QuickAccessGrid(
                     items = quickAccessItems,
-                    onTileClick = onQuickAccessClick
+                    onTileClick = { title ->
+                        when (title) {
+                            "study_sessions" -> navigator.push(StudySessionsScreen)
+                            "find_buddy" -> navigator.push(SearchScreen)
+                            "class_notes" -> navigator.push(SearchScreen)
+                            "campus_events" -> navigator.push(EventsScreen)
+                            else -> {}
+                        }
+                    }
                 )
             }
 
@@ -152,38 +188,47 @@ fun HomeScreen(
             )
         }
 
-        // Posts feed
-        if (posts.isEmpty()) {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(Dimensions.Spacing.lg),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "No posts yet. Check back later!",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+        // Posts feed - using real posts from mock data
+        items(
+            items = posts,
+            key = { post -> post.id }
+        ) { post ->
+            PostCard(
+                post = post,
+                onLikeClick = { clickedPost ->
+                    // Toggle like
+                    posts = posts.map {
+                        if (it.id == clickedPost.id) {
+                            it.copy(
+                                isLiked = !it.isLiked,
+                                likeCount = if (it.isLiked) it.likeCount - 1 else it.likeCount + 1
+                            )
+                        } else it
+                    }
+                },
+                onCommentClick = { clickedPost ->
+                    navigator.push(PostDetailScreen(clickedPost.id))
+                },
+                onShareClick = { /* TODO: Share post */ },
+                onPostClick = { /* TODO: Post detail */ },
+                onUserClick = { post ->
+                    navigator.push(UserProfileScreen(post.authorId))
                 }
-            }
-        } else {
-            items(posts.size) { index ->
-                val post = posts[index]
-                PostCard(
-                    id = post.id,
-                    userName = post.userName,
-                    userAvatarUrl = post.userAvatarUrl,
-                    timestamp = post.timestamp,
-                    content = post.content,
-                    likeCount = post.likeCount,
-                    commentCount = post.commentCount,
-                    isLiked = post.isLiked,
-                    onLikeClick = onPostLikeClick,
-                    onCommentClick = onPostCommentClick,
-                    onShareClick = onPostShareClick,
-                    onMoreClick = onPostMoreClick
+            )
+        }
+
+        // Bottom message
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Dimensions.Spacing.lg),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "You're all caught up! 🎉",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

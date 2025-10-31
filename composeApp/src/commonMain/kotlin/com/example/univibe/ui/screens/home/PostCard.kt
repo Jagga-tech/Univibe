@@ -3,6 +3,7 @@ package com.example.univibe.ui.screens.home
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -24,6 +25,8 @@ import com.example.univibe.ui.animations.AnimationConstants
 import com.example.univibe.ui.components.UniVibeCard
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.domain.models.Post
+import kotlin.math.absoluteValue
 
 /**
  * Individual post card component for the home feed.
@@ -199,6 +202,268 @@ fun PostCard(
                 )
             }
         }
+    }
+}
+
+/**
+ * PostCard overload that accepts the Post domain model.
+ * Converts domain model to UI representation with timestamp formatting.
+ *
+ * @param post The Post domain model to display
+ * @param onLikeClick Callback when like button is clicked
+ * @param onCommentClick Callback when comment button is clicked
+ * @param onShareClick Callback when share button is clicked
+ * @param onPostClick Callback when the post content is clicked
+ * @param onUserClick Callback when the user header is clicked
+ * @param modifier Modifier to apply to the card
+ */
+@Composable
+fun PostCard(
+    post: Post,
+    onLikeClick: (Post) -> Unit = {},
+    onCommentClick: (Post) -> Unit = {},
+    onShareClick: (Post) -> Unit = {},
+    onPostClick: () -> Unit = {},
+    onUserClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    // Format relative time
+    val timeAgo = formatRelativeTime(post.createdAt)
+    
+    var liked by remember { mutableStateOf(post.isLiked) }
+    var likeScale by remember { mutableStateOf(1f) }
+    var currentLikeCount by remember { mutableStateOf(post.likeCount) }
+    
+    // Animate like icon scale on change
+    LaunchedEffect(liked) {
+        if (liked) {
+            likeScale = 1.3f
+            kotlinx.coroutines.delay(150)
+            likeScale = 1f
+        }
+    }
+
+    UniVibeCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(Dimensions.Spacing.md),
+        elevation = 3.dp
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimensions.Spacing.default)
+        ) {
+            // Header: Avatar, Name, Timestamp, More button
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onUserClick),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
+                ) {
+                    UserAvatar(
+                        imageUrl = post.author.avatarUrl,
+                        size = Dimensions.AvatarSize.small,
+                        userName = post.author.fullName
+                    )
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = post.author.fullName,
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        
+                        // Subtitle with course or timestamp
+                        if (post.course != null) {
+                            Text(
+                                text = post.course,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                maxLines = 1
+                            )
+                        }
+                        
+                        Text(
+                            text = timeAgo,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                IconButton(
+                    onClick = { /* TODO: More options */ },
+                    modifier = Modifier.size(Dimensions.IconSize.medium)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "More options",
+                        modifier = Modifier.size(Dimensions.IconSize.medium),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(Dimensions.Spacing.default))
+
+            // Achievement badge if present
+            if (post.achievement != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                        )
+                        .padding(Dimensions.Spacing.sm)
+                ) {
+                    Text(
+                        text = "🏆 ${post.achievement.title}",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(Dimensions.Spacing.sm)
+                    )
+                }
+                Spacer(modifier = Modifier.height(Dimensions.Spacing.default))
+            }
+
+            // Post content
+            Text(
+                text = post.content,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onPostClick)
+            )
+
+            // Tags
+            if (post.tags.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(Dimensions.Spacing.sm))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.xs),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    post.tags.take(3).forEach { tag ->
+                        Text(
+                            text = "#$tag",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    if (post.tags.size > 3) {
+                        Text(
+                            text = "+${post.tags.size - 3}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(Dimensions.Spacing.default))
+
+            // Engagement metrics
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = if (currentLikeCount > 0) "$currentLikeCount likes" else "Be the first to like",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.default),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (post.commentCount > 0) {
+                        Text(
+                            text = "${post.commentCount} comments",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    
+                    if (post.shareCount > 0) {
+                        Text(
+                            text = "${post.shareCount} shares",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(Dimensions.Spacing.default))
+
+            // Divider
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
+
+            Spacer(modifier = Modifier.height(Dimensions.Spacing.md))
+
+            // Action buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ActionButton(
+                    icon = if (liked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    label = "Like",
+                    iconTint = if (liked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    scale = likeScale,
+                    onClick = {
+                        liked = !liked
+                        currentLikeCount = if (liked) currentLikeCount + 1 else (currentLikeCount - 1).coerceAtLeast(0)
+                        onLikeClick(post)
+                    }
+                )
+
+                ActionButton(
+                    icon = Icons.Outlined.ChatBubbleOutline,
+                    label = "Comment",
+                    onClick = { onCommentClick(post) }
+                )
+
+                ActionButton(
+                    icon = Icons.Outlined.ShareOutlined,
+                    label = "Share",
+                    onClick = { onShareClick(post) }
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Helper function to format absolute timestamp into relative time string.
+ */
+private fun formatRelativeTime(timestamp: Long): String {
+    val currentTime = 1698000000000L // Same as mock data base time
+    val diffMs = currentTime - timestamp
+    
+    return when {
+        diffMs < 60000 -> "now"
+        diffMs < 3600000 -> "${diffMs / 60000}m ago"
+        diffMs < 86400000 -> "${diffMs / 3600000}h ago"
+        diffMs < 604800000 -> "${diffMs / 86400000}d ago"
+        else -> "${diffMs / 604800000}w ago"
     }
 }
 

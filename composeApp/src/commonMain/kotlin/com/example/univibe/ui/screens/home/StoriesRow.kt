@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.domain.models.StoryGroup
 
 /**
  * Data class representing a user story.
@@ -154,6 +155,98 @@ private fun StoryItemView(
 
         Text(
             text = story.userName,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            modifier = Modifier.width(Dimensions.AvatarSize.large)
+        )
+    }
+}
+
+/**
+ * StoriesRow overload that accepts StoryGroup domain models.
+ * Displays a horizontal scrolling row of stories from the data layer.
+ *
+ * @param storyGroups List of StoryGroup domain models to display
+ * @param onStoryClick Callback when a story group is clicked
+ * @param onAddStoryClick Callback when "Add Story" button is clicked
+ */
+@Composable
+fun StoriesRow(
+    storyGroups: List<StoryGroup> = emptyList(),
+    onStoryClick: (StoryGroup) -> Unit = {},
+    onAddStoryClick: () -> Unit = {}
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = Dimensions.Spacing.md)
+    ) {
+        androidx.compose.foundation.lazy.LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Dimensions.Spacing.md),
+            horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.md),
+            contentPadding = PaddingValues(horizontal = 0.dp)
+        ) {
+            // Add Story button
+            item {
+                AddStoryButton(onClick = onAddStoryClick)
+            }
+
+            // Story group circles
+            items(storyGroups.size) { index ->
+                val storyGroup = storyGroups[index]
+                DomainStoryCircle(
+                    storyGroup = storyGroup,
+                    onClick = { onStoryClick(storyGroup) }
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Story circle for domain StoryGroup model.
+ * Shows a circular avatar with a border indicating view status.
+ */
+@Composable
+private fun DomainStoryCircle(
+    storyGroup: StoryGroup,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .width(Dimensions.AvatarSize.large)
+            .clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        // Story border: thicker/colored if unviewed, thin if viewed
+        Box(
+            modifier = Modifier
+                .size(Dimensions.AvatarSize.large)
+                .clip(androidx.compose.foundation.shape.CircleShape)
+                .background(
+                    if (storyGroup.hasUnviewedStories)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.surfaceVariant,
+                    shape = androidx.compose.foundation.shape.CircleShape
+                )
+                .padding(if (storyGroup.hasUnviewedStories) 2.dp else 0.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            UserAvatar(
+                imageUrl = storyGroup.user.avatarUrl,
+                size = Dimensions.AvatarSize.large - (if (storyGroup.hasUnviewedStories) 4.dp else 0.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(Dimensions.Spacing.xs))
+
+        Text(
+            text = storyGroup.user.fullName.split(" ").first(),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
