@@ -62,15 +62,23 @@ private fun EventsScreenContent() {
     // State management
     var selectedFilter by remember { mutableStateOf(EventFilter.ALL) }
     var selectedCategory by remember { mutableStateOf<EventCategory?>(null) }
+    var searchQuery by remember { mutableStateOf("") }
+    var isSearching by remember { mutableStateOf(false) }
     
     // Compute filtered events whenever filters change
-    val events = remember(selectedFilter, selectedCategory) {
-        val filtered = MockEvents.getEventsByFilter(selectedFilter)
+    val events = remember(selectedFilter, selectedCategory, searchQuery) {
+        var filtered = MockEvents.getEventsByFilter(selectedFilter)
         if (selectedCategory != null) {
-            filtered.filter { it.category == selectedCategory }
-        } else {
-            filtered
+            filtered = filtered.filter { it.category == selectedCategory }
         }
+        if (searchQuery.isNotBlank()) {
+            filtered = filtered.filter { event ->
+                event.title.contains(searchQuery, ignoreCase = true) ||
+                event.description.contains(searchQuery, ignoreCase = true) ||
+                event.location.name.contains(searchQuery, ignoreCase = true)
+            }
+        }
+        filtered
     }
     
     // Get featured events for carousel
@@ -89,7 +97,7 @@ private fun EventsScreenContent() {
                 },
                 actions = {
                     IconButton(
-                        onClick = { /* TODO: Search events */ }
+                        onClick = { isSearching = !isSearching }
                     ) {
                         Icon(Icons.Default.Search, contentDescription = "Search")
                     }
@@ -116,6 +124,33 @@ private fun EventsScreenContent() {
                 .padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(Spacing.default)
         ) {
+            // Search Bar Section
+            if (isSearching) {
+                item {
+                    TextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = { Text("Search events...") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Search, contentDescription = null)
+                        },
+                        trailingIcon = {
+                            if (searchQuery.isNotEmpty()) {
+                                IconButton(
+                                    onClick = { searchQuery = "" }
+                                ) {
+                                    Icon(Icons.Default.Close, contentDescription = "Clear")
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Spacing.default),
+                        singleLine = true
+                    )
+                }
+            }
+            
             // Filter Chips Section
             item {
                 EventFilterChips(

@@ -18,6 +18,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.MockStudySessions
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.util.ShareHelper
 import kotlin.system.getTimeMillis
 
 /**
@@ -60,7 +61,10 @@ private fun StudySessionDetailScreenContent(sessionId: String) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* Share action */ }) {
+                    IconButton(onClick = { 
+                        val shareText = ShareHelper.shareStudySession(session)
+                        println("Share: $shareText")
+                    }) {
                         Icon(Icons.Default.Share, contentDescription = "Share")
                     }
                 }

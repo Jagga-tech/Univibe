@@ -1,32 +1,31 @@
 package com.example.univibe.ui.screens.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.example.univibe.ui.components.UniVibeTextField
-import com.example.univibe.ui.theme.Dimensions
-import com.example.univibe.ui.screens.features.*
-import com.example.univibe.ui.screens.create.*
 import com.example.univibe.data.mock.MockPosts
 import com.example.univibe.data.mock.MockStories
 import com.example.univibe.domain.models.Post
+import com.example.univibe.ui.components.UniVibeTextField
+import com.example.univibe.ui.screens.create.*
 import com.example.univibe.ui.screens.detail.*
+import com.example.univibe.ui.screens.features.*
+import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.util.ShareHelper
 
 /**
  * Data class representing a post in the feed.
@@ -117,7 +116,7 @@ fun HomeScreen(
                         color = MaterialTheme.colorScheme.primary
                     )
                     IconButton(onClick = { navigator.push(NotificationsScreen) }) {
-                        Icon(Icons.Default.Notifications, contentDescription = "Notifications")
+                        Text("🔔")
                     }
                 }
 
@@ -125,7 +124,6 @@ fun HomeScreen(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
                     placeholder = "Search posts, people...",
-                    leadingIcon = Icons.Default.Search,
                     modifier = Modifier.fillMaxWidth(),
                     enabled = true
                 )
@@ -174,6 +172,76 @@ fun HomeScreen(
             }
         }
 
+        // Campus Features Section
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Dimensions.Spacing.md),
+                verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
+            ) {
+                Text(
+                    "Campus Life",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                
+                // First row of feature cards
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
+                ) {
+                    FeatureCard(
+                        emoji = "📅",
+                        title = "Events",
+                        onClick = { navigator.push(EventsScreen) },
+                        modifier = Modifier.weight(1f)
+                    )
+                    FeatureCard(
+                        emoji = "👥",
+                        title = "Clubs",
+                        onClick = { navigator.push(ClubsScreen) },
+                        modifier = Modifier.weight(1f)
+                    )
+                    FeatureCard(
+                        emoji = "📚",
+                        title = "Study",
+                        onClick = { navigator.push(StudySessionsScreen) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                
+                // Second row of feature cards
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
+                ) {
+                    FeatureCard(
+                        emoji = "🏢",
+                        title = "Departments",
+                        onClick = { navigator.push(DepartmentsScreen) },
+                        modifier = Modifier.weight(1f)
+                    )
+                    FeatureCard(
+                        emoji = "🛍️",
+                        title = "Marketplace",
+                        onClick = { navigator.push(MarketplaceScreen) },
+                        modifier = Modifier.weight(1f)
+                    )
+                    FeatureCard(
+                        emoji = "💼",
+                        title = "Jobs",
+                        onClick = { navigator.push(JobsScreen) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+        }
+
+        // Divider before feed
+        item {
+            Spacer(modifier = Modifier.height(Dimensions.Spacing.md))
+        }
+
         // Feed label
         item {
             Text(
@@ -209,7 +277,10 @@ fun HomeScreen(
                 onCommentClick = { clickedPost ->
                     navigator.push(PostDetailScreen(clickedPost.id))
                 },
-                onShareClick = { /* TODO: Share post */ },
+                onShareClick = { sharedPost ->
+                    val shareText = ShareHelper.sharePost(sharedPost)
+                    println("Share: $shareText")
+                },
                 onPostClick = { /* TODO: Post detail */ },
                 onUserClick = { post ->
                     navigator.push(UserProfileScreen(post.authorId))
@@ -312,3 +383,42 @@ fun getSampleStories(): List<StoryItem> = listOf(
         isViewed = false
     )
 )
+
+/**
+ * Feature card for displaying quick access to campus features.
+ * Shows an emoji and title with a clickable card layout.
+ */
+@Composable
+private fun FeatureCard(
+    emoji: String,
+    title: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .clickable(onClick = onClick),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimensions.Spacing.md),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.xs)
+        ) {
+            Text(
+                text = emoji,
+                style = MaterialTheme.typography.displaySmall
+            )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}

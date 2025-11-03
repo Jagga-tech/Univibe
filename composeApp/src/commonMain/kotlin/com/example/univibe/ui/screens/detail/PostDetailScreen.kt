@@ -20,6 +20,7 @@ import com.example.univibe.ui.components.social.CommentItem
 import com.example.univibe.ui.screens.home.PostCard
 import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.*
+import com.example.univibe.util.ShareHelper
 import java.util.UUID
 
 data class PostDetailScreen(val postId: String) : Screen {
@@ -146,7 +147,10 @@ private fun PostDetailScreenContent(postId: String) {
                         )
                     },
                     onCommentClick = { /* Already on detail screen */ },
-                    onShareClick = { /* TODO: Share */ },
+                    onShareClick = { 
+                        val shareText = ShareHelper.sharePost(postState!!)
+                        println("Share: $shareText")
+                    },
                     onMoreClick = { /* TODO: More options */ }
                 )
             }

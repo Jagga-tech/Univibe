@@ -18,6 +18,7 @@ import com.example.univibe.ui.theme.*
 import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.*
+import com.example.univibe.util.ShareHelper
 
 data class JobDetailScreen(val jobId: String) : Screen {
     @Composable
@@ -68,7 +69,10 @@ private fun JobDetailScreenContent(jobId: String) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO: Share job */ }) {
+                    IconButton(onClick = { 
+                        val shareText = ShareHelper.shareJob(job)
+                        println("Share: $shareText")
+                    }) {
                         Icon(Icons.Default.Share, contentDescription = "Share")
                     }
                 }

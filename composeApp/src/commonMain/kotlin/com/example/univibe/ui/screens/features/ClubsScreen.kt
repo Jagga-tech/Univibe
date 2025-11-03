@@ -33,14 +33,21 @@ private fun ClubsScreenContent() {
     
     var selectedFilter by remember { mutableStateOf(ClubFilter.ALL) }
     var selectedCategory by remember { mutableStateOf<ClubCategory?>(null) }
+    var searchQuery by remember { mutableStateOf("") }
+    var isSearching by remember { mutableStateOf(false) }
     
-    val clubs = remember(selectedFilter, selectedCategory) {
-        val filtered = MockClubs.getClubsByFilter(selectedFilter)
+    val clubs = remember(selectedFilter, selectedCategory, searchQuery) {
+        var filtered = MockClubs.getClubsByFilter(selectedFilter)
         if (selectedCategory != null) {
-            filtered.filter { it.category == selectedCategory }
-        } else {
-            filtered
+            filtered = filtered.filter { it.category == selectedCategory }
         }
+        if (searchQuery.isNotBlank()) {
+            filtered = filtered.filter { club ->
+                club.name.contains(searchQuery, ignoreCase = true) ||
+                club.description.contains(searchQuery, ignoreCase = true)
+            }
+        }
+        filtered
     }
     
     val popularClubs = remember { MockClubs.getPopularClubs() }
@@ -55,7 +62,7 @@ private fun ClubsScreenContent() {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO: Search clubs */ }) {
+                    IconButton(onClick = { isSearching = !isSearching }) {
                         Icon(Icons.Default.Search, contentDescription = "Search")
                     }
                 }
@@ -68,6 +75,33 @@ private fun ClubsScreenContent() {
                 .padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Search Bar Section
+            if (isSearching) {
+                item {
+                    TextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = { Text("Search clubs...") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Search, contentDescription = null)
+                        },
+                        trailingIcon = {
+                            if (searchQuery.isNotEmpty()) {
+                                IconButton(
+                                    onClick = { searchQuery = "" }
+                                ) {
+                                    Icon(Icons.Default.Close, contentDescription = "Clear")
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        singleLine = true
+                    )
+                }
+            }
+            
             // Filter Chips
             item {
                 ClubFilterChips(

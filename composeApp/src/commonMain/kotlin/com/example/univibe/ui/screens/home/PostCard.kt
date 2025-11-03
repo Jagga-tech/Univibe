@@ -224,7 +224,7 @@ fun PostCard(
     onCommentClick: (Post) -> Unit = {},
     onShareClick: (Post) -> Unit = {},
     onPostClick: () -> Unit = {},
-    onUserClick: () -> Unit = {},
+    onUserClick: (Post) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     // Format relative time
@@ -258,7 +258,7 @@ fun PostCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = onUserClick),
+                    .clickable(onClick = { onUserClick(post) }),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {

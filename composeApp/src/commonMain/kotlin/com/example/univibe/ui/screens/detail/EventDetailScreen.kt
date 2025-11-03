@@ -23,6 +23,7 @@ import com.example.univibe.ui.components.SecondaryButton
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.ui.theme.Spacing
+import com.example.univibe.util.ShareHelper
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -76,7 +77,10 @@ private fun EventDetailScreenContent(eventId: String) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO: Share event */ }) {
+                    IconButton(onClick = { 
+                        val shareText = ShareHelper.shareEvent(event)
+                        println("Share: $shareText")
+                    }) {
                         Icon(Icons.Default.Share, contentDescription = "Share")
                     }
                     IconButton(onClick = { /* TODO: More options */ }) {

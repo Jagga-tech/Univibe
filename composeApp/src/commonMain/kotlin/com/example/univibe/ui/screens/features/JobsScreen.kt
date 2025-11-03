@@ -35,14 +35,23 @@ private fun JobsScreenContent() {
     
     var selectedType by remember { mutableStateOf<JobType?>(null) }
     var selectedCategory by remember { mutableStateOf<JobCategory?>(null) }
+    var searchQuery by remember { mutableStateOf("") }
+    var isSearching by remember { mutableStateOf(false) }
     
-    val jobs = remember(selectedType, selectedCategory) {
+    val jobs = remember(selectedType, selectedCategory, searchQuery) {
         var filtered = MockJobs.getActiveJobs()
         if (selectedType != null) {
             filtered = filtered.filter { it.type == selectedType }
         }
         if (selectedCategory != null) {
             filtered = filtered.filter { it.category == selectedCategory }
+        }
+        if (searchQuery.isNotBlank()) {
+            filtered = filtered.filter { job ->
+                job.title.contains(searchQuery, ignoreCase = true) ||
+                job.company.contains(searchQuery, ignoreCase = true) ||
+                job.description.contains(searchQuery, ignoreCase = true)
+            }
         }
         filtered
     }
@@ -57,7 +66,7 @@ private fun JobsScreenContent() {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO: Search jobs */ }) {
+                    IconButton(onClick = { isSearching = !isSearching }) {
                         Icon(Icons.Default.Search, contentDescription = "Search")
                     }
                 }
@@ -71,6 +80,33 @@ private fun JobsScreenContent() {
             verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.default),
             contentPadding = PaddingValues(Dimensions.Spacing.default)
         ) {
+            // Search Bar Section
+            if (isSearching) {
+                item {
+                    TextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = { Text("Search jobs...") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Search, contentDescription = null)
+                        },
+                        trailingIcon = {
+                            if (searchQuery.isNotEmpty()) {
+                                IconButton(
+                                    onClick = { searchQuery = "" }
+                                ) {
+                                    Icon(Icons.Default.Close, contentDescription = "Clear")
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Dimensions.Spacing.default),
+                        singleLine = true
+                    )
+                }
+            }
+            
             // Type Filter
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)) {

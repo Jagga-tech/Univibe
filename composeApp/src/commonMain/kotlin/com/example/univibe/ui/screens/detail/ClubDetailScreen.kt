@@ -22,6 +22,7 @@ import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.screens.home.PostCard
 import com.example.univibe.ui.components.UserAvatar
+import com.example.univibe.util.ShareHelper
 
 data class ClubDetailScreen(val clubId: String) : Screen {
     @Composable
@@ -74,7 +75,10 @@ private fun ClubDetailScreenContent(clubId: String) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO: Share club */ }) {
+                    IconButton(onClick = { 
+                        val shareText = ShareHelper.shareClub(club)
+                        println("Share: $shareText")
+                    }) {
                         Icon(Icons.Default.Share, contentDescription = "Share")
                     }
                     IconButton(onClick = { /* TODO: More options */ }) {
