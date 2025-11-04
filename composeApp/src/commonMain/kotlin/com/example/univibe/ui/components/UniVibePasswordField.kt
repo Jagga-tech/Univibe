@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -16,6 +13,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.sp
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Password input field with toggle visibility button.
@@ -67,11 +65,11 @@ fun UniVibePasswordField(
             },
             trailingIcon = {
                 IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                    Icon(
-                        imageVector = if (isPasswordVisible) {
-                            Icons.Default.VisibilityOff
+                    TextIcon(
+                        symbol = if (isPasswordVisible) {
+                            UISymbols.VISIBILITY_OFF
                         } else {
-                            Icons.Default.Visibility
+                            UISymbols.VISIBILITY
                         },
                         contentDescription = if (isPasswordVisible) {
                             "Hide password"

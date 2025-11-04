@@ -3,20 +3,16 @@ package com.example.univibe.ui.screens.hub
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.People
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.components.UniVibeCard
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Data class representing a campus event.
@@ -147,19 +143,19 @@ fun EventCard(
                 verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
             ) {
                 EventDetailRow(
-                    icon = Icons.Default.AccessTime,
+                    icon = UISymbols.ACCESS_TIME,
                     label = "Time",
                     value = item.time
                 )
 
                 EventDetailRow(
-                    icon = Icons.Default.LocationOn,
+                    icon = UISymbols.LOCATION,
                     label = "Location",
                     value = item.location
                 )
 
                 EventDetailRow(
-                    icon = Icons.Default.People,
+                    icon = UISymbols.PEOPLE,
                     label = "Attending",
                     value = "${item.attendeeCount} people"
                 )
@@ -196,7 +192,7 @@ fun EventCard(
  */
 @Composable
 private fun EventDetailRow(
-    icon: ImageVector,
+    icon: String,
     label: String,
     value: String
 ) {
@@ -205,10 +201,10 @@ private fun EventDetailRow(
         horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = icon,
+        TextIcon(
+            symbol = icon,
             contentDescription = label,
-            modifier = Modifier.size(Dimensions.IconSize.small),
+            fontSize = 16,
             tint = MaterialTheme.colorScheme.primary
         )
 

@@ -6,13 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -27,9 +20,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.components.OutlineButton
 import com.example.univibe.ui.components.PrimaryButton
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.components.UniVibeCard
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Data class representing a post search result.
@@ -232,10 +227,10 @@ private fun SearchHeader(
             onClick = onBackClick,
             modifier = Modifier.size(40.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
+            TextIcon(
+                symbol = UISymbols.BACK,
                 contentDescription = "Back",
-                modifier = Modifier.size(24.dp),
+                fontSize = 24,
                 tint = MaterialTheme.colorScheme.primary
             )
         }
@@ -254,10 +249,10 @@ private fun SearchHeader(
                 )
             },
             leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
+                TextIcon(
+                    symbol = UISymbols.SEARCH,
                     contentDescription = "Search",
-                    modifier = Modifier.size(20.dp),
+                    fontSize = 20,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             },
@@ -447,10 +442,10 @@ private fun PostSearchResultCard(
                     onClick = onLikeClick,
                     modifier = Modifier.size(32.dp)
                 ) {
-                    Icon(
-                        imageVector = if (result.isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    TextIcon(
+                        symbol = if (result.isLiked) UISymbols.FAVORITE else UISymbols.FAVORITE_BORDER,
                         contentDescription = "Like",
-                        modifier = Modifier.size(20.dp),
+                        fontSize = 20,
                         tint = if (result.isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }

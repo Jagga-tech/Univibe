@@ -8,6 +8,8 @@ import com.example.univibe.ui.screens.messages.MessagesScreen
 import com.example.univibe.ui.screens.profile.ProfileScreen
 import com.example.univibe.ui.screens.search.SearchResultsScreen
 import com.example.univibe.ui.screens.settings.SettingsScreen
+import com.example.univibe.ui.screens.settings.ThemePickerScreen
+import com.example.univibe.ui.screens.settings.CustomThemeScreen
 import com.example.univibe.ui.screens.messages.ChatScreen
 import com.example.univibe.ui.screens.hub.EventDetailsScreen
 import com.example.univibe.ui.screens.hub.GroupDetailsScreen
@@ -79,7 +81,18 @@ fun AppNavigationGraph(
         
         currentRoute == NavigationRoute.Settings.route -> {
             SettingsScreen(
-                onBackClick = { navigationState.goBack() }
+                onBackClick = { navigationState.goBack() },
+                onThemeClick = { navigationState.navigate(NavigationRoute.ThemePicker.route) }
+            )
+        }
+        
+        currentRoute == NavigationRoute.ThemePicker.route -> {
+            ThemePickerScreen(
+                onBackClick = { navigationState.goBack() },
+                onCustomThemeClick = { 
+                    // Navigation to custom theme would be handled separately
+                    // For now, we'll keep it simple and just show custom theme in picker
+                }
             )
         }
         

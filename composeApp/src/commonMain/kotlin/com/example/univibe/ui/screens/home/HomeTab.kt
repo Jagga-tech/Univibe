@@ -1,20 +1,16 @@
 package com.example.univibe.ui.screens.home
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.outlined.Home as HomeOutlined
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.screens.create.CreatePostScreen
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Home Tab Screen for Voyager Navigation
@@ -28,12 +24,14 @@ object HomeTab : Tab {
         @Composable
         get() {
             val isSelected = LocalTabNavigator.current.current == this
-            val icon = if (isSelected) Icons.Filled.Home else HomeOutlined
+            val icon = if (isSelected) UISymbols.HOME_FILLED else UISymbols.HOME_OUTLINED
 
             return TabOptions(
                 index = 0u,
                 title = "Home",
-                icon = icon
+                icon = {
+                    TextIcon(symbol = icon)
+                }
             )
         }
 
@@ -46,7 +44,7 @@ object HomeTab : Tab {
                 FloatingActionButton(
                     onClick = { navigator.push(CreatePostScreen) }
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Create Post")
+                    TextIcon(symbol = UISymbols.ADD, contentDescription = "Create Post")
                 }
             }
         ) { paddingValues ->

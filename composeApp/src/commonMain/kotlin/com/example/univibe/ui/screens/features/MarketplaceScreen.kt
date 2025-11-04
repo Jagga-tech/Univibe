@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +18,8 @@ import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.screens.detail.MarketplaceItemDetailScreen
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.utils.UISymbols
 
 object MarketplaceScreen : Screen {
     @Composable
@@ -58,12 +58,20 @@ private fun MarketplaceScreenContent() {
                 title = { Text("Marketplace") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        TextIcon(
+                            symbol = UISymbols.BACK,
+                            contentDescription = "Back",
+                            fontSize = 20
+                        )
                     }
                 },
                 actions = {
                     IconButton(onClick = { isSearching = !isSearching }) {
-                        Icon(Icons.Default.Search, contentDescription = "Search")
+                        TextIcon(
+                            symbol = UISymbols.SEARCH,
+                            contentDescription = "Search",
+                            fontSize = 20
+                        )
                     }
                 }
             )
@@ -73,7 +81,11 @@ private fun MarketplaceScreenContent() {
                 onClick = { /* TODO: Navigate to create item screen */ },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Sell Item")
+                TextIcon(
+                    symbol = UISymbols.ADD,
+                    contentDescription = "Sell Item",
+                    fontSize = 20
+                )
             }
         }
     ) { paddingValues ->
@@ -92,14 +104,20 @@ private fun MarketplaceScreenContent() {
                         onValueChange = { searchQuery = it },
                         placeholder = { Text("Search items...") },
                         leadingIcon = {
-                            Icon(Icons.Default.Search, contentDescription = null)
+                            TextIcon(
+                                symbol = UISymbols.SEARCH,
+                                fontSize = 16
+                            )
                         },
                         trailingIcon = {
                             if (searchQuery.isNotEmpty()) {
                                 IconButton(
                                     onClick = { searchQuery = "" }
                                 ) {
-                                    Icon(Icons.Default.Close, contentDescription = "Clear")
+                                    TextIcon(
+                                        symbol = UISymbols.CLOSE,
+                                        fontSize = 16
+                                    )
                                 }
                             }
                         },
@@ -137,10 +155,9 @@ private fun MarketplaceScreenContent() {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.md)
                         ) {
-                            Icon(
-                                Icons.Default.ShoppingBag,
-                                contentDescription = null,
-                                modifier = Modifier.size(48.dp),
+                            TextIcon(
+                                symbol = UISymbols.SHOPPING_BAG,
+                                fontSize = 48,
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
@@ -280,10 +297,9 @@ private fun MarketplaceItemCard(
                     horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.xs),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        Icons.Default.Place,
-                        contentDescription = null,
-                        modifier = Modifier.size(14.dp),
+                    TextIcon(
+                        symbol = UISymbols.LOCATION,
+                        fontSize = 12,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(

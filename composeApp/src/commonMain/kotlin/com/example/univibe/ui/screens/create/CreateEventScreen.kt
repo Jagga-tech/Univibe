@@ -2,8 +2,6 @@ package com.example.univibe.ui.screens.create
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,7 +14,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.MockEvents
 import com.example.univibe.domain.models.EventCategory
 import com.example.univibe.ui.components.PrimaryButton
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Spacing
+import com.example.univibe.ui.utils.UISymbols
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -64,7 +64,11 @@ private fun CreateEventScreenContent() {
                 title = { Text("Create Event") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.Close, contentDescription = "Close")
+                        TextIcon(
+                            symbol = UISymbols.CLOSE,
+                            contentDescription = "Close",
+                            fontSize = 20
+                        )
                     }
                 },
                 actions = {
@@ -79,7 +83,11 @@ private fun CreateEventScreenContent() {
                                 }
                             }
                         ) {
-                            Icon(Icons.Default.Check, contentDescription = "Create")
+                            TextIcon(
+                                symbol = UISymbols.CHECK,
+                                contentDescription = "Create",
+                                fontSize = 20
+                            )
                         }
                     }
                 }
@@ -249,7 +257,11 @@ private fun CreateEventScreenContent() {
                         singleLine = true,
                         keyboardType = KeyboardType.Number,
                         leadingIcon = {
-                            Icon(Icons.Default.Group, contentDescription = null)
+                            TextIcon(
+                                symbol = UISymbols.GROUP,
+                                contentDescription = null,
+                                fontSize = 16
+                            )
                         },
                         colors = TextFieldDefaults.colors(
                             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
@@ -271,7 +283,11 @@ private fun CreateEventScreenContent() {
                             .heightIn(min = 80.dp),
                         maxLines = 2,
                         leadingIcon = {
-                            Icon(Icons.Default.Label, contentDescription = null)
+                            TextIcon(
+                                symbol = UISymbols.LABEL,
+                                contentDescription = null,
+                                fontSize = 16
+                            )
                         },
                         colors = TextFieldDefaults.colors(
                             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant

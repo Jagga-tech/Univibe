@@ -3,9 +3,6 @@ package com.example.univibe.ui.screens.messages
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,7 +14,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.MockMessages
 import com.example.univibe.data.mock.MockUsers
 import com.example.univibe.ui.components.social.ConversationItem
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 object MessagesScreen : Screen {
     @Composable
@@ -39,12 +38,12 @@ private fun MessagesScreenContent() {
                 title = { Text("Messages") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        TextIcon(symbol = UISymbols.BACK, contentDescription = "Back")
                     }
                 },
                 actions = {
                     IconButton(onClick = { /* TODO: Start new conversation */ }) {
-                        Icon(Icons.Default.Edit, contentDescription = "New message")
+                        TextIcon(symbol = UISymbols.EDIT, contentDescription = "New message")
                     }
                 }
             )

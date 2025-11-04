@@ -3,9 +3,6 @@ package com.example.univibe.ui.screens.profile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,8 +14,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.*
 import com.example.univibe.ui.components.PrimaryButton
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.components.profile.ProfileStatsCard
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Screen displaying the current user's complete profile.
@@ -45,7 +44,7 @@ private fun MyProfileScreenContent() {
                 title = { Text("My Profile") },
                 actions = {
                     IconButton(onClick = { navigator.push(AppSettingsScreen) }) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings")
+                        TextIcon(UISymbols.SETTINGS, contentDescription = "Settings")
                     }
                 }
             )
@@ -85,7 +84,7 @@ private fun MyProfileScreenContent() {
                         onClick = { navigator.push(AppSettingsScreen) },
                         modifier = Modifier.weight(1f)
                     ) {
-                        Icon(Icons.Default.Settings, contentDescription = null)
+                        TextIcon(UISymbols.SETTINGS, contentDescription = null)
                         Spacer(modifier = Modifier.width(Dimensions.Spacing.sm))
                         Text("Settings")
                     }

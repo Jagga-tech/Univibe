@@ -4,15 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.GroupAdd
-import androidx.compose.material.icons.filled.PersonAdd
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -21,13 +12,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.components.OutlineButton
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.components.UniVibeCard
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Data class representing a notification/activity item.
@@ -159,10 +151,10 @@ private fun NotificationsHeader(
             onClick = onSettingsClick,
             modifier = Modifier.size(Dimensions.IconSize.large)
         ) {
-            Icon(
-                imageVector = Icons.Default.Settings,
+            TextIcon(
+                symbol = UISymbols.SETTINGS,
                 contentDescription = "Settings",
-                modifier = Modifier.size(Dimensions.IconSize.medium),
+                fontSize = 20,
                 tint = MaterialTheme.colorScheme.primary
             )
         }
@@ -270,10 +262,9 @@ fun NotificationCard(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = getNotificationIcon(item.type),
-                        contentDescription = item.type,
-                        modifier = Modifier.size(14.dp),
+                    TextIcon(
+                        symbol = getNotificationIcon(item.type),
+                        fontSize = 12,
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
@@ -378,13 +369,13 @@ fun NotificationCardList(
 /**
  * Helper function to get the appropriate icon for a notification type.
  */
-private fun getNotificationIcon(type: String): ImageVector {
+private fun getNotificationIcon(type: String): String {
     return when (type) {
-        "like" -> Icons.Default.FavoriteBorder
-        "follow" -> Icons.Default.PersonAdd
-        "join_group" -> Icons.Default.GroupAdd
-        "rsvp" -> Icons.Default.CheckCircle
-        else -> Icons.Default.Favorite
+        "like" -> UISymbols.FAVORITE_BORDER
+        "follow" -> UISymbols.PERSON_ADD
+        "join_group" -> UISymbols.GROUP_ADD
+        "rsvp" -> UISymbols.CHECK_CIRCLE
+        else -> UISymbols.FAVORITE
     }
 }
 

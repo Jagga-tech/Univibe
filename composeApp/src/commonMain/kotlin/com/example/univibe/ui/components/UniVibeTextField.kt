@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.sp
 import com.example.univibe.ui.theme.Dimensions
 
@@ -25,8 +24,8 @@ fun UniVibeTextField(
     modifier: Modifier = Modifier,
     label: String = "",
     placeholder: String = "",
-    leadingIcon: ImageVector? = null,
-    trailingIcon: ImageVector? = null,
+    leadingIcon: String? = null,
+    trailingIcon: String? = null,
     isError: Boolean = false,
     errorMessage: String = "",
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -53,9 +52,10 @@ fun UniVibeTextField(
             },
             leadingIcon = if (leadingIcon != null) {
                 {
-                    androidx.compose.material3.Icon(
-                        imageVector = leadingIcon,
+                    TextIcon(
+                        symbol = leadingIcon,
                         contentDescription = "Leading icon",
+                        fontSize = 20,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -64,9 +64,10 @@ fun UniVibeTextField(
             },
             trailingIcon = if (trailingIcon != null) {
                 {
-                    androidx.compose.material3.Icon(
-                        imageVector = trailingIcon,
+                    TextIcon(
+                        symbol = trailingIcon,
                         contentDescription = "Trailing icon",
+                        fontSize = 20,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }

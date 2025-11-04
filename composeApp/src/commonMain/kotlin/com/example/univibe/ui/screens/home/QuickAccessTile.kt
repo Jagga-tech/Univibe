@@ -3,22 +3,17 @@ package com.example.univibe.ui.screens.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Group
-import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.components.UniVibeCard
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Data class representing a quick access tile.
@@ -33,7 +28,7 @@ import com.example.univibe.ui.theme.Dimensions
 data class QuickAccessItem(
     val id: String,
     val title: String,
-    val icon: ImageVector,
+    val icon: String,
     val description: String? = null,
     val backgroundColor: androidx.compose.ui.graphics.Color? = null,
     val iconTint: androidx.compose.ui.graphics.Color? = null
@@ -124,10 +119,10 @@ fun QuickAccessTile(
                 verticalArrangement = Arrangement.Center
             ) {
                 // Icon
-                Icon(
-                    imageVector = item.icon,
+                TextIcon(
+                    symbol = item.icon,
                     contentDescription = item.title,
-                    modifier = Modifier.size(Dimensions.IconSize.large),
+                    fontSize = 32,
                     tint = item.iconTint ?: MaterialTheme.colorScheme.primary
                 )
 
@@ -164,25 +159,25 @@ fun getDefaultQuickAccessItems(): List<QuickAccessItem> = listOf(
     QuickAccessItem(
         id = "study_sessions",
         title = "Study Sessions",
-        icon = Icons.Default.Timer,
+        icon = UISymbols.TIMER,
         description = "Find study groups"
     ),
     QuickAccessItem(
         id = "find_buddy",
         title = "Find Study Buddy",
-        icon = Icons.Default.Group,
+        icon = UISymbols.GROUP,
         description = "Connect with peers"
     ),
     QuickAccessItem(
         id = "class_notes",
         title = "Class Notes",
-        icon = Icons.Default.Book,
+        icon = UISymbols.BOOK,
         description = "Share & browse notes"
     ),
     QuickAccessItem(
         id = "campus_events",
         title = "Campus Events",
-        icon = Icons.Default.DateRange,
+        icon = UISymbols.DATE_RANGE,
         description = "Upcoming events"
     )
 )

@@ -3,8 +3,6 @@ package com.example.univibe.ui.screens.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -13,11 +11,13 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.*
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.components.profile.SettingsSectionHeader
 import com.example.univibe.ui.components.profile.ToggleSettingsItem
 import com.example.univibe.ui.components.profile.NavigationSettingsItem
 import com.example.univibe.ui.components.profile.TextSettingsItem
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Comprehensive application settings screen.
@@ -45,7 +45,7 @@ private fun AppSettingsScreenContent() {
                 title = { Text("Settings") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        TextIcon(UISymbols.BACK, contentDescription = "Back")
                     }
                 }
             )

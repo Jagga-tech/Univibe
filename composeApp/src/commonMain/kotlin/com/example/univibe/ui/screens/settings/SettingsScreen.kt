@@ -5,13 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -22,7 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.components.PrimaryButton
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Data class representing general app settings.
@@ -96,7 +92,8 @@ fun SettingsScreen(
     onEditProfileClick: () -> Unit = {},
     onChangePasswordClick: () -> Unit = {},
     onLogoutClick: () -> Unit = {},
-    onDeleteAccountClick: () -> Unit = {}
+    onDeleteAccountClick: () -> Unit = {},
+    onThemeClick: () -> Unit = {}
 ) {
     var general by remember { mutableStateOf(generalSettings) }
     var notifications by remember { mutableStateOf(notificationSettings) }
@@ -141,6 +138,15 @@ fun SettingsScreen(
                             general = general.copy(darkModeEnabled = it)
                             onGeneralSettingsChange(general)
                         }
+                    )
+                }
+
+                item {
+                    SettingItem(
+                        title = "Theme",
+                        description = "Customize app colors",
+                        iconSymbol = UISymbols.PALETTE,
+                        onClick = onThemeClick
                     )
                 }
 
@@ -517,11 +523,11 @@ private fun SettingsHeader(
             onClick = onBackClick,
             modifier = Modifier.size(40.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
+            TextIcon(
+                symbol = UISymbols.BACK,
                 contentDescription = "Back",
-                modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.primary,
+                fontSize = 24
             )
         }
 
@@ -559,11 +565,11 @@ private fun SettingsSectionHeader(
             color = MaterialTheme.colorScheme.primary
         )
 
-        Icon(
-            imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+        TextIcon(
+            symbol = if (isExpanded) UISymbols.EXPAND_LESS else UISymbols.EXPAND_MORE,
             contentDescription = if (isExpanded) "Collapse" else "Expand",
-            modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.primary,
+            fontSize = 24
         )
     }
 
@@ -628,6 +634,64 @@ private fun SettingToggleItem(
 }
 
 /**
+ * Setting item with custom icon and click action.
+ */
+@Composable
+private fun SettingItem(
+    title: String,
+    description: String = "",
+    iconSymbol: String? = null,
+    onClick: () -> Unit = {}
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface)
+            .clickable(onClick = onClick)
+            .padding(Dimensions.Spacing.md),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.xs)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            if (description.isNotEmpty()) {
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+
+        if (iconSymbol != null) {
+            TextIcon(
+                symbol = iconSymbol,
+                contentDescription = title,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 24
+            )
+        } else {
+            TextIcon(
+                symbol = UISymbols.CHEVRON_RIGHT,
+                contentDescription = "Navigate",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 24
+            )
+        }
+    }
+}
+
+/**
  * Navigation setting item (clickable with chevron).
  */
 @Composable
@@ -666,10 +730,10 @@ private fun SettingNavigationItem(
             }
         }
 
-        Icon(
-            imageVector = Icons.Default.ChevronRight,
+        TextIcon(
+            symbol = UISymbols.CHEVRON_RIGHT,
             contentDescription = "Navigate",
-            modifier = Modifier.size(24.dp),
+            fontSize = 24,
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
@@ -713,10 +777,10 @@ private fun SettingSelectItem(
                 )
             }
 
-            Icon(
-                imageVector = if (showDropdown) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+            TextIcon(
+                symbol = if (showDropdown) UISymbols.EXPAND_LESS else UISymbols.EXPAND_MORE,
                 contentDescription = "Toggle dropdown",
-                modifier = Modifier.size(24.dp),
+                fontSize = 24,
                 tint = MaterialTheme.colorScheme.primary
             )
         }

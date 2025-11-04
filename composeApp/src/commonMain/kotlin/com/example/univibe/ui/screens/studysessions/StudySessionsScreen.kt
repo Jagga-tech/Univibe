@@ -3,10 +3,6 @@ package com.example.univibe.ui.screens.studysessions
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,8 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.components.ChipGroup
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.components.UniVibeTextField
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Study Sessions screen composable - find and join group study sessions.
@@ -83,10 +81,10 @@ fun StudySessionsScreen(
                     onClick = onCreateSessionClick,
                     modifier = Modifier.size(Dimensions.IconSize.large)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
+                    TextIcon(
+                        symbol = UISymbols.ADD,
                         contentDescription = "Create study session",
-                        modifier = Modifier.size(Dimensions.IconSize.medium),
+                        fontSize = 20,
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }

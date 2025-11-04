@@ -1,12 +1,11 @@
 package com.example.univibe.ui.screens.messages
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChatBubble
-import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Messages Tab Screen for Voyager Navigation
@@ -20,12 +19,14 @@ object MessagesTab : Tab {
         @Composable
         get() {
             val isSelected = LocalTabNavigator.current.current == this
-            val icon = if (isSelected) Icons.Filled.ChatBubble else Icons.Outlined.ChatBubbleOutline
+            val icon = UISymbols.CHAT_BUBBLE
 
             return TabOptions(
                 index = 3u,
                 title = "Messages",
-                icon = icon
+                icon = {
+                    TextIcon(symbol = icon)
+                }
             )
         }
 

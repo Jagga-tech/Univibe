@@ -3,10 +3,6 @@ package com.example.univibe.ui.screens.profile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,7 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.components.OutlineButton
 import com.example.univibe.ui.components.PrimaryButton
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Profile screen composable - view and edit user profile.
@@ -70,10 +68,10 @@ fun ProfileScreen(
                         onClick = onLogoutClick,
                         modifier = Modifier.size(Dimensions.IconSize.large)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Logout,
+                        TextIcon(
+                            symbol = UISymbols.LOGOUT,
                             contentDescription = "Logout",
-                            modifier = Modifier.size(Dimensions.IconSize.medium),
+                            fontSize = 20,
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }

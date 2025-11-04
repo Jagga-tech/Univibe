@@ -20,6 +20,7 @@ sealed class NavigationRoute(val route: String) {
     
     // Settings-related
     data object Settings : NavigationRoute("settings")
+    data object ThemePicker : NavigationRoute("theme_picker")
     
     // Chat/Messaging details
     data class ChatDetail(val userId: String) : NavigationRoute("chat_detail/$userId") {

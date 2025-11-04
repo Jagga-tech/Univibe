@@ -1,12 +1,11 @@
 package com.example.univibe.ui.screens.profile
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Person as PersonOutlined
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Profile Tab Screen for Voyager Navigation
@@ -20,12 +19,14 @@ object ProfileTab : Tab {
         @Composable
         get() {
             val isSelected = LocalTabNavigator.current.current == this
-            val icon = if (isSelected) Icons.Filled.Person else PersonOutlined
+            val icon = if (isSelected) UISymbols.PERSON_FILLED else UISymbols.PERSON_OUTLINED
 
             return TabOptions(
                 index = 4u,
                 title = "Profile",
-                icon = icon
+                icon = {
+                    TextIcon(symbol = icon)
+                }
             )
         }
 

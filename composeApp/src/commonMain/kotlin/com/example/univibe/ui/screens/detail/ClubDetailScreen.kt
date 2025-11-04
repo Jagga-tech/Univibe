@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +20,8 @@ import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.screens.home.PostCard
 import com.example.univibe.ui.components.UserAvatar
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.utils.UISymbols
 import com.example.univibe.util.ShareHelper
 
 data class ClubDetailScreen(val clubId: String) : Screen {
@@ -47,7 +47,11 @@ private fun ClubDetailScreenContent(clubId: String) {
                     title = { Text("Club Not Found") },
                     navigationIcon = {
                         IconButton(onClick = { navigator.pop() }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                            TextIcon(
+                                symbol = UISymbols.BACK,
+                                contentDescription = "Back",
+                                fontSize = 20
+                            )
                         }
                     }
                 )
@@ -71,7 +75,11 @@ private fun ClubDetailScreenContent(clubId: String) {
                 title = { Text(club.name) },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        TextIcon(
+                            symbol = UISymbols.BACK,
+                            contentDescription = "Back",
+                            fontSize = 20
+                        )
                     }
                 },
                 actions = {
@@ -79,10 +87,18 @@ private fun ClubDetailScreenContent(clubId: String) {
                         val shareText = ShareHelper.shareClub(club)
                         println("Share: $shareText")
                     }) {
-                        Icon(Icons.Default.Share, contentDescription = "Share")
+                        TextIcon(
+                            symbol = UISymbols.SHARE,
+                            contentDescription = "Share",
+                            fontSize = 20
+                        )
                     }
                     IconButton(onClick = { /* TODO: More options */ }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "More")
+                        TextIcon(
+                            symbol = UISymbols.MORE_VERT,
+                            contentDescription = "More",
+                            fontSize = 20
+                        )
                     }
                 }
             )

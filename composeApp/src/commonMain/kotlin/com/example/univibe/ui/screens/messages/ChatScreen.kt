@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,7 +16,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.MockMessages
 import com.example.univibe.data.mock.MockUsers
 import com.example.univibe.ui.components.social.ChatMessage
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 import kotlinx.coroutines.launch
 
 data class ChatScreen(val conversationId: String) : Screen {
@@ -61,7 +60,7 @@ private fun ChatScreenContent(conversationId: String) {
                 title = { Text(otherUser?.fullName ?: "Chat") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        TextIcon(symbol = UISymbols.BACK, contentDescription = "Back")
                     }
                 }
             )
@@ -159,14 +158,14 @@ private fun MessageInputBar(
                 enabled = enabled && value.isNotBlank(),
                 modifier = Modifier.size(48.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Send,
+                TextIcon(
+                    symbol = UISymbols.SEND,
                     contentDescription = "Send message",
                     tint = if (enabled && value.isNotBlank())
                         MaterialTheme.colorScheme.primary
                     else
                         MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(20.dp)
+                    fontSize = 20
                 )
             }
         }

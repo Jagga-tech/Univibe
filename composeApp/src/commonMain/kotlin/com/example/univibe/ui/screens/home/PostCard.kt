@@ -5,13 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.ChatBubbleOutline
-import androidx.compose.material.icons.outlined.ShareOutlined
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,7 +17,9 @@ import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.animations.AnimationConstants
 import com.example.univibe.ui.components.UniVibeCard
 import com.example.univibe.ui.components.UserAvatar
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 import com.example.univibe.domain.models.Post
 import kotlin.math.absoluteValue
 
@@ -118,10 +113,10 @@ fun PostCard(
                     onClick = { onMoreClick(id) },
                     modifier = Modifier.size(Dimensions.IconSize.medium)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
+                    TextIcon(
+                        symbol = UISymbols.MORE_VERT,
                         contentDescription = "More options",
-                        modifier = Modifier.size(Dimensions.IconSize.medium),
+                        fontSize = 20,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -302,10 +297,10 @@ fun PostCard(
                     onClick = { /* TODO: More options */ },
                     modifier = Modifier.size(Dimensions.IconSize.medium)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
+                    TextIcon(
+                        symbol = UISymbols.MORE_VERT,
                         contentDescription = "More options",
-                        modifier = Modifier.size(Dimensions.IconSize.medium),
+                        fontSize = 20,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }

@@ -4,13 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
@@ -20,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * UniVibe Filter Chip
@@ -60,10 +57,10 @@ fun UniVibeFilterChip(
         enabled = enabled,
         leadingIcon = if (selected) {
             {
-                Icon(
-                    imageVector = Icons.Default.Check,
+                TextIcon(
+                    symbol = UISymbols.CHECK,
                     contentDescription = "Selected",
-                    modifier = Modifier.size(Dimensions.IconSize.sm)
+                    fontSize = 18
                 )
             }
         } else null,
@@ -114,10 +111,10 @@ fun UniVibeInputChip(
                 onClick = onDismiss,
                 modifier = Modifier.size(Dimensions.IconSize.sm)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
+                TextIcon(
+                    symbol = UISymbols.CLOSE,
                     contentDescription = "Remove",
-                    modifier = Modifier.size(Dimensions.IconSize.sm)
+                    fontSize = 18
                 )
             }
         },

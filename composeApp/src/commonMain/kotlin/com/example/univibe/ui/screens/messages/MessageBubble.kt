@@ -2,10 +2,6 @@ package com.example.univibe.ui.screens.messages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.DoneAll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,7 +11,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.components.UserAvatar
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Data class representing a single message in a chat conversation.
@@ -134,14 +132,18 @@ fun MessageBubble(
 
                 // Status icon for sent messages
                 if (message.isSentByCurrentUser) {
-                    Icon(
-                        imageVector = if (message.isRead) Icons.Default.DoneAll else Icons.Default.Check,
+                    val statusSymbol = if (message.isRead) UISymbols.DONE_ALL else UISymbols.CHECK
+                    val statusColor = if (message.isRead)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    
+                    TextIcon(
+                        symbol = statusSymbol,
                         contentDescription = if (message.isRead) "Read" else "Sent",
-                        modifier = Modifier.size(14.dp),
-                        tint = if (message.isRead)
-                            MaterialTheme.colorScheme.primary
-                        else
-                            MaterialTheme.colorScheme.onSurfaceVariant
+                        modifier = Modifier.fillMaxWidth(0.1f),
+                        tint = statusColor,
+                        fontSize = 12
                     )
                 }
             }

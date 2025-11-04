@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.univibe.ui.components.TextIcon
 import kotlin.math.abs
 
 /**
@@ -117,10 +115,10 @@ fun PostImagePlaceholder(
             .background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = Icons.Default.Image,
+        TextIcon(
+            symbol = UISymbols.IMAGE,
             contentDescription = "Image placeholder",
-            modifier = Modifier.size(48.dp),
+            fontSize = 48,
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }

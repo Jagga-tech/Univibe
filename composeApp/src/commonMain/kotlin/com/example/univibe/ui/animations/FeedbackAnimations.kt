@@ -4,10 +4,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Error
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Feedback and success animations - confirmations, error states, toast notifications.
@@ -45,13 +43,14 @@ object FeedbackAnimations {
         )
         
         if (visible) {
-            Icon(
-                imageVector = Icons.Default.CheckCircle,
+            TextIcon(
+                symbol = UISymbols.CHECK_CIRCLE,
                 contentDescription = "Success",
                 tint = tint,
                 modifier = modifier
                     .scale(scale)
-                    .animateContentSize()
+                    .animateContentSize(),
+                fontSize = 48
             )
         }
     }
@@ -80,11 +79,12 @@ object FeedbackAnimations {
         )
         
         if (visible) {
-            Icon(
-                imageVector = Icons.Default.Error,
+            TextIcon(
+                symbol = UISymbols.ERROR,
                 contentDescription = "Error",
                 tint = tint,
-                modifier = modifier.scale(scale)
+                modifier = modifier.scale(scale),
+                fontSize = 48
             )
         }
     }

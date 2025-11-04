@@ -3,10 +3,6 @@ package com.example.univibe.ui.screens.hub
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -17,7 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.components.UniVibeTextField
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Hub screen composable - discover and join campus groups and events.
@@ -77,10 +75,10 @@ fun HubScreen(
                     onClick = onFilterClick,
                     modifier = Modifier.size(Dimensions.IconSize.large)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.FilterList,
+                    TextIcon(
+                        symbol = UISymbols.FILTER,
                         contentDescription = "Filter",
-                        modifier = Modifier.size(Dimensions.IconSize.medium),
+                        fontSize = 20,
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -96,7 +94,7 @@ fun HubScreen(
                     }
                 },
                 placeholder = "Search groups, events...",
-                leadingIcon = Icons.Default.Search,
+                leadingIcon = UISymbols.SEARCH,
                 modifier = Modifier.fillMaxWidth()
             )
         }

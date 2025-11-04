@@ -3,8 +3,6 @@ package com.example.univibe.ui.screens.profile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,7 +14,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.UserProfileData
 import com.example.univibe.ui.components.PrimaryButton
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Edit profile screen for users to update their profile information.
@@ -48,7 +48,7 @@ private fun EditProfileScreenContent() {
                 title = { Text("Edit Profile") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        TextIcon(UISymbols.BACK, contentDescription = "Back")
                     }
                 }
             )

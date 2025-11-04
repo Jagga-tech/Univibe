@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,8 +19,10 @@ import com.example.univibe.domain.models.User
 import com.example.univibe.ui.components.PrimaryButton
 import com.example.univibe.ui.components.SecondaryButton
 import com.example.univibe.ui.components.UserAvatar
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.ui.theme.Spacing
+import com.example.univibe.ui.utils.UISymbols
 import com.example.univibe.util.ShareHelper
 import java.text.SimpleDateFormat
 import java.util.*
@@ -49,7 +49,11 @@ private fun EventDetailScreenContent(eventId: String) {
                     title = { Text("Event Not Found") },
                     navigationIcon = {
                         IconButton(onClick = { navigator.pop() }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                            TextIcon(
+                                symbol = UISymbols.BACK,
+                                contentDescription = "Back",
+                                fontSize = 20
+                            )
                         }
                     }
                 )
@@ -73,7 +77,11 @@ private fun EventDetailScreenContent(eventId: String) {
                 title = { Text("Event Details") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        TextIcon(
+                            symbol = UISymbols.BACK,
+                            contentDescription = "Back",
+                            fontSize = 20
+                        )
                     }
                 },
                 actions = {
@@ -81,10 +89,18 @@ private fun EventDetailScreenContent(eventId: String) {
                         val shareText = ShareHelper.shareEvent(event)
                         println("Share: $shareText")
                     }) {
-                        Icon(Icons.Default.Share, contentDescription = "Share")
+                        TextIcon(
+                            symbol = UISymbols.SHARE,
+                            contentDescription = "Share",
+                            fontSize = 20
+                        )
                     }
                     IconButton(onClick = { /* TODO: More options */ }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "More")
+                        TextIcon(
+                            symbol = UISymbols.MORE_VERT,
+                            contentDescription = "More",
+                            fontSize = 20
+                        )
                     }
                 }
             )
@@ -114,14 +130,18 @@ private fun EventDetailScreenContent(eventId: String) {
                             isRSVPed = !isRSVPed
                         },
                         modifier = Modifier.weight(1f),
-                        leadingIcon = if (isRSVPed) Icons.Default.CheckCircle else Icons.Default.Event
+                        leadingIcon = if (isRSVPed) UISymbols.CHECK_CIRCLE else UISymbols.EVENT
                     )
                     
                     IconButton(
                         onClick = { /* TODO: Add to calendar */ },
                         modifier = Modifier.size(48.dp)
                     ) {
-                        Icon(Icons.Default.CalendarMonth, contentDescription = "Add to Calendar")
+                        TextIcon(
+                            symbol = UISymbols.CALENDAR,
+                            contentDescription = "Add to Calendar",
+                            fontSize = 20
+                        )
                     }
                 }
             }
@@ -218,21 +238,21 @@ private fun EventDetailScreenContent(eventId: String) {
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     EventStat(
-                        icon = Icons.Default.Group,
+                        icon = UISymbols.GROUP,
                         value = currentAttendees.toString(),
                         label = "Attending"
                     )
                     
                     if (event.maxAttendees != null) {
                         EventStat(
-                            icon = Icons.Default.EventSeat,
+                            icon = UISymbols.EVENT_SEAT,
                             value = event.maxAttendees.toString(),
                             label = "Capacity"
                         )
                     }
                     
                     EventStat(
-                        icon = Icons.Default.Visibility,
+                        icon = UISymbols.VISIBILITY,
                         value = "${(currentAttendees * 3.5).toInt()}",
                         label = "Views"
                     )
@@ -267,14 +287,14 @@ private fun EventDetailScreenContent(eventId: String) {
                     
                     // Date & Time
                     EventDetailRow(
-                        icon = Icons.Default.Schedule,
+                        icon = UISymbols.SCHEDULE,
                         label = "Date & Time",
                         value = formatFullEventTime(event.startTime, event.endTime)
                     )
                     
                     // Location
                     EventDetailRow(
-                        icon = if (event.location.isVirtual) Icons.Default.Laptop else Icons.Default.Place,
+                        icon = if (event.location.isVirtual) UISymbols.LAPTOP else UISymbols.LOCATION,
                         label = "Location",
                         value = buildString {
                             append(event.location.name)
@@ -367,7 +387,7 @@ private fun EventDetailScreenContent(eventId: String) {
  */
 @Composable
 private fun EventStat(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: String,
     value: String,
     label: String
 ) {
@@ -375,11 +395,10 @@ private fun EventStat(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(Spacing.xs)
     ) {
-        Icon(
-            imageVector = icon,
+        TextIcon(
+            symbol = icon,
             contentDescription = null,
-            modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.primary
+            fontSize = 20
         )
         Text(
             text = value,
@@ -398,7 +417,7 @@ private fun EventStat(
  */
 @Composable
 private fun EventDetailRow(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: String,
     label: String,
     value: String,
     isClickable: Boolean = false,
@@ -414,11 +433,10 @@ private fun EventDetailRow(
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.spacedBy(Spacing.default)
     ) {
-        Icon(
-            imageVector = icon,
+        TextIcon(
+            symbol = icon,
             contentDescription = null,
-            modifier = Modifier.size(20.dp),
-            tint = MaterialTheme.colorScheme.primary
+            fontSize = 16
         )
         Column(modifier = Modifier.weight(1f)) {
             Text(

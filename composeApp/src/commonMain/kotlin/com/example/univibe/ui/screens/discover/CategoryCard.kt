@@ -3,16 +3,6 @@ package com.example.univibe.ui.screens.discover
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Group
-import androidx.compose.material.icons.filled.LocalFireDepartment
-import androidx.compose.material.icons.filled.Palette
-import androidx.compose.material.icons.filled.School
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,11 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.ui.theme.BrandColors
 import com.example.univibe.ui.theme.ExtendedColors
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Data class representing a category of content (e.g., Academics, Social, Sports).
@@ -40,7 +31,7 @@ import com.example.univibe.ui.theme.ExtendedColors
 data class CategoryItem(
     val id: String,
     val title: String,
-    val icon: ImageVector,
+    val icon: String,
     val backgroundColor: Color,
     val iconTint: Color,
     val description: String? = null,
@@ -78,10 +69,10 @@ fun CategoryCard(
             verticalArrangement = Arrangement.Center
         ) {
             // Icon
-            Icon(
-                imageVector = item.icon,
+            TextIcon(
+                symbol = item.icon,
                 contentDescription = item.title,
-                modifier = Modifier.size(Dimensions.IconSize.large),
+                fontSize = 32,
                 tint = item.iconTint
             )
 
@@ -168,7 +159,7 @@ fun getDefaultCategories(): List<CategoryItem> {
         CategoryItem(
             id = "academics",
             title = "Academics",
-            icon = Icons.Default.School,
+            icon = UISymbols.SCHOOL,
             backgroundColor = Color(0xFFF8DEDB),
             iconTint = ExtendedColors.Academic,
             description = "Study groups & notes",
@@ -177,7 +168,7 @@ fun getDefaultCategories(): List<CategoryItem> {
         CategoryItem(
             id = "social",
             title = "Social",
-            icon = Icons.Default.Group,
+            icon = UISymbols.GROUP,
             backgroundColor = Color(0xFFFFEDD9),
             iconTint = ExtendedColors.Social,
             description = "Meet & connect",
@@ -186,7 +177,7 @@ fun getDefaultCategories(): List<CategoryItem> {
         CategoryItem(
             id = "events",
             title = "Events",
-            icon = Icons.Default.DateRange,
+            icon = UISymbols.DATE_RANGE,
             backgroundColor = Color(0xFFA3EEEA),
             iconTint = BrandColors.Teal,
             description = "Campus events",
@@ -195,7 +186,7 @@ fun getDefaultCategories(): List<CategoryItem> {
         CategoryItem(
             id = "sports",
             title = "Sports",
-            icon = Icons.Default.EmojiEvents,
+            icon = UISymbols.EVENTS,
             backgroundColor = Color(0xFFFFCDD2),
             iconTint = ExtendedColors.Sports,
             description = "Teams & games",
@@ -204,7 +195,7 @@ fun getDefaultCategories(): List<CategoryItem> {
         CategoryItem(
             id = "arts",
             title = "Arts & Culture",
-            icon = Icons.Default.Palette,
+            icon = UISymbols.PALETTE,
             backgroundColor = Color(0xFFF0F4C3),
             iconTint = ExtendedColors.Arts,
             description = "Creative pursuits",
@@ -213,7 +204,7 @@ fun getDefaultCategories(): List<CategoryItem> {
         CategoryItem(
             id = "clubs",
             title = "Clubs & Orgs",
-            icon = Icons.Default.Favorite,
+            icon = UISymbols.FAVORITE,
             backgroundColor = Color(0xFFE1BEE7),
             iconTint = ExtendedColors.Arts,
             description = "Join communities",

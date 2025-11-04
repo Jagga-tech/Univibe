@@ -3,9 +3,6 @@ package com.example.univibe.ui.screens.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,7 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.components.UserAvatar
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 import com.example.univibe.domain.models.StoryGroup
 
 /**
@@ -94,10 +93,10 @@ private fun AddStoryButton(onClick: () -> Unit) {
                 .background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.Add,
+            TextIcon(
+                symbol = UISymbols.ADD,
                 contentDescription = "Add story",
-                modifier = Modifier.size(Dimensions.IconSize.large),
+                fontSize = 28,
                 tint = MaterialTheme.colorScheme.primary
             )
         }

@@ -3,9 +3,6 @@ package com.example.univibe.ui.screens.profile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,8 +16,10 @@ import com.example.univibe.data.mock.getOtherUserProfile
 import com.example.univibe.domain.models.UserProfileData
 import com.example.univibe.ui.components.PrimaryButton
 import com.example.univibe.ui.components.OutlineButton
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.components.profile.ProfileStatsCard
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Screen for viewing another user's profile (read-only).
@@ -47,12 +46,12 @@ private fun ViewProfileScreenContent(userId: String) {
                 title = { Text(profile.value.fullName) },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        TextIcon(UISymbols.BACK, contentDescription = "Back")
                     }
                 },
                 actions = {
                     IconButton(onClick = { showMenu = !showMenu }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "More")
+                        TextIcon(UISymbols.MORE_VERT, contentDescription = "More")
                     }
 
                     DropdownMenu(

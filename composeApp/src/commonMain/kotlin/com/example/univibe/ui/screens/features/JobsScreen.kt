@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +18,8 @@ import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.screens.detail.JobDetailScreen
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.utils.UISymbols
 
 object JobsScreen : Screen {
     @Composable
@@ -62,12 +62,20 @@ private fun JobsScreenContent() {
                 title = { Text("Campus Jobs") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        TextIcon(
+                            symbol = UISymbols.BACK,
+                            contentDescription = "Back",
+                            fontSize = 20
+                        )
                     }
                 },
                 actions = {
                     IconButton(onClick = { isSearching = !isSearching }) {
-                        Icon(Icons.Default.Search, contentDescription = "Search")
+                        TextIcon(
+                            symbol = UISymbols.SEARCH,
+                            contentDescription = "Search",
+                            fontSize = 20
+                        )
                     }
                 }
             )
@@ -88,14 +96,20 @@ private fun JobsScreenContent() {
                         onValueChange = { searchQuery = it },
                         placeholder = { Text("Search jobs...") },
                         leadingIcon = {
-                            Icon(Icons.Default.Search, contentDescription = null)
+                            TextIcon(
+                                symbol = UISymbols.SEARCH,
+                                fontSize = 16
+                            )
                         },
                         trailingIcon = {
                             if (searchQuery.isNotEmpty()) {
                                 IconButton(
                                     onClick = { searchQuery = "" }
                                 ) {
-                                    Icon(Icons.Default.Close, contentDescription = "Clear")
+                                    TextIcon(
+                                        symbol = UISymbols.CLOSE,
+                                        fontSize = 16
+                                    )
                                 }
                             }
                         },
@@ -156,10 +170,9 @@ private fun JobsScreenContent() {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.md)
                         ) {
-                            Icon(
-                                Icons.Default.Work,
-                                contentDescription = null,
-                                modifier = Modifier.size(48.dp),
+                            TextIcon(
+                                symbol = UISymbols.WORK,
+                                fontSize = 48,
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
@@ -311,10 +324,9 @@ private fun JobCard(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Icon(
-                        if (job.isRemote) Icons.Default.Laptop else Icons.Default.Place,
-                        contentDescription = null,
-                        modifier = Modifier.size(14.dp),
+                    TextIcon(
+                        symbol = if (job.isRemote) UISymbols.LAPTOP else UISymbols.LOCATION,
+                        fontSize = 12,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
@@ -333,10 +345,9 @@ private fun JobCard(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.weight(1f)
                     ) {
-                        Icon(
-                            Icons.Default.AttachMoney,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp),
+                        TextIcon(
+                            symbol = UISymbols.MONEY,
+                            fontSize = 12,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(

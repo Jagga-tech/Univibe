@@ -4,16 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.ui.theme.SemanticColors
@@ -29,14 +23,14 @@ enum class ToastType {
 }
 
 /**
- * Get the appropriate icon and color for a toast type.
+ * Get the appropriate color and icon symbol for a toast type.
  */
-private fun ToastType.getIconAndColor(): Pair<ImageVector, androidx.compose.ui.graphics.Color> {
+private fun ToastType.getColorAndSymbol(): Pair<androidx.compose.ui.graphics.Color, String> {
     return when (this) {
-        ToastType.Success -> Icons.Default.CheckCircle to SemanticColors.Success
-        ToastType.Error -> Icons.Default.Error to SemanticColors.Error
-        ToastType.Warning -> Icons.Default.Warning to SemanticColors.Warning
-        ToastType.Info -> Icons.Default.Info to SemanticColors.Info
+        ToastType.Success -> SemanticColors.Success to "✓"
+        ToastType.Error -> SemanticColors.Error to "✕"
+        ToastType.Warning -> SemanticColors.Warning to "⚠"
+        ToastType.Info -> SemanticColors.Info to "ℹ"
     }
 }
 
@@ -65,7 +59,7 @@ fun UniVibeToast(
     onAction: (() -> Unit)? = null,
     duration: Int = 3000
 ) {
-    val (icon, color) = type.getIconAndColor()
+    val (color, symbol) = type.getColorAndSymbol()
     
     Box(
         modifier = modifier
@@ -88,12 +82,12 @@ fun UniVibeToast(
             horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.md),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Icon
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.size(Dimensions.IconSize.md),
-                tint = color
+            // Symbol indicator
+            Text(
+                text = symbol,
+                style = MaterialTheme.typography.headlineSmall,
+                color = color,
+                modifier = Modifier.padding(horizontal = Dimensions.Spacing.sm)
             )
             
             // Message

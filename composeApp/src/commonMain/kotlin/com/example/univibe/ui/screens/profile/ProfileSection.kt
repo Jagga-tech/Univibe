@@ -3,9 +3,6 @@ package com.example.univibe.ui.screens.profile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,8 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.components.UniVibeCard
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Data class representing an item in a profile section.
@@ -77,10 +76,10 @@ fun ProfileSection(
                         onClick = onEditClick,
                         modifier = Modifier.size(Dimensions.IconSize.large)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
+                        TextIcon(
+                            symbol = UISymbols.EDIT,
                             contentDescription = "Edit section",
-                            modifier = Modifier.size(Dimensions.IconSize.medium),
+                            fontSize = 20,
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }

@@ -5,9 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +19,8 @@ import com.example.univibe.domain.models.SessionFilter
 import com.example.univibe.domain.models.LocationType
 import com.example.univibe.ui.screens.detail.StudySessionDetailScreen
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.utils.UISymbols
 import kotlin.system.getTimeMillis
 
 /**
@@ -64,12 +63,20 @@ private fun StudySessionsScreenContent() {
                 title = { Text("Study Sessions") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        TextIcon(
+                            symbol = UISymbols.BACK,
+                            contentDescription = "Back",
+                            fontSize = 20
+                        )
                     }
                 },
                 actions = {
                     IconButton(onClick = { showFilters = !showFilters }) {
-                        Icon(Icons.Default.FilterList, contentDescription = "Filters")
+                        TextIcon(
+                            symbol = UISymbols.FILTER_LIST,
+                            contentDescription = "Filters",
+                            fontSize = 20
+                        )
                     }
                 }
             )
@@ -145,11 +152,19 @@ private fun SearchBar(
             .fillMaxWidth()
             .height(56.dp),
         placeholder = { Text("Search sessions...") },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+        leadingIcon = { 
+            TextIcon(
+                symbol = UISymbols.SEARCH,
+                fontSize = 16
+            )
+        },
         trailingIcon = {
             if (query.isNotEmpty()) {
                 IconButton(onClick = { onQueryChange("") }) {
-                    Icon(Icons.Default.Close, contentDescription = "Clear")
+                    TextIcon(
+                        symbol = UISymbols.CLOSE,
+                        fontSize = 16
+                    )
                 }
             }
         },
@@ -319,10 +334,9 @@ private fun StudySessionCard(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Icon(
-                        Icons.Default.LocationOn,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
+                    TextIcon(
+                        symbol = UISymbols.LOCATION,
+                        fontSize = 14,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
@@ -339,10 +353,9 @@ private fun StudySessionCard(
                     horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.xs),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        Icons.Default.AccessTime,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
+                    TextIcon(
+                        symbol = UISymbols.ACCESS_TIME,
+                        fontSize = 14,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(

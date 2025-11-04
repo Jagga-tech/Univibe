@@ -1,12 +1,6 @@
 package com.example.univibe.ui.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChatBubble
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Sealed class representing navigation destinations in UniVibe app.
@@ -14,36 +8,36 @@ import androidx.compose.ui.graphics.vector.ImageVector
  */
 sealed class NavigationItem(
     val route: String,
-    val icon: ImageVector,
+    val icon: String,
     val label: String
 ) {
     data object Home : NavigationItem(
         route = "home",
-        icon = Icons.Default.Home,
+        icon = UISymbols.HOME,
         label = "Home"
     )
 
     data object Discover : NavigationItem(
         route = "discover",
-        icon = Icons.Default.Search,
+        icon = UISymbols.SEARCH,
         label = "Discover"
     )
 
     data object Hub : NavigationItem(
         route = "hub",
-        icon = Icons.Default.Add,
+        icon = UISymbols.ADD,
         label = "Hub"
     )
 
     data object Messages : NavigationItem(
         route = "messages",
-        icon = Icons.Default.ChatBubble,
+        icon = UISymbols.CHAT_BUBBLE,
         label = "Messages"
     )
 
     data object Profile : NavigationItem(
         route = "profile",
-        icon = Icons.Default.Person,
+        icon = UISymbols.PERSON,
         label = "Profile"
     )
 

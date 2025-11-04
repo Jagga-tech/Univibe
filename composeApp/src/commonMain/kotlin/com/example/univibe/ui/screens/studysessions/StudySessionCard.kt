@@ -2,22 +2,19 @@ package com.example.univibe.ui.screens.studysessions
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.components.PrimaryButton
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.components.UniVibeCard
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Data class representing a study session.
@@ -133,14 +130,14 @@ fun StudySessionCard(
 
             // Session details (time, location)
             SessionDetailRow(
-                icon = Icons.Default.AccessTime,
+                icon = UISymbols.ACCESS_TIME,
                 label = item.time
             )
 
             Spacer(modifier = Modifier.height(Dimensions.Spacing.sm))
 
             SessionDetailRow(
-                icon = Icons.Default.LocationOn,
+                icon = UISymbols.LOCATION,
                 label = item.location
             )
 
@@ -207,7 +204,7 @@ fun StudySessionCard(
  */
 @Composable
 private fun SessionDetailRow(
-    icon: ImageVector,
+    icon: String,
     label: String,
     modifier: Modifier = Modifier
 ) {
@@ -217,10 +214,10 @@ private fun SessionDetailRow(
         horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = icon,
+        TextIcon(
+            symbol = icon,
             contentDescription = null,
-            modifier = Modifier.size(Dimensions.IconSize.small),
+            fontSize = 16,
             tint = MaterialTheme.colorScheme.primary
         )
 

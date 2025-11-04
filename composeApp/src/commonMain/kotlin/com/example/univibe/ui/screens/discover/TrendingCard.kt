@@ -2,18 +2,16 @@ package com.example.univibe.ui.screens.discover
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.TrendingUp
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.components.UniVibeCard
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Data class representing a trending topic or hashtag.
@@ -31,7 +29,7 @@ data class TrendingItem(
     val category: String,
     val postCount: Int,
     val momentum: String? = null,
-    val icon: ImageVector? = null
+    val icon: String? = null
 )
 
 /**
@@ -129,10 +127,10 @@ fun TrendingCard(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.TrendingUp,
+                    TextIcon(
+                        symbol = item.icon ?: UISymbols.TRENDING_UP,
                         contentDescription = "Trending",
-                        modifier = Modifier.size(Dimensions.IconSize.medium),
+                        fontSize = 20,
                         tint = MaterialTheme.colorScheme.tertiary
                     )
 
@@ -189,7 +187,7 @@ fun getSampleTrendingItems(): List<TrendingItem> = listOf(
         category = "Academics",
         postCount = 1204,
         momentum = "↑ 45%",
-        icon = Icons.Default.TrendingUp
+        icon = UISymbols.TRENDING_UP
     ),
     TrendingItem(
         id = "trending_2",
@@ -197,7 +195,7 @@ fun getSampleTrendingItems(): List<TrendingItem> = listOf(
         category = "Community",
         postCount = 856,
         momentum = "↑ 32%",
-        icon = Icons.Default.TrendingUp
+        icon = UISymbols.TRENDING_UP
     ),
     TrendingItem(
         id = "trending_3",
@@ -205,7 +203,7 @@ fun getSampleTrendingItems(): List<TrendingItem> = listOf(
         category = "Events",
         postCount = 2341,
         momentum = "↑ 58%",
-        icon = Icons.Default.TrendingUp
+        icon = UISymbols.TRENDING_UP
     ),
     TrendingItem(
         id = "trending_4",
@@ -213,7 +211,7 @@ fun getSampleTrendingItems(): List<TrendingItem> = listOf(
         category = "Academics",
         postCount = 1567,
         momentum = "↑ 28%",
-        icon = Icons.Default.TrendingUp
+        icon = UISymbols.TRENDING_UP
     ),
     TrendingItem(
         id = "trending_5",
@@ -221,6 +219,6 @@ fun getSampleTrendingItems(): List<TrendingItem> = listOf(
         category = "Collaboration",
         postCount = 743,
         momentum = "↑ 15%",
-        icon = Icons.Default.TrendingUp
+        icon = UISymbols.TRENDING_UP
     )
 )

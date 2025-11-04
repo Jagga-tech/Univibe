@@ -1,17 +1,6 @@
 package com.example.univibe.ui.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.ChatBubble
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Home as HomeOutlined
-import androidx.compose.material.icons.outlined.Search as SearchOutlined
-import androidx.compose.material.icons.outlined.Dashboard as DashboardOutlined
-import androidx.compose.material.icons.outlined.ChatBubbleOutline
-import androidx.compose.material.icons.outlined.Person as PersonOutlined
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Navigation Screens
@@ -21,43 +10,43 @@ import androidx.compose.ui.graphics.vector.ImageVector
 sealed class Screen(
     val route: String,
     val title: String,
-    val icon: ImageVector? = null,
-    val selectedIcon: ImageVector? = null
+    val icon: String? = null,
+    val selectedIcon: String? = null
 ) {
     // Main Tab Screens
     data object Home : Screen(
         route = "home",
         title = "Home",
-        icon = HomeOutlined,
-        selectedIcon = Home
+        icon = UISymbols.HOME_OUTLINED,
+        selectedIcon = UISymbols.HOME_FILLED
     )
     
     data object Discover : Screen(
         route = "discover",
         title = "Discover",
-        icon = SearchOutlined,
-        selectedIcon = Search
+        icon = UISymbols.SEARCH_OUTLINED,
+        selectedIcon = UISymbols.SEARCH_FILLED
     )
     
     data object Hub : Screen(
         route = "hub",
         title = "Hub",
-        icon = DashboardOutlined,
-        selectedIcon = Dashboard
+        icon = UISymbols.DASHBOARD_OUTLINED,
+        selectedIcon = UISymbols.DASHBOARD_FILLED
     )
     
     data object Messages : Screen(
         route = "messages",
         title = "Messages",
-        icon = ChatBubbleOutline,
-        selectedIcon = ChatBubble
+        icon = UISymbols.CHAT_BUBBLE,
+        selectedIcon = UISymbols.CHAT_BUBBLE
     )
     
     data object Profile : Screen(
         route = "profile",
         title = "Profile",
-        icon = PersonOutlined,
-        selectedIcon = Person
+        icon = UISymbols.PERSON_OUTLINED,
+        selectedIcon = UISymbols.PERSON_FILLED
     )
     
     // Auth Screens

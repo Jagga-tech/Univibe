@@ -11,11 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.animations.AnimationConstants
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 /**
  * Button size variants for consistency.
@@ -46,8 +46,8 @@ fun PrimaryButton(
     enabled: Boolean = true,
     loading: Boolean = false,
     size: ButtonSize = ButtonSize.Medium,
-    leadingIcon: ImageVector? = null,
-    trailingIcon: ImageVector? = null
+    leadingIcon: String? = null,
+    trailingIcon: String? = null
 ) {
     var isPressed by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
@@ -101,18 +101,18 @@ fun PrimaryButton(
                 horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
             ) {
                 if (leadingIcon != null) {
-                    Icon(
-                        imageVector = leadingIcon,
+                    TextIcon(
+                        symbol = leadingIcon,
                         contentDescription = null,
-                        modifier = Modifier.size(Dimensions.IconSize.sm)
+                        fontSize = 14
                     )
                 }
                 Text(text)
                 if (trailingIcon != null) {
-                    Icon(
-                        imageVector = trailingIcon,
+                    TextIcon(
+                        symbol = trailingIcon,
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp)
+                        fontSize = 14
                     )
                 }
             }
@@ -131,8 +131,8 @@ fun SecondaryButton(
     enabled: Boolean = true,
     loading: Boolean = false,
     size: ButtonSize = ButtonSize.Medium,
-    leadingIcon: ImageVector? = null,
-    trailingIcon: ImageVector? = null
+    leadingIcon: String? = null,
+    trailingIcon: String? = null
 ) {
     var isPressed by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
@@ -186,18 +186,18 @@ fun SecondaryButton(
                 horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
             ) {
                 if (leadingIcon != null) {
-                    Icon(
-                        imageVector = leadingIcon,
+                    TextIcon(
+                        symbol = leadingIcon,
                         contentDescription = null,
-                        modifier = Modifier.size(Dimensions.IconSize.sm)
+                        fontSize = 14
                     )
                 }
                 Text(text)
                 if (trailingIcon != null) {
-                    Icon(
-                        imageVector = trailingIcon,
+                    TextIcon(
+                        symbol = trailingIcon,
                         contentDescription = null,
-                        modifier = Modifier.size(Dimensions.IconSize.sm)
+                        fontSize = 14
                     )
                 }
             }
@@ -216,8 +216,8 @@ fun TertiaryButton(
     enabled: Boolean = true,
     loading: Boolean = false,
     size: ButtonSize = ButtonSize.Medium,
-    leadingIcon: ImageVector? = null,
-    trailingIcon: ImageVector? = null
+    leadingIcon: String? = null,
+    trailingIcon: String? = null
 ) {
     var isPressed by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
@@ -271,18 +271,18 @@ fun TertiaryButton(
                 horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
             ) {
                 if (leadingIcon != null) {
-                    Icon(
-                        imageVector = leadingIcon,
+                    TextIcon(
+                        symbol = leadingIcon,
                         contentDescription = null,
-                        modifier = Modifier.size(Dimensions.IconSize.sm)
+                        fontSize = 14
                     )
                 }
                 Text(text)
                 if (trailingIcon != null) {
-                    Icon(
-                        imageVector = trailingIcon,
+                    TextIcon(
+                        symbol = trailingIcon,
                         contentDescription = null,
-                        modifier = Modifier.size(Dimensions.IconSize.sm)
+                        fontSize = 14
                     )
                 }
             }
@@ -301,8 +301,8 @@ fun OutlineButton(
     enabled: Boolean = true,
     loading: Boolean = false,
     size: ButtonSize = ButtonSize.Medium,
-    leadingIcon: ImageVector? = null,
-    trailingIcon: ImageVector? = null
+    leadingIcon: String? = null,
+    trailingIcon: String? = null
 ) {
     var isPressed by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
@@ -355,18 +355,18 @@ fun OutlineButton(
                 horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
             ) {
                 if (leadingIcon != null) {
-                    Icon(
-                        imageVector = leadingIcon,
+                    TextIcon(
+                        symbol = leadingIcon,
                         contentDescription = null,
-                        modifier = Modifier.size(Dimensions.IconSize.sm)
+                        fontSize = 14
                     )
                 }
                 Text(text)
                 if (trailingIcon != null) {
-                    Icon(
-                        imageVector = trailingIcon,
+                    TextIcon(
+                        symbol = trailingIcon,
                         contentDescription = null,
-                        modifier = Modifier.size(Dimensions.IconSize.sm)
+                        fontSize = 14
                     )
                 }
             }
@@ -385,8 +385,8 @@ fun TextButtonVariant(
     enabled: Boolean = true,
     loading: Boolean = false,
     size: ButtonSize = ButtonSize.Medium,
-    leadingIcon: ImageVector? = null,
-    trailingIcon: ImageVector? = null
+    leadingIcon: String? = null,
+    trailingIcon: String? = null
 ) {
     var isPressed by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
@@ -434,18 +434,18 @@ fun TextButtonVariant(
                 horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
             ) {
                 if (leadingIcon != null) {
-                    Icon(
-                        imageVector = leadingIcon,
+                    TextIcon(
+                        symbol = leadingIcon,
                         contentDescription = null,
-                        modifier = Modifier.size(Dimensions.IconSize.sm)
+                        fontSize = 14
                     )
                 }
                 Text(text)
                 if (trailingIcon != null) {
-                    Icon(
-                        imageVector = trailingIcon,
+                    TextIcon(
+                        symbol = trailingIcon,
                         contentDescription = null,
-                        modifier = Modifier.size(Dimensions.IconSize.sm)
+                        fontSize = 14
                     )
                 }
             }

@@ -3,9 +3,6 @@ package com.example.univibe.ui.screens.notifications
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,10 +13,12 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.MockNotifications
 import com.example.univibe.domain.models.*
+import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.components.social.NotificationItem
 import com.example.univibe.ui.screens.detail.PostDetailScreen
 import com.example.univibe.ui.screens.detail.UserProfileScreen
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.utils.UISymbols
 
 object NotificationCenterScreen : Screen {
     @Composable
@@ -47,7 +46,7 @@ private fun NotificationCenterScreenContent() {
                 title = { Text("Notifications") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        TextIcon(UISymbols.BACK, contentDescription = "Back")
                     }
                 },
                 actions = {
@@ -57,7 +56,7 @@ private fun NotificationCenterScreenContent() {
                             notifications = MockNotifications.getAllNotifications()
                         }
                     ) {
-                        Icon(Icons.Default.Delete, contentDescription = "Clear all")
+                        TextIcon(UISymbols.CLOSE, contentDescription = "Clear all")
                     }
                 }
             )

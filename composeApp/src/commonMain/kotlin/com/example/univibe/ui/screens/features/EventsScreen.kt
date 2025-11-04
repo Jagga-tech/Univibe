@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +18,8 @@ import com.example.univibe.data.mock.MockEvents
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.screens.detail.EventDetailScreen
 import com.example.univibe.ui.screens.create.CreateEventScreen
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.utils.UISymbols
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -92,19 +92,31 @@ private fun EventsScreenContent() {
                     IconButton(
                         onClick = { navigator.pop() }
                     ) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        TextIcon(
+                            symbol = UISymbols.BACK,
+                            contentDescription = "Back",
+                            fontSize = 20
+                        )
                     }
                 },
                 actions = {
                     IconButton(
                         onClick = { isSearching = !isSearching }
                     ) {
-                        Icon(Icons.Default.Search, contentDescription = "Search")
+                        TextIcon(
+                            symbol = UISymbols.SEARCH,
+                            contentDescription = "Search",
+                            fontSize = 20
+                        )
                     }
                     IconButton(
                         onClick = { /* TODO: Calendar view */ }
                     ) {
-                        Icon(Icons.Default.CalendarMonth, contentDescription = "Calendar View")
+                        TextIcon(
+                            symbol = UISymbols.CALENDAR,
+                            contentDescription = "Calendar View",
+                            fontSize = 20
+                        )
                     }
                 }
             )
@@ -114,7 +126,11 @@ private fun EventsScreenContent() {
                 onClick = { navigator.push(CreateEventScreen) },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Create Event")
+                TextIcon(
+                    symbol = UISymbols.ADD,
+                    contentDescription = "Create Event",
+                    fontSize = 20
+                )
             }
         }
     ) { paddingValues ->
@@ -132,14 +148,20 @@ private fun EventsScreenContent() {
                         onValueChange = { searchQuery = it },
                         placeholder = { Text("Search events...") },
                         leadingIcon = {
-                            Icon(Icons.Default.Search, contentDescription = null)
+                            TextIcon(
+                                symbol = UISymbols.SEARCH,
+                                fontSize = 16
+                            )
                         },
                         trailingIcon = {
                             if (searchQuery.isNotEmpty()) {
                                 IconButton(
                                     onClick = { searchQuery = "" }
                                 ) {
-                                    Icon(Icons.Default.Close, contentDescription = "Clear")
+                                    TextIcon(
+                                        symbol = UISymbols.CLOSE,
+                                        fontSize = 16
+                                    )
                                 }
                             }
                         },
@@ -212,10 +234,9 @@ private fun EventsScreenContent() {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(Spacing.default)
                         ) {
-                            Icon(
-                                Icons.Default.Event,
-                                contentDescription = null,
-                                modifier = Modifier.size(48.dp),
+                            TextIcon(
+                                symbol = UISymbols.EVENT,
+                                fontSize = 48,
                                 tint = MaterialTheme.colorScheme.outline
                             )
                             Text(

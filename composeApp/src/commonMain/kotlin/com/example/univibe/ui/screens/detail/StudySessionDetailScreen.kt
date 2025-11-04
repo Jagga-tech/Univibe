@@ -4,9 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +15,8 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.MockStudySessions
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.utils.UISymbols
 import com.example.univibe.util.ShareHelper
 import kotlin.system.getTimeMillis
 
@@ -57,7 +56,11 @@ private fun StudySessionDetailScreenContent(sessionId: String) {
                 title = { Text("Session Details") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        TextIcon(
+                            symbol = UISymbols.BACK,
+                            contentDescription = "Back",
+                            fontSize = 20
+                        )
                     }
                 },
                 actions = {
@@ -65,7 +68,11 @@ private fun StudySessionDetailScreenContent(sessionId: String) {
                         val shareText = ShareHelper.shareStudySession(session)
                         println("Share: $shareText")
                     }) {
-                        Icon(Icons.Default.Share, contentDescription = "Share")
+                        TextIcon(
+                            symbol = UISymbols.SHARE,
+                            contentDescription = "Share",
+                            fontSize = 20
+                        )
                     }
                 }
             )
@@ -384,7 +391,11 @@ private fun JoinButtonSection(
                 .width(56.dp)
                 .height(56.dp)
         ) {
-            Icon(Icons.Default.Message, contentDescription = "Message")
+            TextIcon(
+                symbol = UISymbols.MESSAGE,
+                contentDescription = "Message",
+                fontSize = 16
+            )
         }
     }
 }

@@ -3,8 +3,6 @@ package com.example.univibe.ui.screens.detail
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +16,8 @@ import com.example.univibe.ui.theme.*
 import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.*
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.utils.UISymbols
 import com.example.univibe.util.ShareHelper
 
 data class JobDetailScreen(val jobId: String) : Screen {
@@ -41,7 +41,11 @@ private fun JobDetailScreenContent(jobId: String) {
                     title = { Text("Job Not Found") },
                     navigationIcon = {
                         IconButton(onClick = { navigator.pop() }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                            TextIcon(
+                                symbol = UISymbols.BACK,
+                                contentDescription = "Back",
+                                fontSize = 20
+                            )
                         }
                     }
                 )
@@ -65,7 +69,11 @@ private fun JobDetailScreenContent(jobId: String) {
                 title = { Text(job.company) },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        TextIcon(
+                            symbol = UISymbols.BACK,
+                            contentDescription = "Back",
+                            fontSize = 20
+                        )
                     }
                 },
                 actions = {
@@ -73,7 +81,11 @@ private fun JobDetailScreenContent(jobId: String) {
                         val shareText = ShareHelper.shareJob(job)
                         println("Share: $shareText")
                     }) {
-                        Icon(Icons.Default.Share, contentDescription = "Share")
+                        TextIcon(
+                            symbol = UISymbols.SHARE,
+                            contentDescription = "Share",
+                            fontSize = 20
+                        )
                     }
                 }
             )

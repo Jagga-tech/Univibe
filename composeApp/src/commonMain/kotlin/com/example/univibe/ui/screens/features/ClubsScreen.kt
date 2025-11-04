@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +16,8 @@ import com.example.univibe.ui.theme.*
 import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.screens.detail.ClubDetailScreen
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.utils.UISymbols
 
 object ClubsScreen : Screen {
     @Composable
@@ -58,12 +58,20 @@ private fun ClubsScreenContent() {
                 title = { Text("Clubs") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        TextIcon(
+                            symbol = UISymbols.BACK,
+                            contentDescription = "Back",
+                            fontSize = 20
+                        )
                     }
                 },
                 actions = {
                     IconButton(onClick = { isSearching = !isSearching }) {
-                        Icon(Icons.Default.Search, contentDescription = "Search")
+                        TextIcon(
+                            symbol = UISymbols.SEARCH,
+                            contentDescription = "Search",
+                            fontSize = 20
+                        )
                     }
                 }
             )
@@ -83,14 +91,20 @@ private fun ClubsScreenContent() {
                         onValueChange = { searchQuery = it },
                         placeholder = { Text("Search clubs...") },
                         leadingIcon = {
-                            Icon(Icons.Default.Search, contentDescription = null)
+                            TextIcon(
+                                symbol = UISymbols.SEARCH,
+                                fontSize = 16
+                            )
                         },
                         trailingIcon = {
                             if (searchQuery.isNotEmpty()) {
                                 IconButton(
                                     onClick = { searchQuery = "" }
                                 ) {
-                                    Icon(Icons.Default.Close, contentDescription = "Clear")
+                                    TextIcon(
+                                        symbol = UISymbols.CLOSE,
+                                        fontSize = 16
+                                    )
                                 }
                             }
                         },
@@ -170,10 +184,9 @@ private fun ClubsScreenContent() {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Icon(
-                                Icons.Default.Groups,
-                                contentDescription = null,
-                                modifier = Modifier.size(48.dp),
+                            TextIcon(
+                                symbol = UISymbols.GROUPS,
+                                fontSize = 48,
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
@@ -320,10 +333,10 @@ private fun PopularClubCard(
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
                 if (club.isVerified) {
-                    Icon(
-                        Icons.Default.Verified,
+                    TextIcon(
+                        symbol = UISymbols.VERIFIED,
                         contentDescription = "Verified",
-                        modifier = Modifier.size(16.dp),
+                        fontSize = 14,
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -333,10 +346,9 @@ private fun PopularClubCard(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    Icons.Default.Group,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp),
+                TextIcon(
+                    symbol = UISymbols.GROUP,
+                    fontSize = 14,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(

@@ -1,8 +1,6 @@
 package com.example.univibe.ui.screens.create
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -10,6 +8,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.ui.theme.*
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.utils.UISymbols
 
 object CreateReelScreen : Screen {
     @Composable
@@ -29,7 +29,11 @@ private fun CreateReelScreenContent() {
                 title = { Text("Create Reel") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.Close, contentDescription = "Close")
+                        TextIcon(
+                            symbol = UISymbols.CLOSE,
+                            contentDescription = "Close",
+                            fontSize = 20
+                        )
                     }
                 }
             )
