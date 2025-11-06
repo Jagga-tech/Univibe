@@ -4,13 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,24 +19,20 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.MockPosts
 import com.example.univibe.data.mock.MockStories
 import com.example.univibe.domain.models.Post
-import com.example.univibe.ui.components.UniVibeTextField
+import com.example.univibe.ui.components.*
 import com.example.univibe.ui.screens.create.*
 import com.example.univibe.ui.screens.detail.*
 import com.example.univibe.ui.screens.features.*
 import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.util.ShareHelper
+import com.example.univibe.ui.utils.OnBottomReached
+import com.example.univibe.ui.utils.PaginationState
+import com.example.univibe.ui.utils.rememberPaginationState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * Data class representing a post in the feed.
- *
- * @param id Unique identifier for the post
- * @param userName Name of the user who posted
- * @param userAvatarUrl URL of the user's avatar
- * @param timestamp When the post was created
- * @param content Main text content of the post
- * @param likeCount Number of likes
- * @param commentCount Number of comments
- * @param isLiked Whether current user liked this post
  */
 data class PostItem(
     val id: String,
@@ -52,21 +47,12 @@ data class PostItem(
 
 /**
  * Home screen composable - main feed for UniVibe app.
- * Displays stories row, quick access tiles, and a scrollable feed of posts.
- *
- * @param posts List of posts to display in the feed
- * @param stories List of stories to display
- * @param quickAccessItems List of quick access tiles
- * @param onPostLikeClick Callback when a post is liked
- * @param onPostCommentClick Callback when comment button is clicked
- * @param onPostShareClick Callback when share button is clicked
- * @param onPostMoreClick Callback when more options is clicked
- * @param onStoryClick Callback when a story is clicked
- * @param onAddStoryClick Callback when "Add Story" is clicked
- * @param onQuickAccessClick Callback when a quick access tile is clicked
- * @param onSearchClick Callback when search field is clicked
- * @param onNotificationClick Callback when notification bell is clicked
- * @param onSettingsClick Callback when settings is clicked
+ * Features:
+ * - Pull-to-refresh for manual refresh
+ * - Infinite scroll/pagination
+ * - Skeleton loading for initial load
+ * - Error state with retry
+ * - Empty state when no posts
  */
 @Composable
 fun HomeScreen(
@@ -87,338 +73,335 @@ fun HomeScreen(
     val navigator = LocalNavigator.currentOrThrow
     var searchQuery by remember { mutableStateOf("") }
     
-    // State for real posts from mock data
-    var posts by remember { mutableStateOf(MockPosts.posts) }
-
-    LazyColumn(
+    // Pagination state
+    val paginationState = rememberPaginationState(
+        initialItems = MockPosts.posts.take(10)
+    )
+    
+    // Pull-to-refresh state
+    val scope = rememberCoroutineScope()
+    var isRefreshing by remember { mutableStateOf(false) }
+    val pullToRefreshState = rememberPullToRefreshState()
+    
+    val listState = rememberLazyListState()
+    
+    // Initial loading
+    var isInitialLoading by remember { mutableStateOf(true) }
+    
+    LaunchedEffect(Unit) {
+        delay(500) // Simulate network call
+        isInitialLoading = false
+    }
+    
+    // Pull-to-refresh handler
+    LaunchedEffect(pullToRefreshState.isRefreshing) {
+        if (pullToRefreshState.isRefreshing) {
+            isRefreshing = true
+            delay(1000) // Simulate network call
+            paginationState.refresh(MockPosts.posts.take(10))
+            isRefreshing = false
+            pullToRefreshState.endRefresh()
+        }
+    }
+    
+    // Pagination handler
+    listState.OnBottomReached {
+        scope.launch {
+            paginationState.loadNextPage { page ->
+                delay(1000) // Simulate network call
+                MockPosts.posts.drop((page + 1) * 10).take(10)
+            }
+        }
+    }
+    
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .nestedScroll(pullToRefreshState.nestedScrollConnection)
     ) {
-        // Top section with search bar
-        item {
-            Column(
+        if (isInitialLoading) {
+            // Skeleton loading state
+            LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(Dimensions.Spacing.md)
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+                contentPadding = PaddingValues(16.dp)
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = Dimensions.Spacing.sm),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "UniVibe",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    IconButton(onClick = { navigator.push(NotificationsScreen) }) {
-                        Text("🔔")
-                    }
+                items(3) {
+                    PostCardSkeleton()
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
-
-                UniVibeTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    placeholder = "Search posts, people...",
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = true
-                )
             }
-        }
-
-        // Stories row - using real stories from mock data
-        item {
-            StoriesRow(
-                storyGroups = MockStories.storyGroups,
-                onStoryClick = { storyGroup ->
-                    val startIndex = MockStories.storyGroups.indexOf(storyGroup)
-                    navigator.push(StoryViewerScreen(MockStories.storyGroups, startIndex))
-                },
-                onAddStoryClick = { /* TODO: Add story */ }
-            )
-        }
-
-        // Quick access grid
-        if (quickAccessItems.isNotEmpty()) {
-            item {
-                QuickAccessGrid(
-                    items = quickAccessItems,
-                    onTileClick = { title ->
-                        when (title) {
-                            "study_sessions" -> navigator.push(StudySessionsScreen)
-                            "find_buddy" -> navigator.push(SearchScreen)
-                            "class_notes" -> navigator.push(SearchScreen)
-                            "campus_events" -> navigator.push(EventsScreen)
-                            else -> {}
+        } else if (paginationState.error != null) {
+            // Error state
+            ErrorState(
+                error = paginationState.error ?: "Unknown error",
+                onRetry = {
+                    scope.launch {
+                        paginationState.retry { page ->
+                            delay(1000)
+                            MockPosts.posts.drop((page + 1) * 10).take(10)
                         }
                     }
-                )
+                },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.Center)
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+                state = listState,
+                contentPadding = PaddingValues(16.dp)
+            ) {
+                // Top section with search bar
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp)
+                    ) {
+                        Text(
+                            text = "Home",
+                            style = MaterialTheme.typography.headlineLarge,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+                        
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            UniVibeTextField(
+                                value = searchQuery,
+                                onValueChange = { searchQuery = it },
+                                placeholder = "What's on your mind?",
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(48.dp)
+                            )
+                            
+                            IconButton(
+                                onClick = { 
+                                    scope.launch {
+                                        pullToRefreshState.startRefresh()
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Refresh,
+                                    contentDescription = "Refresh"
+                                )
+                            }
+                        }
+                    }
+                }
+                
+                // Posts list
+                if (paginationState.items.isEmpty()) {
+                    item {
+                        EmptyState(
+                            title = "No posts yet",
+                            description = "Be the first to share something with your campus!",
+                            icon = Icons.Default.SearchOff,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                } else {
+                    items(paginationState.items) { post ->
+                        PostCard(
+                            post = post,
+                            onLikeClick = { onPostLikeClick(post.id) },
+                            onCommentClick = { onPostCommentClick(post.id) },
+                            onShareClick = { onPostShareClick(post.id) },
+                            onMoreClick = { onPostMoreClick(post.id) }
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+                
+                // Loading indicator at bottom
+                if (paginationState.isLoading && paginationState.items.isNotEmpty()) {
+                    item {
+                        PaginationLoadingIndicator()
+                    }
+                }
+                
+                // End of list message
+                if (!paginationState.hasMorePages && paginationState.items.isNotEmpty()) {
+                    item {
+                        EndOfListIndicator()
+                    }
+                }
             }
+        }
+        
+        // Pull-to-refresh indicator
+        PullToRefreshContainer(
+            state = pullToRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+    }
+}
 
-            // Divider
-            item {
+@Composable
+private fun PostCard(
+    post: PostItem,
+    onLikeClick: () -> Unit = {},
+    onCommentClick: () -> Unit = {},
+    onShareClick: () -> Unit = {},
+    onMoreClick: () -> Unit = {}
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            // User header
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Avatar placeholder
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .padding(horizontal = Dimensions.Spacing.md)
+                        .size(40.dp)
+                        .background(
+                            MaterialTheme.colorScheme.surfaceVariant,
+                            shape = androidx.compose.foundation.shape.CircleShape
+                        )
                 )
-                Spacer(modifier = Modifier.height(Dimensions.Spacing.md))
-            }
-        }
-
-        // Campus Features Section
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = Dimensions.Spacing.md),
-                verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
-            ) {
-                Text(
-                    "Campus Life",
-                    style = MaterialTheme.typography.titleMedium
-                )
-                
-                // First row of feature cards
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
-                ) {
-                    FeatureCard(
-                        emoji = "📅",
-                        title = "Events",
-                        onClick = { navigator.push(EventsScreen) },
-                        modifier = Modifier.weight(1f)
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = post.userName,
+                        style = MaterialTheme.typography.titleSmall
                     )
-                    FeatureCard(
-                        emoji = "👥",
-                        title = "Clubs",
-                        onClick = { navigator.push(ClubsScreen) },
-                        modifier = Modifier.weight(1f)
-                    )
-                    FeatureCard(
-                        emoji = "📚",
-                        title = "Study",
-                        onClick = { navigator.push(StudySessionsScreen) },
-                        modifier = Modifier.weight(1f)
+                    Text(
+                        text = post.timestamp,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                
-                // Second row of feature cards
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
-                ) {
-                    FeatureCard(
-                        emoji = "🏢",
-                        title = "Departments",
-                        onClick = { navigator.push(DepartmentsScreen) },
-                        modifier = Modifier.weight(1f)
-                    )
-                    FeatureCard(
-                        emoji = "🛍️",
-                        title = "Marketplace",
-                        onClick = { navigator.push(MarketplaceScreen) },
-                        modifier = Modifier.weight(1f)
-                    )
-                    FeatureCard(
-                        emoji = "💼",
-                        title = "Jobs",
-                        onClick = { navigator.push(JobsScreen) },
-                        modifier = Modifier.weight(1f)
-                    )
+                IconButton(onClick = onMoreClick) {
+                    Icon(Icons.Default.MoreVert, contentDescription = "More")
                 }
             }
-        }
-
-        // Divider before feed
-        item {
-            Spacer(modifier = Modifier.height(Dimensions.Spacing.md))
-        }
-
-        // Feed label
-        item {
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Content text
             Text(
-                text = "What's New",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(
-                    start = Dimensions.Spacing.md,
-                    end = Dimensions.Spacing.md,
-                    bottom = Dimensions.Spacing.sm
-                )
+                text = post.content,
+                style = MaterialTheme.typography.bodyMedium
             )
-        }
-
-        // Posts feed - using real posts from mock data
-        items(
-            items = posts,
-            key = { post -> post.id }
-        ) { post ->
-            PostCard(
-                post = post,
-                onLikeClick = { clickedPost ->
-                    // Toggle like
-                    posts = posts.map {
-                        if (it.id == clickedPost.id) {
-                            it.copy(
-                                isLiked = !it.isLiked,
-                                likeCount = if (it.isLiked) it.likeCount - 1 else it.likeCount + 1
-                            )
-                        } else it
-                    }
-                },
-                onCommentClick = { clickedPost ->
-                    navigator.push(PostDetailScreen(clickedPost.id))
-                },
-                onShareClick = { sharedPost ->
-                    val shareText = ShareHelper.sharePost(sharedPost)
-                    println("Share: $shareText")
-                },
-                onPostClick = { /* TODO: Post detail */ },
-                onUserClick = { post ->
-                    navigator.push(UserProfileScreen(post.authorId))
-                }
-            )
-        }
-
-        // Bottom message
-        item {
-            Box(
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Engagement stats
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(Dimensions.Spacing.lg),
-                contentAlignment = Alignment.Center
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "You're all caught up! 🎉",
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = "${post.likeCount} likes",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "${post.commentCount} comments",
+                    style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-        }
-
-        // Bottom padding for navigation bar
-        item {
-            Spacer(modifier = Modifier.height(Dimensions.Spacing.lg))
+            
+            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            
+            // Action buttons
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                ActionButton(
+                    icon = if (post.isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    label = "Like",
+                    onClick = onLikeClick,
+                    modifier = Modifier.weight(1f)
+                )
+                ActionButton(
+                    icon = Icons.Default.ChatBubbleOutline,
+                    label = "Comment",
+                    onClick = onCommentClick,
+                    modifier = Modifier.weight(1f)
+                )
+                ActionButton(
+                    icon = Icons.Default.IosShare,
+                    label = "Share",
+                    onClick = onShareClick,
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
     }
 }
 
-/**
- * Convenience function to create sample/mock posts for preview and testing.
- */
-fun getSamplePosts(): List<PostItem> = listOf(
-    PostItem(
-        id = "post_1",
-        userName = "Sarah Chen",
-        timestamp = "2 hours ago",
-        content = "Just finished a breakthrough study session with the organic chemistry group! So grateful for this community. Anyone else struggling with mechanisms? Let's study together! 🔬📚",
-        likeCount = 24,
-        commentCount = 5,
-        isLiked = false
-    ),
-    PostItem(
-        id = "post_2",
-        userName = "Alex Rivera",
-        timestamp = "4 hours ago",
-        content = "Library night everyone! Meeting at floor 3 study area at 7pm. Bring your laptops and your questions. Coffee is on me! ☕",
-        likeCount = 18,
-        commentCount = 8,
-        isLiked = false
-    ),
-    PostItem(
-        id = "post_3",
-        userName = "Jordan Park",
-        timestamp = "6 hours ago",
-        content = "Pro tip: Use the Pomodoro technique (25 min focus, 5 min break) for studying. I went from C's to A's with this method! What's your studying hack?",
-        likeCount = 47,
-        commentCount = 12,
-        isLiked = true
-    ),
-    PostItem(
-        id = "post_4",
-        userName = "Emma Davis",
-        timestamp = "8 hours ago",
-        content = "Campus rec is having a volleyball tournament next weekend! Looking for teammates. No experience necessary, just come for fun! ⚽",
-        likeCount = 15,
-        commentCount = 7,
-        isLiked = false
-    )
-)
-
-/**
- * Convenience function to create sample/mock stories for preview and testing.
- */
-fun getSampleStories(): List<StoryItem> = listOf(
-    StoryItem(
-        id = "story_1",
-        userName = "Maya Patel",
-        isViewed = false
-    ),
-    StoryItem(
-        id = "story_2",
-        userName = "Chris Lee",
-        isViewed = true
-    ),
-    StoryItem(
-        id = "story_3",
-        userName = "Taylor White",
-        isViewed = false
-    ),
-    StoryItem(
-        id = "story_4",
-        userName = "Jamie Brown",
-        isViewed = true
-    ),
-    StoryItem(
-        id = "story_5",
-        userName = "Morgan Black",
-        isViewed = false
-    )
-)
-
-/**
- * Feature card for displaying quick access to campus features.
- * Shows an emoji and title with a clickable card layout.
- */
 @Composable
-private fun FeatureCard(
-    emoji: String,
-    title: String,
+private fun ActionButton(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    Row(
         modifier = modifier
-            .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+            .height(36.dp)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 8.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Dimensions.Spacing.md),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.xs)
-        ) {
-            Text(
-                text = emoji,
-                style = MaterialTheme.typography.displaySmall
-            )
-            Text(
-                text = title,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
+        Icon(
+            imageVector = icon,
+            contentDescription = label,
+            modifier = Modifier.size(20.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
+}
+
+data class StoryItem(
+    val id: String,
+    val userName: String,
+    val avatarUrl: String? = null
+)
+
+data class QuickAccessItem(
+    val id: String,
+    val label: String,
+    val icon: String
+)
+
+fun getDefaultQuickAccessItems() = emptyList<QuickAccessItem>()
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun rememberPullToRefreshState(): androidx.compose.material3.pulltorefresh.PullToRefreshState {
+    return androidx.compose.material3.pulltorefresh.rememberPullToRefreshState()
 }

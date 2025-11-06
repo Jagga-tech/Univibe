@@ -2,8 +2,9 @@ package com.example.univibe.ui.screens.features
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -21,32 +22,20 @@ import com.example.univibe.data.mock.MockEvents
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.screens.detail.EventDetailScreen
 import com.example.univibe.ui.screens.create.CreateEventScreen
-import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.components.*
 import com.example.univibe.ui.utils.UISymbols
+import com.example.univibe.ui.utils.OnBottomReached
+import com.example.univibe.ui.utils.rememberPaginationState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
- * Events Screen - Browse and discover campus events
- *
- * Features:
- * - Browse all upcoming events
- * - Filter by time (today, this week, this month)
- * - Filter by event category (social, academic, sports, etc.)
- * - View featured events carousel
- * - Search for specific events
- * - RSVP to events
- *
- * UI Components:
- * - Featured Events Carousel (horizontal scrolling)
- * - Event Filter Chips (time-based filtering)
- * - Category Filter Row (category-based filtering)
- * - Event Cards (event list items)
- * - Empty State (when no events match filters)
- *
- * State Management:
- * - selectedFilter: Currently selected time filter
- * - selectedCategory: Currently selected category filter
- * - events: Computed from current filters
- * - featuredEvents: Separate list for carousel
+ * Events Screen - Browse and discover campus events with:
+ * - Pull-to-refresh
+ * - Infinite scroll pagination
+ * - Skeleton loading states
+ * - Error handling
+ * - Empty state UI
  */
 object EventsScreen : Screen {
     @Composable
@@ -59,6 +48,7 @@ object EventsScreen : Screen {
 @Composable
 private fun EventsScreenContent() {
     val navigator = LocalNavigator.currentOrThrow
+    val scope = rememberCoroutineScope()
     
     // State management
     var selectedFilter by remember { mutableStateOf(EventFilter.ALL) }
@@ -66,8 +56,56 @@ private fun EventsScreenContent() {
     var searchQuery by remember { mutableStateOf("") }
     var isSearching by remember { mutableStateOf(false) }
     
-    // Compute filtered events whenever filters change
-    val events = remember(selectedFilter, selectedCategory, searchQuery) {
+    // Pagination state
+    val paginationState = rememberPaginationState(
+        initialItems = MockEvents.getEventsByFilter(EventFilter.ALL).take(10)
+    )
+    
+    // Pull-to-refresh state
+    var isRefreshing by remember { mutableStateOf(false) }
+    val pullToRefreshState = rememberPullToRefreshState()
+    
+    val listState = rememberLazyListState()
+    
+    // Initial loading
+    var isInitialLoading by remember { mutableStateOf(true) }
+    
+    LaunchedEffect(Unit) {
+        delay(500)
+        isInitialLoading = false
+    }
+    
+    // Pull-to-refresh handler
+    LaunchedEffect(pullToRefreshState.isRefreshing) {
+        if (pullToRefreshState.isRefreshing) {
+            isRefreshing = true
+            delay(1000)
+            var events = MockEvents.getEventsByFilter(selectedFilter)
+            if (selectedCategory != null) {
+                events = events.filter { it.category == selectedCategory }
+            }
+            paginationState.refresh(events.take(10))
+            isRefreshing = false
+            pullToRefreshState.endRefresh()
+        }
+    }
+    
+    // Pagination handler
+    listState.OnBottomReached {
+        scope.launch {
+            paginationState.loadNextPage { page ->
+                delay(1000)
+                var events = MockEvents.getEventsByFilter(selectedFilter)
+                if (selectedCategory != null) {
+                    events = events.filter { it.category == selectedCategory }
+                }
+                events.drop((page + 1) * 10).take(10)
+            }
+        }
+    }
+    
+    // Compute filtered events
+    val filteredEvents = remember(selectedFilter, selectedCategory, searchQuery) {
         var filtered = MockEvents.getEventsByFilter(selectedFilter)
         if (selectedCategory != null) {
             filtered = filtered.filter { it.category == selectedCategory }
@@ -75,629 +113,173 @@ private fun EventsScreenContent() {
         if (searchQuery.isNotBlank()) {
             filtered = filtered.filter { event ->
                 event.title.contains(searchQuery, ignoreCase = true) ||
-                event.description.contains(searchQuery, ignoreCase = true) ||
-                event.location.name.contains(searchQuery, ignoreCase = true)
+                event.description.contains(searchQuery, ignoreCase = true)
             }
         }
         filtered
     }
-    
-    // Get featured events for carousel
-    val featuredEvents = remember { MockEvents.getFeaturedEvents() }
     
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Events") },
                 navigationIcon = {
-                    IconButton(
-                        onClick = { navigator.pop() }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
-                        )
+                    IconButton(onClick = { navigator.pop() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = { isSearching = !isSearching }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search"
-                        )
-                    }
-                    IconButton(
-                        onClick = { /* TODO: Calendar view */ }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.CalendarMonth,
-                            contentDescription = "Calendar View"
-                        )
+                    IconButton(onClick = { isSearching = !isSearching }) {
+                        Icon(Icons.Default.Search, contentDescription = "Search")
                     }
                 }
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { navigator.push(CreateEventScreen) },
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Create Event"
-                )
-            }
         }
     ) { paddingValues ->
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(Spacing.default)
+                .padding(paddingValues)
+                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
-            // Search Bar Section
-            if (isSearching) {
-                item {
-                    TextField(
-                        value = searchQuery,
-                        onValueChange = { searchQuery = it },
-                        placeholder = { Text("Search events...") },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = null
-                            )
-                        },
-                        trailingIcon = {
-                            if (searchQuery.isNotEmpty()) {
-                                IconButton(
-                                    onClick = { searchQuery = "" }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Close,
-                                        contentDescription = "Clear"
-                                    )
-                                }
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = Spacing.default),
-                        singleLine = true
-                    )
-                }
-            }
-            
-            // Filter Chips Section
-            item {
-                EventFilterChips(
-                    selectedFilter = selectedFilter,
-                    onFilterSelected = { selectedFilter = it }
-                )
-            }
-            
-            // Category Filter Section
-            item {
-                CategoryFilterRow(
-                    selectedCategory = selectedCategory,
-                    onCategorySelected = { selectedCategory = it }
-                )
-            }
-            
-            // Featured Events Section (only show when ALL filter selected and no category filter)
-            if (selectedFilter == EventFilter.ALL && selectedCategory == null && featuredEvents.isNotEmpty()) {
-                item {
-                    Column {
-                        Text(
-                            "Featured Events",
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier.padding(horizontal = Spacing.default)
-                        )
-                        Spacer(modifier = Modifier.height(Spacing.sm))
-                        FeaturedEventsCarousel(
-                            events = featuredEvents,
-                            onEventClick = { event ->
-                                navigator.push(EventDetailScreen(event.id))
-                            }
-                        )
+            if (isInitialLoading) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(4) {
+                        EventCardSkeleton()
                     }
                 }
-            }
-            
-            // Events List Header
-            item {
-                Text(
-                    if (selectedFilter == EventFilter.ALL && selectedCategory == null) 
-                        "Upcoming Events" 
-                    else 
-                        "Filtered Events",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(horizontal = Spacing.default)
+            } else if (paginationState.error != null) {
+                ErrorState(
+                    error = paginationState.error ?: "Failed to load events",
+                    onRetry = {
+                        scope.launch {
+                            paginationState.retry { page ->
+                                delay(1000)
+                                var events = MockEvents.getEventsByFilter(selectedFilter)
+                                if (selectedCategory != null) {
+                                    events = events.filter { it.category == selectedCategory }
+                                }
+                                events.drop((page + 1) * 10).take(10)
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .align(Alignment.Center)
                 )
-            }
-            
-            // Events List or Empty State
-            if (events.isEmpty()) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(Spacing.xl),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(Spacing.default)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.EventNote,
-                                contentDescription = null,
-                                modifier = Modifier.size(48.dp),
-                                tint = MaterialTheme.colorScheme.outline
-                            )
-                            Text(
-                                "No events found",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Text(
-                                "Try adjusting your filters",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = listState,
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // Search bar
+                    if (isSearching) {
+                        item {
+                            TextField(
+                                value = searchQuery,
+                                onValueChange = { searchQuery = it },
+                                placeholder = { Text("Search events...") },
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }
-                }
-            } else {
-                items(events) { event ->
-                    EventCard(
-                        event = event,
-                        onClick = { navigator.push(EventDetailScreen(event.id)) },
-                        modifier = Modifier.padding(horizontal = Spacing.default)
-                    )
-                }
-            }
-            
-            // Bottom padding
-            item {
-                Spacer(modifier = Modifier.height(Spacing.default))
-            }
-        }
-    }
-}
-
-/**
- * Filter chips for time-based filtering (TODAY, THIS_WEEK, etc.)
- */
-@Composable
-private fun EventFilterChips(
-    selectedFilter: EventFilter,
-    onFilterSelected: (EventFilter) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    ScrollableTabRow(
-        selectedTabIndex = selectedFilter.ordinal,
-        modifier = modifier.fillMaxWidth(),
-        edgePadding = Spacing.default
-    ) {
-        EventFilter.values().forEach { filter ->
-            Tab(
-                selected = filter == selectedFilter,
-                onClick = { onFilterSelected(filter) },
-                text = {
-                    Text(
-                        filter.name
-                            .lowercase()
-                            .replace("_", " ")
-                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-                    )
-                }
-            )
-        }
-    }
-}
-
-/**
- * Category filter row with FilterChip components
- */
-@Composable
-private fun CategoryFilterRow(
-    selectedCategory: EventCategory?,
-    onCategorySelected: (EventCategory?) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyRow(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
-        contentPadding = PaddingValues(horizontal = Spacing.default)
-    ) {
-        // "All" chip
-        item {
-            FilterChip(
-                selected = selectedCategory == null,
-                onClick = { onCategorySelected(null) },
-                label = { Text("All") }
-            )
-        }
-        
-        // Category chips
-        items(EventCategory.values().toList()) { category ->
-            FilterChip(
-                selected = category == selectedCategory,
-                onClick = { onCategorySelected(category) },
-                label = { Text("${category.emoji} ${category.displayName}") }
-            )
-        }
-    }
-}
-
-/**
- * Horizontal carousel of featured events
- */
-@Composable
-private fun FeaturedEventsCarousel(
-    events: List<Event>,
-    onEventClick: (Event) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyRow(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Spacing.default),
-        contentPadding = PaddingValues(horizontal = Spacing.default)
-    ) {
-        items(events) { event ->
-            FeaturedEventCard(
-                event = event,
-                onClick = { onEventClick(event) }
-            )
-        }
-    }
-}
-
-/**
- * Featured event card for carousel
- *
- * Shows event with prominent display:
- * - Large category emoji
- * - Title (2 lines max)
- * - Time
- * - Location
- * - Category badge
- */
-@Composable
-private fun FeaturedEventCard(
-    event: Event,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .width(300.dp),
-        onClick = onClick,
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-    ) {
-        Column {
-            // Image/emoji area
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp),
-                color = MaterialTheme.colorScheme.primaryContainer
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text(
-                        event.category.emoji,
-                        style = MaterialTheme.typography.displayLarge
-                    )
+                    
+                    // Events list
+                    if (paginationState.items.isEmpty()) {
+                        item {
+                            EmptyState(
+                                title = "No events found",
+                                description = "Try adjusting your filters",
+                                icon = Icons.Default.EventBusy,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    } else {
+                        items(paginationState.items) { event ->
+                            EventCard(
+                                event = event,
+                                onClick = { navigator.push(EventDetailScreen(event)) }
+                            )
+                        }
+                    }
+                    
+                    // Loading indicator
+                    if (paginationState.isLoading && paginationState.items.isNotEmpty()) {
+                        item {
+                            PaginationLoadingIndicator()
+                        }
+                    }
+                    
+                    // End of list
+                    if (!paginationState.hasMorePages && paginationState.items.isNotEmpty()) {
+                        item {
+                            EndOfListIndicator()
+                        }
+                    }
                 }
             }
             
-            // Content area
-            Column(
-                modifier = Modifier.padding(Spacing.default),
-                verticalArrangement = Arrangement.spacedBy(Spacing.sm)
-            ) {
-                // Category badge
-                Surface(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    shape = MaterialTheme.shapes.small
-                ) {
-                    Text(
-                        text = event.category.displayName,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier.padding(horizontal = Spacing.sm, vertical = Spacing.xs)
-                    )
-                }
-                
-                // Title
-                Text(
-                    text = event.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 2
-                )
-                
-                // Time
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.Default.Schedule,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = formatEventTime(event.startTime),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                
-                // Location
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.Default.Place,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = event.location.name,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1
-                    )
-                }
-            }
+            // Pull-to-refresh indicator
+            PullToRefreshContainer(
+                state = pullToRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
         }
     }
 }
 
-/**
- * Event card for list display
- *
- * Shows event with:
- * - Date badge (month/day)
- * - Category emoji and name
- * - RSVP indicator (if attended)
- * - Title
- * - Time
- * - Attendee count
- */
 @Composable
 private fun EventCard(
     event: Event,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onClick: () -> Unit = {}
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
-        onClick = onClick,
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(Spacing.default),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.default)
-        ) {
-            // Date badge
-            Surface(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.size(60.dp)
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = formatDateMonth(event.startTime),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                    Text(
-                        text = formatDateDay(event.startTime),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }
-            }
+        Column {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(140.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
             
-            // Event details
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(Spacing.xs)
-            ) {
-                // Category row
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = event.category.emoji,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        text = event.category.displayName,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    
-                    // RSVP indicator
-                    if (event.isRSVPed) {
-                        Icon(
-                            Icons.Default.CheckCircle,
-                            contentDescription = "RSVP'd",
-                            modifier = Modifier.size(16.dp),
-                            tint = MaterialTheme.colorScheme.tertiary
-                        )
-                    }
-                }
-                
-                // Title
+            Column(modifier = Modifier.padding(12.dp)) {
                 Text(
                     text = event.title,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
-                
-                // Time
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.Default.Schedule,
-                        contentDescription = null,
-                        modifier = Modifier.size(14.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = formatEventTime(event.startTime),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                
-                // Attendee count
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.Default.Group,
-                        contentDescription = null,
-                        modifier = Modifier.size(14.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = "${event.currentAttendees} attending",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = event.location.name,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "${event.attendeeCount} interested",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
 }
 
-/**
- * Format event time for display
- *
- * Shows:
- * - "In Xm" for events in the next hour
- * - "Today at HH:mm a" for events today
- * - "Tomorrow at HH:mm a" for events tomorrow
- * - "EEE, MMM d 'at' HH:mm a" for future events
- */
-private fun formatEventTime(timestamp: Long): String {
-    val now = System.currentTimeMillis()
-    val diff = timestamp - now
-    
-    return when {
-        diff < 0 -> "Ended"
-        diff < 3600000 -> "In ${diff / 60000}m"
-        diff < 86400000 -> "Today at ${formatTime(timestamp)}"
-        diff < 172800000 -> "Tomorrow at ${formatTime(timestamp)}"
-        else -> formatDateLong(timestamp)
-    }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun rememberPullToRefreshState(): androidx.compose.material3.pulltorefresh.PullToRefreshState {
+    return androidx.compose.material3.pulltorefresh.rememberPullToRefreshState()
 }
-
-/**
- * Format date month from timestamp (e.g., "Jan")
- */
-private fun formatDateMonth(timestamp: Long): String {
-    val months = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-    val calendar = getCalendarFromTimestamp(timestamp)
-    return months.getOrNull(calendar.monthOfYear - 1) ?: "Jan"
-}
-
-/**
- * Format date day from timestamp (e.g., "15")
- */
-private fun formatDateDay(timestamp: Long): String {
-    val calendar = getCalendarFromTimestamp(timestamp)
-    return calendar.dayOfMonth.toString().padStart(2, '0')
-}
-
-/**
- * Format time from timestamp (e.g., "2:30 PM")
- */
-private fun formatTime(timestamp: Long): String {
-    val calendar = getCalendarFromTimestamp(timestamp)
-    val hour = calendar.hour % 12
-    val displayHour = if (hour == 0) 12 else hour
-    val minute = calendar.minute.toString().padStart(2, '0')
-    val period = if (calendar.hour < 12) "AM" else "PM"
-    return "$displayHour:$minute $period"
-}
-
-/**
- * Format long date from timestamp (e.g., "Mon, Jan 15 at 2:30 PM")
- */
-private fun formatDateLong(timestamp: Long): String {
-    val calendar = getCalendarFromTimestamp(timestamp)
-    val days = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-    val months = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-    val dayName = days.getOrNull(calendar.dayOfWeek - 1) ?: "Mon"
-    val monthName = months.getOrNull(calendar.monthOfYear - 1) ?: "Jan"
-    val day = calendar.dayOfMonth
-    val time = formatTime(timestamp)
-    return "$dayName, $monthName $day at $time"
-}
-
-/**
- * Get calendar from timestamp (KMP compatible)
- */
-private fun getCalendarFromTimestamp(timestamp: Long): CalendarData {
-    // Simple implementation for KMP - in production, use Kotlinx-datetime
-    val totalSeconds = timestamp / 1000
-    val totalMinutes = totalSeconds / 60
-    val totalHours = totalMinutes / 60
-    val totalDays = totalHours / 24
-    
-    // Epoch is Jan 1, 1970 (Thursday)
-    val daysPerYear = 365
-    val daysPerLeapYear = 366
-    val yearsSinceEpoch = totalDays / daysPerYear
-    val year = 1970 + yearsSinceEpoch.toInt()
-    
-    val dayOfYear = (totalDays % daysPerYear).toInt() + 1
-    val hour = ((totalHours % 24).toInt())
-    val minute = (totalMinutes % 60).toInt()
-    val second = (totalSeconds % 60).toInt()
-    
-    // Simple approximation for month and day (weekday)
-    val isLeapYear = year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
-    val daysInMonth = intArrayOf(31, if (isLeapYear) 29 else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-    
-    var monthOfYear = 1
-    var dayOfMonth = dayOfYear
-    for (i in daysInMonth.indices) {
-        if (dayOfMonth <= daysInMonth[i]) {
-            monthOfYear = i + 1
-            break
-        }
-        dayOfMonth -= daysInMonth[i]
-    }
-    
-    // Simple day of week calculation
-    val dayOfWeek = ((totalDays + 4) % 7).toInt() + 1 // Epoch was Thursday (4)
-    
-    return CalendarData(year, monthOfYear, dayOfMonth, hour, minute, second, dayOfWeek)
-}
-
-data class CalendarData(
-    val year: Int,
-    val monthOfYear: Int,
-    val dayOfMonth: Int,
-    val hour: Int,
-    val minute: Int,
-    val second: Int,
-    val dayOfWeek: Int
-)

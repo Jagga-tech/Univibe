@@ -3,346 +3,358 @@ package com.example.univibe.ui.screens.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.example.univibe.data.mock.*
-import com.example.univibe.ui.components.TextIcon
-import com.example.univibe.ui.components.profile.SettingsSectionHeader
-import com.example.univibe.ui.components.profile.ToggleSettingsItem
-import com.example.univibe.ui.components.profile.NavigationSettingsItem
-import com.example.univibe.ui.theme.Dimensions
-import com.example.univibe.ui.utils.UISymbols
 
-/**
- * Detailed privacy settings screen.
- */
+// Privacy Settings Data Class
+data class PrivacyPreferences(
+    val profileVisibility: String = "Public", // Public, Friends Only, Private
+    val showActivityStatus: Boolean = true,
+    val allowMessagesFromAnyone: Boolean = true,
+    val showOnlineStatus: Boolean = true,
+    val showPostsToPublic: Boolean = true,
+    val showFollowersList: Boolean = true,
+    val showFollowingList: Boolean = true,
+    val allowTagsInPhotos: Boolean = true,
+    val searchEngineIndexing: Boolean = true
+)
+
 object PrivacySettingsScreen : Screen {
     @Composable
     override fun Content() {
-        PrivacySettingsScreenContent()
+        PrivacySettingsContent()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PrivacySettingsScreenContent() {
+private fun PrivacySettingsContent() {
     val navigator = LocalNavigator.currentOrThrow
     
-    var profileVisibility by remember { mutableStateOf("public") }
-    var showFollowersList by remember { mutableStateOf(true) }
-    var showFollowingList by remember { mutableStateOf(true) }
-    var showActivityStatus by remember { mutableStateOf(true) }
-    var allowSearchByEmail by remember { mutableStateOf(true) }
-    var allowSearchByPhone by remember { mutableStateOf(false) }
-    var showBirthday by remember { mutableStateOf(false) }
-
-    val blockedUsers = remember { mutableStateOf(getBlockedUsers()) }
-    val mutedUsers = remember { mutableStateOf(getMutedUsers()) }
-
+    var preferences by remember { mutableStateOf(PrivacyPreferences()) }
+    var visibilityExpanded by remember { mutableStateOf(false) }
+    var showSaveSnackbar by remember { mutableStateOf(false) }
+    
+    val snackbarHostState = remember { SnackbarHostState() }
+    val visibilityOptions = listOf("Public", "Friends Only", "Private")
+    
+    LaunchedEffect(showSaveSnackbar) {
+        if (showSaveSnackbar) {
+            snackbarHostState.showSnackbar("Privacy settings saved")
+            showSaveSnackbar = false
+        }
+    }
+    
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Privacy") },
+                title = { Text("Privacy Settings") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        TextIcon(UISymbols.BACK, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues),
-            contentPadding = PaddingValues(vertical = Dimensions.Spacing.md)
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Profile Visibility
+            // Profile Visibility Section
             item {
-                SettingsSectionHeader("Profile Visibility")
+                Text(
+                    text = "Profile Visibility",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
             }
-
+            
             item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(Dimensions.Spacing.md)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                 ) {
-                    listOf("Public", "Friends Only", "Private").forEach { option ->
-                        Row(
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        ExposedDropdownMenuBox(
+                            expanded = visibilityExpanded,
+                            onExpandedChange = { visibilityExpanded = it },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = Dimensions.Spacing.sm),
-                            horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.md)
+                                .padding(16.dp)
                         ) {
-                            RadioButton(
-                                selected = profileVisibility == option.lowercase(),
-                                onClick = { profileVisibility = option.lowercase() }
-                            )
-                            Text(
-                                text = option,
+                            OutlinedTextField(
+                                value = preferences.profileVisibility,
+                                onValueChange = {},
+                                label = { Text("Who can see your profile?") },
                                 modifier = Modifier
-                                    .align(androidx.compose.ui.Alignment.CenterVertically)
-                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .menuAnchor(),
+                                readOnly = true,
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = visibilityExpanded) },
+                                leadingIcon = {
+                                    Icon(Icons.Default.Visibility, contentDescription = null)
+                                }
                             )
+                            
+                            ExposedDropdownMenu(
+                                expanded = visibilityExpanded,
+                                onDismissRequest = { visibilityExpanded = false }
+                            ) {
+                                visibilityOptions.forEach { option ->
+                                    DropdownMenuItem(
+                                        text = { Text(option) },
+                                        onClick = {
+                                            preferences = preferences.copy(profileVisibility = option)
+                                            visibilityExpanded = false
+                                            showSaveSnackbar = true
+                                        }
+                                    )
+                                }
+                            }
                         }
+                        
+                        Text(
+                            text = when (preferences.profileVisibility) {
+                                "Public" -> "Your profile is visible to everyone on UniVibe"
+                                "Friends Only" -> "Only your friends can see your profile"
+                                else -> "Only you can see your profile"
+                            },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                        )
                     }
                 }
             }
-
+            
             item {
-                Divider(modifier = Modifier.padding(vertical = Dimensions.Spacing.sm))
+                Divider()
             }
-
-            // Who Can See Your Info
+            
+            // Status & Activity Section
             item {
-                SettingsSectionHeader("Who Can See Your Info")
-            }
-
-            item {
-                ToggleSettingsItem(
-                    title = "Show Followers List",
-                    description = "Allow others to see your followers",
-                    isChecked = showFollowersList,
-                    onToggle = { showFollowersList = it }
+                Text(
+                    text = "Status & Activity",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
-
+            
             item {
-                ToggleSettingsItem(
+                PrivacyToggleCard(
+                    title = "Show Online Status",
+                    description = "Let others see when you're online",
+                    icon = Icons.Default.Info,
+                    isEnabled = preferences.showOnlineStatus,
+                    onToggle = {
+                        preferences = preferences.copy(showOnlineStatus = it)
+                        showSaveSnackbar = true
+                    }
+                )
+            }
+            
+            item {
+                PrivacyToggleCard(
+                    title = "Show Activity Status",
+                    description = "Display what you're currently doing",
+                    icon = Icons.Default.Timeline,
+                    isEnabled = preferences.showActivityStatus,
+                    onToggle = {
+                        preferences = preferences.copy(showActivityStatus = it)
+                        showSaveSnackbar = true
+                    }
+                )
+            }
+            
+            item {
+                Divider()
+            }
+            
+            // Messages Section
+            item {
+                Text(
+                    text = "Messages",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+            
+            item {
+                PrivacyToggleCard(
+                    title = "Allow Messages from Anyone",
+                    description = "If off, only friends can message you",
+                    icon = Icons.Default.Mail,
+                    isEnabled = preferences.allowMessagesFromAnyone,
+                    onToggle = {
+                        preferences = preferences.copy(allowMessagesFromAnyone = it)
+                        showSaveSnackbar = true
+                    }
+                )
+            }
+            
+            item {
+                Divider()
+            }
+            
+            // Content Visibility Section
+            item {
+                Text(
+                    text = "Content Visibility",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+            
+            item {
+                PrivacyToggleCard(
+                    title = "Show Posts to Public",
+                    description = "Allow non-friends to see your posts",
+                    icon = Icons.Default.Article,
+                    isEnabled = preferences.showPostsToPublic,
+                    onToggle = {
+                        preferences = preferences.copy(showPostsToPublic = it)
+                        showSaveSnackbar = true
+                    }
+                )
+            }
+            
+            item {
+                PrivacyToggleCard(
+                    title = "Show Followers List",
+                    description = "Allow others to see who follows you",
+                    icon = Icons.Default.Groups,
+                    isEnabled = preferences.showFollowersList,
+                    onToggle = {
+                        preferences = preferences.copy(showFollowersList = it)
+                        showSaveSnackbar = true
+                    }
+                )
+            }
+            
+            item {
+                PrivacyToggleCard(
                     title = "Show Following List",
                     description = "Allow others to see who you follow",
-                    isChecked = showFollowingList,
-                    onToggle = { showFollowingList = it }
+                    icon = Icons.Default.PersonAdd,
+                    isEnabled = preferences.showFollowingList,
+                    onToggle = {
+                        preferences = preferences.copy(showFollowingList = it)
+                        showSaveSnackbar = true
+                    }
                 )
             }
-
+            
             item {
-                ToggleSettingsItem(
-                    title = "Show Activity Status",
-                    description = "Let others see when you're online",
-                    isChecked = showActivityStatus,
-                    onToggle = { showActivityStatus = it }
+                PrivacyToggleCard(
+                    title = "Allow Tags in Photos",
+                    description = "Allow others to tag you in photos",
+                    icon = Icons.Default.PhotoLibrary,
+                    isEnabled = preferences.allowTagsInPhotos,
+                    onToggle = {
+                        preferences = preferences.copy(allowTagsInPhotos = it)
+                        showSaveSnackbar = true
+                    }
                 )
             }
-
+            
             item {
-                ToggleSettingsItem(
-                    title = "Show Birthday",
-                    description = "Display your birthday on your profile",
-                    isChecked = showBirthday,
-                    onToggle = { showBirthday = it }
-                )
+                Divider()
             }
-
-            item {
-                Divider(modifier = Modifier.padding(vertical = Dimensions.Spacing.sm))
-            }
-
-            // Discoverability
-            item {
-                SettingsSectionHeader("Discoverability")
-            }
-
-            item {
-                ToggleSettingsItem(
-                    title = "Searchable by Email",
-                    description = "Let people find you by email",
-                    isChecked = allowSearchByEmail,
-                    onToggle = { allowSearchByEmail = it }
-                )
-            }
-
-            item {
-                ToggleSettingsItem(
-                    title = "Searchable by Phone",
-                    description = "Let people find you by phone number",
-                    isChecked = allowSearchByPhone,
-                    onToggle = { allowSearchByPhone = it }
-                )
-            }
-
-            item {
-                Divider(modifier = Modifier.padding(vertical = Dimensions.Spacing.sm))
-            }
-
-            // Blocked Users
-            item {
-                SettingsSectionHeader("Blocked Users")
-            }
-
+            
+            // Search Section
             item {
                 Text(
-                    text = "${blockedUsers.value.size} blocked",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(Dimensions.Spacing.md)
+                    text = "Search & Discovery",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
-
+            
             item {
-                if (blockedUsers.value.isNotEmpty()) {
-                    blockedUsers.value.forEach { blockedUser ->
-                        BlockedUserItem(
-                            blockedUserId = blockedUser.blockedUserId,
-                            reason = blockedUser.reason,
-                            onUnblock = {
-                                blockedUsers.value = blockedUsers.value.filter { 
-                                    it.blockedUserId != blockedUser.blockedUserId 
-                                }
-                                removeBlockedUser(blockedUser.blockedUserId)
-                            }
-                        )
+                PrivacyToggleCard(
+                    title = "Search Engine Indexing",
+                    description = "Allow search engines to index your profile",
+                    icon = Icons.Default.Search,
+                    isEnabled = preferences.searchEngineIndexing,
+                    onToggle = {
+                        preferences = preferences.copy(searchEngineIndexing = it)
+                        showSaveSnackbar = true
                     }
-                } else {
-                    Text(
-                        text = "No blocked users",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(Dimensions.Spacing.md)
-                    )
-                }
-            }
-
-            item {
-                Divider(modifier = Modifier.padding(vertical = Dimensions.Spacing.sm))
-            }
-
-            // Muted Users
-            item {
-                SettingsSectionHeader("Muted Users")
-            }
-
-            item {
-                Text(
-                    text = "${mutedUsers.value.size} muted",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(Dimensions.Spacing.md)
                 )
             }
-
+            
             item {
-                if (mutedUsers.value.isNotEmpty()) {
-                    mutedUsers.value.forEach { mutedUser ->
-                        MutedUserItem(
-                            mutedUserId = mutedUser.blockedUserId,
-                            reason = mutedUser.reason,
-                            onUnmute = {
-                                mutedUsers.value = mutedUsers.value.filter { 
-                                    it.blockedUserId != mutedUser.blockedUserId 
-                                }
-                            }
-                        )
-                    }
-                } else {
-                    Text(
-                        text = "No muted users",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(Dimensions.Spacing.md)
-                    )
-                }
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(Dimensions.Spacing.lg))
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }
 }
 
-/**
- * Item representing a blocked user.
- */
 @Composable
-private fun BlockedUserItem(
-    blockedUserId: String,
-    reason: String? = null,
-    onUnblock: () -> Unit = {}
+private fun PrivacyToggleCard(
+    title: String,
+    description: String,
+    icon: androidx.compose.material.icons.materialIcon,
+    isEnabled: Boolean,
+    onToggle: (Boolean) -> Unit
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Dimensions.Spacing.md)
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimensions.Spacing.md),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = title,
+                modifier = Modifier
+                    .size(24.dp)
+                    .padding(end = 12.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+            
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = blockedUserId,
-                    style = MaterialTheme.typography.bodyMedium
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall
                 )
-                if (!reason.isNullOrEmpty()) {
-                    Text(
-                        text = reason,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-
-            TextButton(onClick = onUnblock) {
-                Text("Unblock", color = MaterialTheme.colorScheme.primary)
-            }
-        }
-    }
-}
-
-/**
- * Item representing a muted user.
- */
-@Composable
-private fun MutedUserItem(
-    mutedUserId: String,
-    reason: String? = null,
-    onUnmute: () -> Unit = {}
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Dimensions.Spacing.md)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Dimensions.Spacing.md),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = mutedUserId,
-                    style = MaterialTheme.typography.bodyMedium
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                if (!reason.isNullOrEmpty()) {
-                    Text(
-                        text = reason,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
             }
-
-            TextButton(onClick = onUnmute) {
-                Text("Unmute", color = MaterialTheme.colorScheme.primary)
-            }
+            
+            Switch(
+                checked = isEnabled,
+                onCheckedChange = onToggle,
+                modifier = Modifier.padding(start = 16.dp)
+            )
         }
     }
 }

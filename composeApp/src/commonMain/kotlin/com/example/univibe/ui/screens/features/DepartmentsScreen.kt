@@ -1,9 +1,10 @@
 package com.example.univibe.ui.screens.features
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -15,13 +16,13 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.example.univibe.ui.theme.*
-import com.example.univibe.ui.theme.Dimensions
-import com.example.univibe.data.mock.*
-import com.example.univibe.domain.models.*
-import com.example.univibe.ui.components.TextIcon
-import com.example.univibe.ui.utils.UISymbols
-import com.example.univibe.ui.screens.detail.DepartmentDetailScreen
+import com.example.univibe.data.mock.MockDepartments
+import com.example.univibe.domain.models.Department
+import com.example.univibe.ui.components.*
+import com.example.univibe.ui.utils.OnBottomReached
+import com.example.univibe.ui.utils.rememberPaginationState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 object DepartmentsScreen : Screen {
     @Composable
@@ -34,14 +35,38 @@ object DepartmentsScreen : Screen {
 @Composable
 private fun DepartmentsScreenContent() {
     val navigator = LocalNavigator.currentOrThrow
+    val scope = rememberCoroutineScope()
     
-    var selectedCategory by remember { mutableStateOf<DepartmentCategory?>(null) }
+    val paginationState = rememberPaginationState(
+        initialItems = MockDepartments.departments.take(10)
+    )
     
-    val departments = remember(selectedCategory) {
-        if (selectedCategory != null) {
-            MockDepartments.getDepartmentsByCategory(selectedCategory!!)
-        } else {
-            MockDepartments.getAllDepartments()
+    var isRefreshing by remember { mutableStateOf(false) }
+    val pullToRefreshState = rememberPullToRefreshState()
+    val listState = rememberLazyListState()
+    var isInitialLoading by remember { mutableStateOf(true) }
+    
+    LaunchedEffect(Unit) {
+        delay(500)
+        isInitialLoading = false
+    }
+    
+    LaunchedEffect(pullToRefreshState.isRefreshing) {
+        if (pullToRefreshState.isRefreshing) {
+            isRefreshing = true
+            delay(1000)
+            paginationState.refresh(MockDepartments.departments.take(10))
+            isRefreshing = false
+            pullToRefreshState.endRefresh()
+        }
+    }
+    
+    listState.OnBottomReached {
+        scope.launch {
+            paginationState.loadNextPage { page ->
+                delay(1000)
+                MockDepartments.departments.drop((page + 1) * 10).take(10)
+            }
         }
     }
     
@@ -51,178 +76,120 @@ private fun DepartmentsScreenContent() {
                 title = { Text("Departments") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, "Back")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /* TODO: Search departments */ }) {
-                        Icon(Icons.Default.Search, "Search")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
         }
     ) { paddingValues ->
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.default),
-            contentPadding = PaddingValues(Dimensions.Spacing.default)
+                .padding(paddingValues)
+                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
-            // Category Filter
-            item {
-                CategoryFilterRow(
-                    selectedCategory = selectedCategory,
-                    onCategorySelected = { selectedCategory = it }
+            if (isInitialLoading) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(4) {
+                        EventCardSkeleton()
+                    }
+                }
+            } else if (paginationState.error != null) {
+                ErrorState(
+                    error = paginationState.error ?: "Failed to load departments",
+                    onRetry = {
+                        scope.launch {
+                            paginationState.retry { page ->
+                                delay(1000)
+                                MockDepartments.departments.drop((page + 1) * 10).take(10)
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .align(Alignment.Center)
                 )
-            }
-            
-            // Departments List Header
-            item {
-                Text(
-                    "All Departments",
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-            
-            // Departments List
-            if (departments.isEmpty()) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(Dimensions.Spacing.xl),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.md)
-                        ) {
-                            Icon(
-                                Icons.Default.School,
-                                contentDescription = null,
-                                modifier = Modifier.size(48.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = listState,
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (paginationState.items.isEmpty()) {
+                        item {
+                            EmptyState(
+                                title = "No departments",
+                                description = "No departments to display",
+                                icon = Icons.Default.SchoolOff,
+                                modifier = Modifier.fillMaxSize()
                             )
-                            Text(
-                                "No departments found",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Text(
-                                "Try adjusting your filters",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                        }
+                    } else {
+                        items(paginationState.items) { dept ->
+                            DepartmentCard(dept)
+                        }
+                    }
+                    
+                    if (paginationState.isLoading && paginationState.items.isNotEmpty()) {
+                        item {
+                            PaginationLoadingIndicator()
+                        }
+                    }
+                    
+                    if (!paginationState.hasMorePages && paginationState.items.isNotEmpty()) {
+                        item {
+                            EndOfListIndicator()
                         }
                     }
                 }
-            } else {
-                items(departments) { department ->
-                    DepartmentCard(
-                        department = department,
-                        onClick = { navigator.push(DepartmentDetailScreen(department.id)) }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun CategoryFilterRow(
-    selectedCategory: DepartmentCategory?,
-    onCategorySelected: (DepartmentCategory?) -> Unit
-) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm),
-        contentPadding = PaddingValues(horizontal = Dimensions.Spacing.default)
-    ) {
-        item {
-            FilterChip(
-                selected = selectedCategory == null,
-                onClick = { onCategorySelected(null) },
-                label = { Text("All") }
-            )
-        }
-        
-        items(DepartmentCategory.values().toList()) { category ->
-            FilterChip(
-                selected = category == selectedCategory,
-                onClick = { onCategorySelected(category) },
-                label = { Text("${category.emoji} ${category.displayName}") }
-            )
-        }
-    }
-}
-
-@Composable
-private fun DepartmentCard(
-    department: Department,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(Dimensions.Spacing.default),
-            horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.default)
-        ) {
-            Surface(
-                modifier = Modifier.size(60.dp),
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = MaterialTheme.shapes.large
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text(
-                        department.category.emoji,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-                }
             }
             
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.xs)
-            ) {
-                Text(
-                    text = department.name,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                
-                Text(
-                    text = department.abbreviation,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                
-                Text(
-                    text = department.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.xs),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.Default.Place,
-                        contentDescription = null,
-                        modifier = Modifier.size(14.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        department.building,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
+            PullToRefreshContainer(
+                state = pullToRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
         }
     }
+}
+
+@Composable
+private fun DepartmentCard(department: Department) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = department.name,
+                style = MaterialTheme.typography.titleSmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Chair: ${department.chairName}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = department.description,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun rememberPullToRefreshState(): androidx.compose.material3.pulltorefresh.PullToRefreshState {
+    return androidx.compose.material3.pulltorefresh.rememberPullToRefreshState()
 }

@@ -29,6 +29,8 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
+            implementation("androidx.compose.material:material-icons-core:1.6.0")
+            implementation("androidx.compose.material:material-icons-extended:1.6.0")
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.datastore.preferences)
         }

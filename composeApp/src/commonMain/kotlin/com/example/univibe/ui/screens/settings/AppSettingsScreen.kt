@@ -1,388 +1,459 @@
 package com.example.univibe.ui.screens.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.example.univibe.data.mock.*
-import com.example.univibe.ui.components.TextIcon
-import com.example.univibe.ui.components.profile.SettingsSectionHeader
-import com.example.univibe.ui.components.profile.ToggleSettingsItem
-import com.example.univibe.ui.components.profile.NavigationSettingsItem
-import com.example.univibe.ui.components.profile.TextSettingsItem
-import com.example.univibe.ui.theme.Dimensions
-import com.example.univibe.ui.utils.UISymbols
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-/**
- * Comprehensive application settings screen.
- */
+// General App Settings Data Class
+data class GeneralSettings(
+    val darkModeEnabled: Boolean = false,
+    val selectedLanguage: String = "English",
+    val compactViewEnabled: Boolean = false,
+    val autoPlayVideos: Boolean = true,
+    val appVersion: String = "1.0.0",
+    val buildNumber: String = "1"
+)
+
 object AppSettingsScreen : Screen {
     @Composable
     override fun Content() {
-        AppSettingsScreenContent()
+        AppSettingsContent()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AppSettingsScreenContent() {
+private fun AppSettingsContent() {
     val navigator = LocalNavigator.currentOrThrow
+    val scope = rememberCoroutineScope()
     
-    var preferences by remember { mutableStateOf(getCurrentUserPreferences()) }
-    var notificationSettings by remember { mutableStateOf(getNotificationSettings()) }
-    var accountSettings by remember { mutableStateOf(getAccountSettings()) }
-    var showThemeSelector by remember { mutableStateOf(false) }
-
+    var generalSettings by remember { mutableStateOf(GeneralSettings()) }
+    var expandedSections by remember { mutableStateOf(setOf<String>()) }
+    var showLogoutDialog by remember { mutableStateOf(false) }
+    var showSaveSnackbar by remember { mutableStateOf(false) }
+    
+    val snackbarHostState = remember { SnackbarHostState() }
+    
+    LaunchedEffect(showSaveSnackbar) {
+        if (showSaveSnackbar) {
+            snackbarHostState.showSnackbar("Settings saved")
+            showSaveSnackbar = false
+        }
+    }
+    
+    // Logout Dialog
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = { Text("Logout") },
+            text = { Text("Are you sure you want to logout?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showLogoutDialog = false
+                        scope.launch {
+                            delay(1000)
+                            // TODO: Navigate to login screen after logout
+                        }
+                    }
+                ) {
+                    Text("Logout")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLogoutDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+    
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Settings") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        TextIcon(UISymbols.BACK, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues),
-            contentPadding = PaddingValues(vertical = Dimensions.Spacing.md)
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Display Settings
+            // Profile Section
             item {
-                SettingsSectionHeader("Display")
-            }
-
-            item {
-                NavigationSettingsItem(
-                    title = "Theme",
-                    description = "Choose your preferred theme",
-                    value = preferences.theme.capitalize(),
-                    onClick = { showThemeSelector = true }
+                SettingsSectionHeader(
+                    title = "Profile & Account",
+                    icon = Icons.Default.Person
                 )
             }
-
+            
             item {
-                NavigationSettingsItem(
-                    title = "Font Size",
-                    description = "Adjust text size",
-                    value = preferences.fontSize.capitalize(),
-                    onClick = { }
+                SettingMenuCard(
+                    title = "Edit Profile",
+                    description = "Update your profile information",
+                    icon = Icons.Default.Edit,
+                    onClick = { /* TODO: Navigate to edit profile */ }
                 )
             }
-
+            
             item {
-                Divider(modifier = Modifier.padding(vertical = Dimensions.Spacing.sm))
+                SettingMenuCard(
+                    title = "Account Settings",
+                    description = "Manage your account security",
+                    icon = Icons.Default.VpnKey,
+                    onClick = { navigator.push(AccountSettingsScreen) }
+                )
             }
-
-            // Notification Settings
+            
             item {
-                SettingsSectionHeader("Notifications")
+                Divider()
             }
-
+            
+            // Preferences Section
             item {
-                ToggleSettingsItem(
-                    title = "Enable Notifications",
-                    description = "Receive all app notifications",
-                    isChecked = preferences.notificationsEnabled,
-                    onToggle = { newValue ->
-                        preferences = preferences.copy(notificationsEnabled = newValue)
-                        updateUserPreferences(preferences)
+                SettingsSectionHeader(
+                    title = "Preferences",
+                    icon = Icons.Default.Settings
+                )
+            }
+            
+            item {
+                SettingToggleCard(
+                    title = "Dark Mode",
+                    description = "Use dark theme",
+                    icon = Icons.Default.DarkMode,
+                    isEnabled = generalSettings.darkModeEnabled,
+                    onToggle = {
+                        generalSettings = generalSettings.copy(darkModeEnabled = it)
+                        showSaveSnackbar = true
                     }
                 )
             }
-
+            
             item {
-                ToggleSettingsItem(
-                    title = "Push Notifications",
-                    description = "Receive push notifications",
-                    isChecked = preferences.pushNotifications,
-                    enabled = preferences.notificationsEnabled,
-                    onToggle = { newValue ->
-                        preferences = preferences.copy(pushNotifications = newValue)
-                        updateUserPreferences(preferences)
+                SettingToggleCard(
+                    title = "Compact View",
+                    description = "Use compact layout for lists",
+                    icon = Icons.Default.ViewCompact,
+                    isEnabled = generalSettings.compactViewEnabled,
+                    onToggle = {
+                        generalSettings = generalSettings.copy(compactViewEnabled = it)
+                        showSaveSnackbar = true
                     }
                 )
             }
-
+            
             item {
-                ToggleSettingsItem(
-                    title = "Email Notifications",
-                    description = "Receive email updates",
-                    isChecked = preferences.emailNotifications,
-                    enabled = preferences.notificationsEnabled,
-                    onToggle = { newValue ->
-                        preferences = preferences.copy(emailNotifications = newValue)
-                        updateUserPreferences(preferences)
+                SettingToggleCard(
+                    title = "Auto-play Videos",
+                    description = "Automatically play videos in feed",
+                    icon = Icons.Default.Videocam,
+                    isEnabled = generalSettings.autoPlayVideos,
+                    onToggle = {
+                        generalSettings = generalSettings.copy(autoPlayVideos = it)
+                        showSaveSnackbar = true
                     }
                 )
             }
-
+            
             item {
-                ToggleSettingsItem(
-                    title = "Sound",
-                    description = "Play notification sounds",
-                    isChecked = preferences.soundEnabled,
-                    enabled = preferences.notificationsEnabled,
-                    onToggle = { newValue ->
-                        preferences = preferences.copy(soundEnabled = newValue)
-                        updateUserPreferences(preferences)
-                    }
+                Divider()
+            }
+            
+            // Notifications & Privacy Section
+            item {
+                SettingsSectionHeader(
+                    title = "Notifications & Privacy",
+                    icon = Icons.Default.Security
                 )
             }
-
+            
             item {
-                ToggleSettingsItem(
-                    title = "Vibration",
-                    description = "Vibrate on notifications",
-                    isChecked = preferences.vibrationEnabled,
-                    enabled = preferences.notificationsEnabled,
-                    onToggle = { newValue ->
-                        preferences = preferences.copy(vibrationEnabled = newValue)
-                        updateUserPreferences(preferences)
-                    }
+                SettingMenuCard(
+                    title = "Notification Settings",
+                    description = "Manage notification preferences",
+                    icon = Icons.Default.Notifications,
+                    onClick = { navigator.push(NotificationSettingsScreen) }
                 )
             }
-
+            
             item {
-                Divider(modifier = Modifier.padding(vertical = Dimensions.Spacing.sm))
-            }
-
-            // Specific Notification Types
-            item {
-                SettingsSectionHeader("Notification Types")
-            }
-
-            item {
-                ToggleSettingsItem(
-                    title = "Likes & Comments",
-                    isChecked = notificationSettings.likeNotifications,
-                    onToggle = { newValue ->
-                        notificationSettings = notificationSettings.copy(likeNotifications = newValue)
-                        updateNotificationSettings(notificationSettings)
-                    }
-                )
-            }
-
-            item {
-                ToggleSettingsItem(
-                    title = "Follow Notifications",
-                    isChecked = notificationSettings.followNotifications,
-                    onToggle = { newValue ->
-                        notificationSettings = notificationSettings.copy(followNotifications = newValue)
-                        updateNotificationSettings(notificationSettings)
-                    }
-                )
-            }
-
-            item {
-                ToggleSettingsItem(
-                    title = "Messages",
-                    isChecked = notificationSettings.messageNotifications,
-                    onToggle = { newValue ->
-                        notificationSettings = notificationSettings.copy(messageNotifications = newValue)
-                        updateNotificationSettings(notificationSettings)
-                    }
-                )
-            }
-
-            item {
-                ToggleSettingsItem(
-                    title = "Event Updates",
-                    isChecked = notificationSettings.eventNotifications,
-                    onToggle = { newValue ->
-                        notificationSettings = notificationSettings.copy(eventNotifications = newValue)
-                        updateNotificationSettings(notificationSettings)
-                    }
-                )
-            }
-
-            item {
-                Divider(modifier = Modifier.padding(vertical = Dimensions.Spacing.sm))
-            }
-
-            // Privacy & Security
-            item {
-                SettingsSectionHeader("Privacy & Security")
-            }
-
-            item {
-                NavigationSettingsItem(
-                    title = "Privacy",
+                SettingMenuCard(
+                    title = "Privacy Settings",
                     description = "Control who can see your profile",
-                    onClick = { }
+                    icon = Icons.Default.PrivacyTip,
+                    onClick = { navigator.push(PrivacySettingsScreen) }
                 )
             }
-
+            
             item {
-                NavigationSettingsItem(
-                    title = "Blocked Users",
-                    description = "Manage blocked users",
-                    value = getBlockedUsers().size.toString(),
-                    onClick = { }
+                Divider()
+            }
+            
+            // About Section
+            item {
+                SettingsSectionHeader(
+                    title = "About & Support",
+                    icon = Icons.Default.Info
                 )
             }
-
+            
             item {
-                ToggleSettingsItem(
-                    title = "Online Status",
-                    description = "Show when you're online",
-                    isChecked = preferences.showOnlineStatus,
-                    onToggle = { newValue ->
-                        preferences = preferences.copy(showOnlineStatus = newValue)
-                        updateUserPreferences(preferences)
-                    }
+                InfoCard(
+                    label = "App Version",
+                    value = generalSettings.appVersion
                 )
             }
-
+            
             item {
-                ToggleSettingsItem(
-                    title = "Two-Factor Authentication",
-                    description = "Add an extra layer of security",
-                    isChecked = accountSettings.twoFactorEnabled,
-                    onToggle = { newValue ->
-                        accountSettings = accountSettings.copy(twoFactorEnabled = newValue)
-                        toggleTwoFactor(newValue)
-                    }
+                InfoCard(
+                    label = "Build Number",
+                    value = generalSettings.buildNumber
                 )
             }
-
+            
             item {
-                Divider(modifier = Modifier.padding(vertical = Dimensions.Spacing.sm))
-            }
-
-            // Account
-            item {
-                SettingsSectionHeader("Account")
-            }
-
-            item {
-                NavigationSettingsItem(
-                    title = "Change Password",
-                    description = "Update your password",
-                    onClick = { }
-                )
-            }
-
-            item {
-                NavigationSettingsItem(
-                    title = "Login Sessions",
-                    description = "Manage active sessions",
-                    value = "${accountSettings.loginSessions.size} active",
-                    onClick = { }
-                )
-            }
-
-            item {
-                NavigationSettingsItem(
-                    title = "Connected Apps",
-                    description = "Manage app permissions",
-                    value = "${accountSettings.connectedApps.size} connected",
-                    onClick = { }
-                )
-            }
-
-            item {
-                Divider(modifier = Modifier.padding(vertical = Dimensions.Spacing.sm))
-            }
-
-            // About & Support
-            item {
-                SettingsSectionHeader("About & Support")
-            }
-
-            item {
-                TextSettingsItem(
-                    title = "App Version",
-                    value = "1.0.0"
-                )
-            }
-
-            item {
-                NavigationSettingsItem(
+                SettingMenuCard(
                     title = "Help & Support",
-                    onClick = { }
+                    description = "Get help and report issues",
+                    icon = Icons.Default.Help,
+                    onClick = { /* TODO: Open help */ }
                 )
             }
-
+            
             item {
-                NavigationSettingsItem(
-                    title = "Terms of Service",
-                    onClick = { }
-                )
-            }
-
-            item {
-                NavigationSettingsItem(
-                    title = "Privacy Policy",
-                    onClick = { }
-                )
-            }
-
-            item {
-                NavigationSettingsItem(
+                SettingMenuCard(
                     title = "About UniVibe",
-                    onClick = { }
+                    description = "Learn more about the app",
+                    icon = Icons.Default.Info,
+                    onClick = { /* TODO: Open about */ }
                 )
             }
-
+            
             item {
-                Divider(modifier = Modifier.padding(vertical = Dimensions.Spacing.sm))
+                Divider()
             }
-
-            // Danger Zone
+            
+            // Session Section
             item {
-                SettingsSectionHeader("Danger Zone")
+                SettingsSectionHeader(
+                    title = "Session",
+                    icon = Icons.Default.Logout
+                )
             }
-
+            
             item {
-                Button(
-                    onClick = { },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(Dimensions.Spacing.md),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error
+                OutlinedButton(
+                    onClick = { showLogoutDialog = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
                     )
                 ) {
+                    Icon(Icons.Default.Logout, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text("Logout")
                 }
             }
-
+            
             item {
-                Button(
-                    onClick = { },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(Dimensions.Spacing.md),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error
-                    )
-                ) {
-                    Text("Delete Account")
-                }
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(Dimensions.Spacing.lg))
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }
 }
 
-/**
- * Format enum string to readable format.
- */
-private fun String.capitalize(): String {
-    return this.replaceFirstChar { it.uppercase() }
+@Composable
+private fun SettingsSectionHeader(
+    title: String,
+    icon: androidx.compose.material.icons.materialIcon
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = title,
+            modifier = Modifier.size(20.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@Composable
+private fun SettingMenuCard(
+    title: String,
+    description: String = "",
+    icon: androidx.compose.material.icons.materialIcon,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = title,
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                
+                Column {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    if (description.isNotEmpty()) {
+                        Text(
+                            text = description,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                    }
+                }
+            }
+            
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = "Navigate",
+                modifier = Modifier.size(24.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun SettingToggleCard(
+    title: String,
+    description: String = "",
+    icon: androidx.compose.material.icons.materialIcon,
+    isEnabled: Boolean,
+    onToggle: (Boolean) -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = title,
+                    modifier = Modifier.size(24.dp),
+                    tint = if (isEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                
+                Column {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    if (description.isNotEmpty()) {
+                        Text(
+                            text = description,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                    }
+                }
+            }
+            
+            Switch(
+                checked = isEnabled,
+                onCheckedChange = onToggle,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun InfoCard(
+    label: String,
+    value: String
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
 }

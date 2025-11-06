@@ -1,9 +1,12 @@
 package com.example.univibe.ui.screens.features
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,13 +16,13 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.example.univibe.ui.theme.*
-import com.example.univibe.ui.theme.Dimensions
-import com.example.univibe.data.mock.*
-import com.example.univibe.domain.models.*
-import com.example.univibe.ui.screens.detail.JobDetailScreen
-import com.example.univibe.ui.components.TextIcon
-import com.example.univibe.ui.utils.UISymbols
+import com.example.univibe.data.mock.MockJobs
+import com.example.univibe.domain.models.Job
+import com.example.univibe.ui.components.*
+import com.example.univibe.ui.utils.OnBottomReached
+import com.example.univibe.ui.utils.rememberPaginationState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 object JobsScreen : Screen {
     @Composable
@@ -32,28 +35,39 @@ object JobsScreen : Screen {
 @Composable
 private fun JobsScreenContent() {
     val navigator = LocalNavigator.currentOrThrow
+    val scope = rememberCoroutineScope()
     
-    var selectedType by remember { mutableStateOf<JobType?>(null) }
-    var selectedCategory by remember { mutableStateOf<JobCategory?>(null) }
-    var searchQuery by remember { mutableStateOf("") }
-    var isSearching by remember { mutableStateOf(false) }
+    val paginationState = rememberPaginationState(
+        initialItems = MockJobs.getActiveJobs().take(10)
+    )
     
-    val jobs = remember(selectedType, selectedCategory, searchQuery) {
-        var filtered = MockJobs.getActiveJobs()
-        if (selectedType != null) {
-            filtered = filtered.filter { it.type == selectedType }
+    var isRefreshing by remember { mutableStateOf(false) }
+    val pullToRefreshState = rememberPullToRefreshState()
+    val listState = rememberLazyListState()
+    var isInitialLoading by remember { mutableStateOf(true) }
+    
+    LaunchedEffect(Unit) {
+        delay(500)
+        isInitialLoading = false
+    }
+    
+    LaunchedEffect(pullToRefreshState.isRefreshing) {
+        if (pullToRefreshState.isRefreshing) {
+            isRefreshing = true
+            delay(1000)
+            paginationState.refresh(MockJobs.getActiveJobs().take(10))
+            isRefreshing = false
+            pullToRefreshState.endRefresh()
         }
-        if (selectedCategory != null) {
-            filtered = filtered.filter { it.category == selectedCategory }
-        }
-        if (searchQuery.isNotBlank()) {
-            filtered = filtered.filter { job ->
-                job.title.contains(searchQuery, ignoreCase = true) ||
-                job.company.contains(searchQuery, ignoreCase = true) ||
-                job.description.contains(searchQuery, ignoreCase = true)
+    }
+    
+    listState.OnBottomReached {
+        scope.launch {
+            paginationState.loadNextPage { page ->
+                delay(1000)
+                MockJobs.getActiveJobs().drop((page + 1) * 10).take(10)
             }
         }
-        filtered
     }
     
     Scaffold(
@@ -62,325 +76,138 @@ private fun JobsScreenContent() {
                 title = { Text("Campus Jobs") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        TextIcon(
-                            symbol = UISymbols.BACK,
-                            contentDescription = "Back",
-                            fontSize = 20
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { isSearching = !isSearching }) {
-                        TextIcon(
-                            symbol = UISymbols.SEARCH,
-                            contentDescription = "Search",
-                            fontSize = 20
-                        )
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
         }
     ) { paddingValues ->
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.default),
-            contentPadding = PaddingValues(Dimensions.Spacing.default)
+                .padding(paddingValues)
+                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
-            // Search Bar Section
-            if (isSearching) {
-                item {
-                    TextField(
-                        value = searchQuery,
-                        onValueChange = { searchQuery = it },
-                        placeholder = { Text("Search jobs...") },
-                        leadingIcon = {
-                            TextIcon(
-                                symbol = UISymbols.SEARCH,
-                                fontSize = 16
-                            )
-                        },
-                        trailingIcon = {
-                            if (searchQuery.isNotEmpty()) {
-                                IconButton(
-                                    onClick = { searchQuery = "" }
-                                ) {
-                                    TextIcon(
-                                        symbol = UISymbols.CLOSE,
-                                        fontSize = 16
-                                    )
-                                }
+            if (isInitialLoading) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(5) {
+                        JobCardSkeleton()
+                    }
+                }
+            } else if (paginationState.error != null) {
+                ErrorState(
+                    error = paginationState.error ?: "Failed to load jobs",
+                    onRetry = {
+                        scope.launch {
+                            paginationState.retry { page ->
+                                delay(1000)
+                                MockJobs.getActiveJobs().drop((page + 1) * 10).take(10)
                             }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = Dimensions.Spacing.default),
-                        singleLine = true
-                    )
-                }
-            }
-            
-            // Type Filter
-            item {
-                Column(verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)) {
-                    Text(
-                        "Job Type",
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                    TypeFilterRow(
-                        selectedType = selectedType,
-                        onTypeSelected = { selectedType = it }
-                    )
-                }
-            }
-            
-            // Category Filter
-            item {
-                Column(verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)) {
-                    Text(
-                        "Category",
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                    CategoryFilterRow(
-                        selectedCategory = selectedCategory,
-                        onCategorySelected = { selectedCategory = it }
-                    )
-                }
-            }
-            
-            // Jobs List Header
-            item {
-                Text(
-                    "${jobs.size} job${if (jobs.size != 1) "s" else ""} available",
-                    style = MaterialTheme.typography.titleMedium
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .align(Alignment.Center)
                 )
-            }
-            
-            // Jobs List
-            if (jobs.isEmpty()) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(Dimensions.Spacing.xl),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.md)
-                        ) {
-                            TextIcon(
-                                symbol = UISymbols.WORK,
-                                fontSize = 48,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = listState,
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (paginationState.items.isEmpty()) {
+                        item {
+                            EmptyState(
+                                title = "No jobs available",
+                                description = "Check back soon for new opportunities",
+                                icon = Icons.Default.WorkOff,
+                                modifier = Modifier.fillMaxSize()
                             )
-                            Text(
-                                "No jobs found",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Text(
-                                "Try adjusting your filters",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                        }
+                    } else {
+                        items(paginationState.items) { job ->
+                            JobCard(job)
+                        }
+                    }
+                    
+                    if (paginationState.isLoading && paginationState.items.isNotEmpty()) {
+                        item {
+                            PaginationLoadingIndicator()
+                        }
+                    }
+                    
+                    if (!paginationState.hasMorePages && paginationState.items.isNotEmpty()) {
+                        item {
+                            EndOfListIndicator()
                         }
                     }
                 }
-            } else {
-                items(jobs) { job ->
-                    JobCard(
-                        job = job,
-                        onClick = { navigator.push(JobDetailScreen(job.id)) }
-                    )
-                }
             }
-        }
-    }
-}
-
-@Composable
-private fun TypeFilterRow(
-    selectedType: JobType?,
-    onTypeSelected: (JobType?) -> Unit
-) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
-    ) {
-        // All types chip
-        item {
-            FilterChip(
-                selected = selectedType == null,
-                onClick = { onTypeSelected(null) },
-                label = { Text("All") }
-            )
-        }
-        
-        // Type chips
-        items(JobType.values().toList()) { type ->
-            FilterChip(
-                selected = type == selectedType,
-                onClick = { onTypeSelected(type) },
-                label = { Text(type.displayName) }
+            
+            PullToRefreshContainer(
+                state = pullToRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter)
             )
         }
     }
 }
 
 @Composable
-private fun CategoryFilterRow(
-    selectedCategory: JobCategory?,
-    onCategorySelected: (JobCategory?) -> Unit
-) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
-    ) {
-        // All categories chip
-        item {
-            FilterChip(
-                selected = selectedCategory == null,
-                onClick = { onCategorySelected(null) },
-                label = { Text("All") }
-            )
-        }
-        
-        // Category chips
-        items(JobCategory.values().toList()) { category ->
-            FilterChip(
-                selected = category == selectedCategory,
-                onClick = { onCategorySelected(category) },
-                label = { Text("${category.emoji} ${category.displayName}") }
-            )
-        }
-    }
-}
-
-@Composable
-private fun JobCard(
-    job: Job,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+private fun JobCard(job: Job) {
     Card(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(Dimensions.Spacing.default),
-            verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
-        ) {
-            // Company and Type
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        Row(modifier = Modifier.padding(12.dp)) {
+            Box(
+                modifier = Modifier
+                    .size(60.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
+            
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 12.dp)
             ) {
                 Text(
-                    text = job.company,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    text = job.title,
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
-                
-                Surface(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    shape = MaterialTheme.shapes.small
-                ) {
-                    Text(
-                        text = job.type.displayName,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier.padding(
-                            horizontal = Dimensions.Spacing.sm,
-                            vertical = Dimensions.Spacing.xs
-                        )
-                    )
-                }
-            }
-            
-            // Job Title
-            Text(
-                text = job.title,
-                style = MaterialTheme.typography.titleMedium
-            )
-            
-            // Description
-            Text(
-                text = job.description,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            
-            // Details Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.default)
-            ) {
-                // Location
+                Text(
+                    text = job.company,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.xs),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(1f)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    TextIcon(
-                        symbol = if (job.isRemote) UISymbols.LAPTOP else UISymbols.LOCATION,
-                        fontSize = 12,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    Text(
+                        text = "$ ${job.salary}",
+                        style = MaterialTheme.typography.labelSmall
                     )
                     Text(
-                        if (job.isRemote) "Remote" else job.location,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        text = job.type.name,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                
-                // Salary (if available)
-                if (job.salary != null) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.xs),
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        TextIcon(
-                            symbol = UISymbols.MONEY,
-                            fontSize = 12,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            job.salary,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                }
             }
-            
-            // Posted Date
-            Text(
-                "Posted ${formatJobDate(job.postedDate)}",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }
 
-private fun formatJobDate(timestamp: Long): String {
-    val now = 1700000000000L // Use fixed time for consistency
-    val diff = now - timestamp
-    val days = diff / 86400000L
-    
-    return when {
-        days == 0L -> "today"
-        days == 1L -> "yesterday"
-        days < 7 -> "$days days ago"
-        days < 30 -> "${days / 7} weeks ago"
-        else -> "${days / 30} months ago"
-    }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun rememberPullToRefreshState(): androidx.compose.material3.pulltorefresh.PullToRefreshState {
+    return androidx.compose.material3.pulltorefresh.rememberPullToRefreshState()
 }
