@@ -1,7 +1,7 @@
 package com.example.univibe.domain.models
 
 import kotlinx.serialization.Serializable
-import kotlin.system.getTimeMillis
+import kotlinx.serialization.Contextual
 
 /**
  * Complete study session model representing an academic collaboration group.
@@ -15,15 +15,17 @@ data class StudySession(
     val subject: String,
     val description: String,
     val hostId: String,
+    @Contextual
     val host: User,
     val location: SessionLocation,
     val startTime: Long,
     val endTime: Long,
     val maxParticipants: Int,
     val currentParticipants: Int,
+    @Contextual
     val participants: List<User> = emptyList(),
     val isJoined: Boolean = false,
-    val createdAt: Long = getTimeMillis(),
+    val createdAt: Long = 0,
     val tags: List<String> = emptyList()
 ) {
     /**
@@ -38,8 +40,9 @@ data class StudySession(
     
     /**
      * Checks if session is happening soon (within next 24 hours).
+     * Pass currentTime from System.currentTimeMillis() externally.
      */
-    val isUpcoming: Boolean get() = startTime - getTimeMillis() <= 86400000L
+    fun isUpcoming(currentTime: Long): Boolean = startTime - currentTime <= 86400000L
     
     /**
      * Formats duration as readable string (e.g., "2h 30m").

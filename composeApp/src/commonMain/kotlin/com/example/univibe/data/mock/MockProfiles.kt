@@ -1,13 +1,15 @@
 package com.example.univibe.data.mock
 
 import com.example.univibe.domain.models.*
-import kotlin.system.getTimeMillis
 
 // ============================================================================
 // CURRENT USER PROFILE
 // ============================================================================
 
 private val currentUserId = "user_1"
+
+// Using a fixed timestamp for mock data
+private val mockNow = 1704067200000L // January 1, 2024 00:00:00 UTC
 
 fun getCurrentUserProfile(): UserProfileData = UserProfileData(
     id = currentUserId,
@@ -27,7 +29,7 @@ fun getCurrentUserProfile(): UserProfileData = UserProfileData(
     followingCount = 234,
     postsCount = 128,
     isVerified = true,
-    joinedDate = getTimeMillis() - (365 * 24 * 60 * 60 * 1000),
+    joinedDate = mockNow - (365 * 24 * 60 * 60 * 1000),
     website = "alexchen.dev",
     location = "San Francisco, CA",
     pronouns = "he/him",
@@ -53,7 +55,7 @@ fun getOtherUserProfile(): UserProfileData = UserProfileData(
     isVerified = false,
     isFollowing = true,
     isFollowedBy = false,
-    joinedDate = getTimeMillis() - (180 * 24 * 60 * 60 * 1000),
+    joinedDate = mockNow - (180 * 24 * 60 * 60 * 1000),
     location = "San Francisco, CA"
 )
 
@@ -150,7 +152,7 @@ fun getNotificationSettings(userId: String = currentUserId): NotificationSetting
 
 fun getAccountSettings(userId: String = currentUserId): AccountSettings = AccountSettings(
     userId = userId,
-    passwordLastChanged = getTimeMillis() - (30 * 24 * 60 * 60 * 1000),
+    passwordLastChanged = mockNow - (30 * 24 * 60 * 60 * 1000),
     twoFactorEnabled = true,
     twoFactorMethod = "authenticator",
     loginSessions = listOf(
@@ -161,7 +163,7 @@ fun getAccountSettings(userId: String = currentUserId): AccountSettings = Accoun
             platform = "ios",
             ipAddress = "192.168.1.1",
             location = "San Francisco, CA",
-            lastActive = getTimeMillis() - 3600000,
+            lastActive = mockNow - 3600000,
             isCurrentSession = true
         ),
         LoginSession(
@@ -171,7 +173,7 @@ fun getAccountSettings(userId: String = currentUserId): AccountSettings = Accoun
             platform = "macos",
             ipAddress = "192.168.1.5",
             location = "San Francisco, CA",
-            lastActive = getTimeMillis() - 86400000,
+            lastActive = mockNow - 86400000,
             isCurrentSession = false
         ),
         LoginSession(
@@ -181,7 +183,7 @@ fun getAccountSettings(userId: String = currentUserId): AccountSettings = Accoun
             platform = "android",
             ipAddress = "192.168.1.10",
             location = "San Francisco, CA",
-            lastActive = getTimeMillis() - (7 * 24 * 60 * 60 * 1000),
+            lastActive = mockNow - (7 * 24 * 60 * 60 * 1000),
             isCurrentSession = false
         )
     ),
@@ -190,15 +192,15 @@ fun getAccountSettings(userId: String = currentUserId): AccountSettings = Accoun
             id = "app_1",
             appName = "GitHub",
             permissions = listOf("read:user", "repo"),
-            connectedDate = getTimeMillis() - (90 * 24 * 60 * 60 * 1000),
-            lastAccessDate = getTimeMillis() - 86400000
+            connectedDate = mockNow - (90 * 24 * 60 * 60 * 1000),
+            lastAccessDate = mockNow - 86400000
         ),
         ConnectedApp(
             id = "app_2",
             appName = "Spotify",
             permissions = listOf("user-read-private", "user-top-read"),
-            connectedDate = getTimeMillis() - (60 * 24 * 60 * 60 * 1000),
-            lastAccessDate = getTimeMillis() - 3600000
+            connectedDate = mockNow - (60 * 24 * 60 * 60 * 1000),
+            lastAccessDate = mockNow - 3600000
         )
     )
 )
@@ -233,7 +235,7 @@ fun getUserAchievements(userId: String = currentUserId): List<UserAchievement> =
         name = "First Post",
         description = "Posted your first piece of content",
         icon = "🎉",
-        unlockedDate = getTimeMillis() - (365 * 24 * 60 * 60 * 1000),
+        unlockedDate = mockNow - (365 * 24 * 60 * 60 * 1000),
         category = "engagement"
     ),
     UserAchievement(
@@ -242,7 +244,7 @@ fun getUserAchievements(userId: String = currentUserId): List<UserAchievement> =
         name = "Social Butterfly",
         description = "Reached 100 followers",
         icon = "🦋",
-        unlockedDate = getTimeMillis() - (300 * 24 * 60 * 60 * 1000),
+        unlockedDate = mockNow - (300 * 24 * 60 * 60 * 1000),
         category = "community"
     ),
     UserAchievement(
@@ -251,7 +253,7 @@ fun getUserAchievements(userId: String = currentUserId): List<UserAchievement> =
         name = "Week Warrior",
         description = "Posted every day for a week",
         icon = "🎯",
-        unlockedDate = getTimeMillis() - (200 * 24 * 60 * 60 * 1000),
+        unlockedDate = mockNow - (200 * 24 * 60 * 60 * 1000),
         category = "engagement"
     ),
     UserAchievement(
@@ -260,7 +262,7 @@ fun getUserAchievements(userId: String = currentUserId): List<UserAchievement> =
         name = "Community Champion",
         description = "Reached 500 followers",
         icon = "👑",
-        unlockedDate = getTimeMillis() - (100 * 24 * 60 * 60 * 1000),
+        unlockedDate = mockNow - (100 * 24 * 60 * 60 * 1000),
         category = "community"
     ),
     UserAchievement(
@@ -269,7 +271,7 @@ fun getUserAchievements(userId: String = currentUserId): List<UserAchievement> =
         name = "Event Attendee",
         description = "Attended 5 events",
         icon = "🎪",
-        unlockedDate = getTimeMillis() - (30 * 24 * 60 * 60 * 1000),
+        unlockedDate = mockNow - (30 * 24 * 60 * 60 * 1000),
         category = "events"
     ),
     UserAchievement(
@@ -278,7 +280,7 @@ fun getUserAchievements(userId: String = currentUserId): List<UserAchievement> =
         name = "Knowledge Seeker",
         description = "Joined 3 clubs",
         icon = "📚",
-        unlockedDate = getTimeMillis() - (15 * 24 * 60 * 60 * 1000),
+        unlockedDate = mockNow - (15 * 24 * 60 * 60 * 1000),
         category = "learning"
     )
 )
@@ -292,14 +294,14 @@ fun getBlockedUsers(userId: String = currentUserId): List<BlockedUser> = listOf(
         userId = userId,
         blockedUserId = "user_spam_1",
         reason = "Spam content",
-        blockedDate = getTimeMillis() - (60 * 24 * 60 * 60 * 1000),
+        blockedDate = mockNow - (60 * 24 * 60 * 60 * 1000),
         mutedOnly = false
     ),
     BlockedUser(
         userId = userId,
         blockedUserId = "user_troll_1",
         reason = "Harassment",
-        blockedDate = getTimeMillis() - (30 * 24 * 60 * 60 * 1000),
+        blockedDate = mockNow - (30 * 24 * 60 * 60 * 1000),
         mutedOnly = false
     )
 )
@@ -313,7 +315,7 @@ fun getMutedUsers(userId: String = currentUserId): List<BlockedUser> = listOf(
         userId = userId,
         blockedUserId = "user_5",
         reason = "Too many notifications",
-        blockedDate = getTimeMillis() - (15 * 24 * 60 * 60 * 1000),
+        blockedDate = mockNow - (15 * 24 * 60 * 60 * 1000),
         mutedOnly = true
     )
 )
@@ -418,7 +420,7 @@ fun addBlockedUser(blockedUserId: String, reason: String? = null): BlockedUser {
         userId = currentUserId,
         blockedUserId = blockedUserId,
         reason = reason,
-        blockedDate = getTimeMillis(),
+        blockedDate = mockNow,
         mutedOnly = false
     )
     return blockedUser
@@ -430,7 +432,7 @@ fun removeBlockedUser(blockedUserId: String) {
 
 fun changePassword(newPassword: String) {
     currentAccountSettings = currentAccountSettings.copy(
-        passwordLastChanged = getTimeMillis()
+        passwordLastChanged = mockNow
     )
 }
 

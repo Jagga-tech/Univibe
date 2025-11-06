@@ -41,19 +41,19 @@ object AnimationConstants {
     // ============== SPRING SPECS ==============
     
     // Interactive spring (bouncy)
-    val interactiveSpring = spring(
+    val interactiveSpring = spring<Float>(
         dampingRatio = Spring.DampingRatioMediumBouncy,
         stiffness = Spring.StiffnessHigh
     )
     
     // Smooth spring (less bouncy)
-    val smoothSpring = spring(
+    val smoothSpring = spring<Float>(
         dampingRatio = Spring.DampingRatioLowBouncy,
         stiffness = Spring.StiffnessMedium
     )
     
     // Stiff spring (minimal bounce)
-    val stiffSpring = spring(
+    val stiffSpring = spring<Float>(
         dampingRatio = Spring.DampingRatioNoBouncy,
         stiffness = Spring.StiffnessHigh
     )

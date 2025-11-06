@@ -1,13 +1,18 @@
 package com.example.univibe.data.mock
 
 import com.example.univibe.domain.models.*
-import java.util.UUID
-import kotlin.system.getTimeMillis
 
 object MockMessages {
     
     private val messages = mutableListOf<Message>()
     private val conversations = mutableListOf<Conversation>()
+    
+    // Counter for generating unique IDs (KMP-compatible alternative to UUID)
+    private var idCounter = 1000
+    private fun generateId(): String = (++idCounter).toString()
+    
+    // Using a fixed timestamp for mock data (represents a baseline "now" for consistent behavior)
+    private val now = 1704067200000L // January 1, 2024 00:00:00 UTC
     
     init {
         // Current user ID (would be replaced with actual logged-in user)
@@ -19,13 +24,11 @@ object MockMessages {
         val user6 = MockUsers.users[5] // David Kim
         val user7 = MockUsers.users[6] // Emily White
         
-        val now = getTimeMillis()
-        
         // ===== CONVERSATION 1: With Emily White =====
-        val conversation1Id = UUID.randomUUID().toString()
+        val conversation1Id = generateId()
         val conv1Messages = listOf(
             Message(
-                id = UUID.randomUUID().toString(),
+                id = generateId(),
                 conversationId = conversation1Id,
                 senderId = user7.id,
                 sender = user7,
@@ -34,7 +37,7 @@ object MockMessages {
                 isRead = false
             ),
             Message(
-                id = UUID.randomUUID().toString(),
+                id = generateId(),
                 conversationId = conversation1Id,
                 senderId = user7.id,
                 sender = user7,
@@ -43,7 +46,7 @@ object MockMessages {
                 isRead = false
             ),
             Message(
-                id = UUID.randomUUID().toString(),
+                id = generateId(),
                 conversationId = conversation1Id,
                 senderId = currentUserId,
                 sender = MockUsers.users[0],
@@ -52,7 +55,7 @@ object MockMessages {
                 isRead = true
             ),
             Message(
-                id = UUID.randomUUID().toString(),
+                id = generateId(),
                 conversationId = conversation1Id,
                 senderId = user7.id,
                 sender = user7,
@@ -75,10 +78,10 @@ object MockMessages {
         messages.addAll(conv1Messages)
         
         // ===== CONVERSATION 2: With Sarah Johnson =====
-        val conversation2Id = UUID.randomUUID().toString()
+        val conversation2Id = generateId()
         val conv2Messages = listOf(
             Message(
-                id = UUID.randomUUID().toString(),
+                id = generateId(),
                 conversationId = conversation2Id,
                 senderId = currentUserId,
                 sender = MockUsers.users[0],
@@ -87,7 +90,7 @@ object MockMessages {
                 isRead = true
             ),
             Message(
-                id = UUID.randomUUID().toString(),
+                id = generateId(),
                 conversationId = conversation2Id,
                 senderId = user2.id,
                 sender = user2,
@@ -96,7 +99,7 @@ object MockMessages {
                 isRead = true
             ),
             Message(
-                id = UUID.randomUUID().toString(),
+                id = generateId(),
                 conversationId = conversation2Id,
                 senderId = user2.id,
                 sender = user2,
@@ -105,7 +108,7 @@ object MockMessages {
                 isRead = true
             ),
             Message(
-                id = UUID.randomUUID().toString(),
+                id = generateId(),
                 conversationId = conversation2Id,
                 senderId = currentUserId,
                 sender = MockUsers.users[0],
@@ -128,10 +131,10 @@ object MockMessages {
         messages.addAll(conv2Messages)
         
         // ===== CONVERSATION 3: With Michael Chen =====
-        val conversation3Id = UUID.randomUUID().toString()
+        val conversation3Id = generateId()
         val conv3Messages = listOf(
             Message(
-                id = UUID.randomUUID().toString(),
+                id = generateId(),
                 conversationId = conversation3Id,
                 senderId = user3.id,
                 sender = user3,
@@ -140,7 +143,7 @@ object MockMessages {
                 isRead = true
             ),
             Message(
-                id = UUID.randomUUID().toString(),
+                id = generateId(),
                 conversationId = conversation3Id,
                 senderId = currentUserId,
                 sender = MockUsers.users[0],
@@ -149,7 +152,7 @@ object MockMessages {
                 isRead = true
             ),
             Message(
-                id = UUID.randomUUID().toString(),
+                id = generateId(),
                 conversationId = conversation3Id,
                 senderId = user3.id,
                 sender = user3,
@@ -172,10 +175,10 @@ object MockMessages {
         messages.addAll(conv3Messages)
         
         // ===== CONVERSATION 4: With David Kim =====
-        val conversation4Id = UUID.randomUUID().toString()
+        val conversation4Id = generateId()
         val conv4Messages = listOf(
             Message(
-                id = UUID.randomUUID().toString(),
+                id = generateId(),
                 conversationId = conversation4Id,
                 senderId = user6.id,
                 sender = user6,
@@ -184,7 +187,7 @@ object MockMessages {
                 isRead = true
             ),
             Message(
-                id = UUID.randomUUID().toString(),
+                id = generateId(),
                 conversationId = conversation4Id,
                 senderId = currentUserId,
                 sender = MockUsers.users[0],
@@ -221,11 +224,11 @@ object MockMessages {
     
     fun sendMessage(conversationId: String, senderId: String, content: String): Message {
         val message = Message(
-            id = UUID.randomUUID().toString(),
+            id = generateId(),
             conversationId = conversationId,
             senderId = senderId,
             content = content,
-            createdAt = getTimeMillis(),
+            createdAt = now,
             isRead = false
         )
         messages.add(message)
@@ -272,12 +275,12 @@ object MockMessages {
     
     fun createConversation(participantIds: List<String>, isGroup: Boolean = false, groupName: String? = null): Conversation {
         val conversation = Conversation(
-            id = UUID.randomUUID().toString(),
+            id = generateId(),
             participantIds = participantIds,
             participants = participantIds.mapNotNull { id -> MockUsers.users.find { it.id == id } },
             isGroup = isGroup,
             groupName = groupName,
-            createdAt = getTimeMillis()
+            createdAt = now
         )
         conversations.add(conversation)
         return conversation

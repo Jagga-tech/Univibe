@@ -124,9 +124,36 @@ private fun formatConversationTime(timestamp: Long): String {
         differenceInMillis < 3600000 -> "${differenceInMillis / 60000}m"
         differenceInMillis < 86400000 -> "${differenceInMillis / 3600000}h"
         differenceInMillis < 604800000 -> "${differenceInMillis / 86400000}d"
-        else -> {
-            val sdf = java.text.SimpleDateFormat("MM/dd", java.util.Locale.getDefault())
-            sdf.format(java.util.Date(timestamp))
-        }
+        else -> formatDateAsMonthDay(timestamp)
     }
+}
+
+private fun formatDateAsMonthDay(timestamp: Long): String {
+    val totalSeconds = timestamp / 1000
+    val totalMinutes = totalSeconds / 60
+    val totalHours = totalMinutes / 60
+    val totalDays = totalHours / 24
+    
+    val daysPerYear = 365
+    val yearsSinceEpoch = totalDays / daysPerYear
+    val year = 1970 + yearsSinceEpoch.toInt()
+    
+    val dayOfYear = (totalDays % daysPerYear).toInt() + 1
+    
+    val isLeapYear = year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
+    val daysInMonth = intArrayOf(31, if (isLeapYear) 29 else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+    
+    var monthOfYear = 1
+    var dayOfMonth = dayOfYear
+    for (i in daysInMonth.indices) {
+        if (dayOfMonth <= daysInMonth[i]) {
+            monthOfYear = i + 1
+            break
+        }
+        dayOfMonth -= daysInMonth[i]
+    }
+    
+    val month = monthOfYear.toString().padStart(2, '0')
+    val day = dayOfMonth.toString().padStart(2, '0')
+    return "$month/$day"
 }

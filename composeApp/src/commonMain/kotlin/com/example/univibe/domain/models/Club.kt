@@ -1,5 +1,8 @@
 package com.example.univibe.domain.models
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Contextual
+
 /**
  * Represents a student organization/club on campus.
  *
@@ -26,6 +29,7 @@ package com.example.univibe.domain.models
  * @property tags Searchable tags for the club
  * @property createdAt When the club was created
  */
+@Serializable
 data class Club(
     val id: String,
     val name: String,
@@ -34,8 +38,10 @@ data class Club(
     val logoUrl: String? = null,
     val bannerUrl: String? = null,
     val presidentId: String,
+    @Contextual
     val president: User,
     val memberCount: Int,
+    @Contextual
     val members: List<User> = emptyList(),
     val isMember: Boolean = false,
     val isVerified: Boolean = false,
@@ -45,12 +51,13 @@ data class Club(
     val upcomingEvents: List<Event> = emptyList(),
     val recentPosts: List<Post> = emptyList(),
     val tags: List<String> = emptyList(),
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = 0
 )
 
 /**
  * Club's social media and contact information
  */
+@Serializable
 data class ClubSocialMedia(
     val instagram: String? = null,
     val twitter: String? = null,
@@ -61,6 +68,7 @@ data class ClubSocialMedia(
 /**
  * Categories for student organizations
  */
+@Serializable
 enum class ClubCategory(val displayName: String, val emoji: String) {
     ACADEMIC("Academic", "📚"),
     SPORTS("Sports & Recreation", "⚽"),

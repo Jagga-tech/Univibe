@@ -1,7 +1,7 @@
 package com.example.univibe.ui.animations
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 
@@ -93,7 +93,7 @@ object ListAnimations {
             initialValue = 0f,
             targetValue = 360f,
             animationSpec = infiniteRepeatable(
-                animation = tween(
+                animation = tween<Float>(
                     durationMillis = 1000,
                     easing = LinearEasing
                 ),

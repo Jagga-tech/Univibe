@@ -24,8 +24,6 @@ import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.ui.theme.Spacing
 import com.example.univibe.ui.utils.UISymbols
 import com.example.univibe.util.ShareHelper
-import java.text.SimpleDateFormat
-import java.util.*
 
 data class EventDetailScreen(val eventId: String) : Screen {
     @Composable
@@ -456,18 +454,77 @@ private fun EventDetailRow(
  * Format event date and time range for display
  */
 private fun formatFullEventTime(startTime: Long, endTime: Long): String {
-    val startFormat = SimpleDateFormat("EEE, MMM d 'at' h:mm a", Locale.getDefault())
-    val endFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+    val startCal = getCalendarFromEventTimestamp(startTime)
+    val endCal = getCalendarFromEventTimestamp(endTime)
     
-    val startDate = Date(startTime)
-    val endDate = Date(endTime)
+    val isSameDay = startCal.dayOfMonth == endCal.dayOfMonth && 
+                    startCal.monthOfYear == endCal.monthOfYear && 
+                    startCal.year == endCal.year
     
-    val isSameDay = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(startDate) ==
-            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(endDate)
+    val days = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+    val months = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    
+    fun formatTime(cal: EventCalendarData): String {
+        val hour = cal.hour % 12
+        val displayHour = if (hour == 0) 12 else hour
+        val minute = cal.minute.toString().padStart(2, '0')
+        val period = if (cal.hour < 12) "AM" else "PM"
+        return "$displayHour:$minute $period"
+    }
+    
+    fun formatDateLong(cal: EventCalendarData): String {
+        val dayName = days.getOrNull(cal.dayOfWeek - 1) ?: "Mon"
+        val monthName = months.getOrNull(cal.monthOfYear - 1) ?: "Jan"
+        val day = cal.dayOfMonth
+        return "$dayName, $monthName $day at ${formatTime(cal)}"
+    }
     
     return if (isSameDay) {
-        "${startFormat.format(startDate)} - ${endFormat.format(endDate)}"
+        "${formatDateLong(startCal)} - ${formatTime(endCal)}"
     } else {
-        "${startFormat.format(startDate)} - ${startFormat.format(endDate)}"
+        "${formatDateLong(startCal)} - ${formatDateLong(endCal)}"
     }
 }
+
+private fun getCalendarFromEventTimestamp(timestamp: Long): EventCalendarData {
+    val totalSeconds = timestamp / 1000
+    val totalMinutes = totalSeconds / 60
+    val totalHours = totalMinutes / 60
+    val totalDays = totalHours / 24
+    
+    val daysPerYear = 365
+    val yearsSinceEpoch = totalDays / daysPerYear
+    val year = 1970 + yearsSinceEpoch.toInt()
+    
+    val dayOfYear = (totalDays % daysPerYear).toInt() + 1
+    val hour = ((totalHours % 24).toInt())
+    val minute = (totalMinutes % 60).toInt()
+    val second = (totalSeconds % 60).toInt()
+    
+    val isLeapYear = year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
+    val daysInMonth = intArrayOf(31, if (isLeapYear) 29 else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+    
+    var monthOfYear = 1
+    var dayOfMonth = dayOfYear
+    for (i in daysInMonth.indices) {
+        if (dayOfMonth <= daysInMonth[i]) {
+            monthOfYear = i + 1
+            break
+        }
+        dayOfMonth -= daysInMonth[i]
+    }
+    
+    val dayOfWeek = ((totalDays + 4) % 7).toInt() + 1
+    
+    return EventCalendarData(year, monthOfYear, dayOfMonth, hour, minute, second, dayOfWeek)
+}
+
+data class EventCalendarData(
+    val year: Int,
+    val monthOfYear: Int,
+    val dayOfMonth: Int,
+    val hour: Int,
+    val minute: Int,
+    val second: Int,
+    val dayOfWeek: Int
+)

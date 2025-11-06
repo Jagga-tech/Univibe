@@ -18,7 +18,6 @@ import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.utils.UISymbols
 import com.example.univibe.util.ShareHelper
-import kotlin.system.getTimeMillis
 
 /**
  * Detail screen for a specific study session.
@@ -539,7 +538,7 @@ private fun DetailRow(
  * Format date and time for display.
  */
 private fun formatDateTime(startTime: Long, endTime: Long): String {
-    val now = getTimeMillis()
+    val now = System.currentTimeMillis()
     val diffDays = (startTime - now) / 86400000L
     
     // For now, return simple format; in real app would use date formatter

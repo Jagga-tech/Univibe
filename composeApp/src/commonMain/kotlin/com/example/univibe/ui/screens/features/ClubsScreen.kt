@@ -4,10 +4,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -58,19 +62,17 @@ private fun ClubsScreenContent() {
                 title = { Text("Clubs") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        TextIcon(
-                            symbol = UISymbols.BACK,
-                            contentDescription = "Back",
-                            fontSize = 20
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back"
                         )
                     }
                 },
                 actions = {
                     IconButton(onClick = { isSearching = !isSearching }) {
-                        TextIcon(
-                            symbol = UISymbols.SEARCH,
-                            contentDescription = "Search",
-                            fontSize = 20
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search"
                         )
                     }
                 }
@@ -91,9 +93,9 @@ private fun ClubsScreenContent() {
                         onValueChange = { searchQuery = it },
                         placeholder = { Text("Search clubs...") },
                         leadingIcon = {
-                            TextIcon(
-                                symbol = UISymbols.SEARCH,
-                                fontSize = 16
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null
                             )
                         },
                         trailingIcon = {
@@ -101,9 +103,9 @@ private fun ClubsScreenContent() {
                                 IconButton(
                                     onClick = { searchQuery = "" }
                                 ) {
-                                    TextIcon(
-                                        symbol = UISymbols.CLOSE,
-                                        fontSize = 16
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "Clear"
                                     )
                                 }
                             }
@@ -184,9 +186,10 @@ private fun ClubsScreenContent() {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            TextIcon(
-                                symbol = UISymbols.GROUPS,
-                                fontSize = 48,
+                            Icon(
+                                imageVector = Icons.Default.Groups,
+                                contentDescription = null,
+                                modifier = Modifier.size(48.dp),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
@@ -211,7 +214,7 @@ private fun ClubsScreenContent() {
                 }
             }
             
-            // Bottom spacing
+            // Bottom padding
             item {
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -222,11 +225,12 @@ private fun ClubsScreenContent() {
 @Composable
 private fun ClubFilterChips(
     selectedFilter: ClubFilter,
-    onFilterSelected: (ClubFilter) -> Unit
+    onFilterSelected: (ClubFilter) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     ScrollableTabRow(
         selectedTabIndex = selectedFilter.ordinal,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         edgePadding = 16.dp,
         indicator = { }
     ) {
@@ -330,13 +334,13 @@ private fun PopularClubCard(
                     text = club.name,
                     style = MaterialTheme.typography.titleSmall,
                     maxLines = 2,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    textAlign = TextAlign.Center
                 )
                 if (club.isVerified) {
-                    TextIcon(
-                        symbol = UISymbols.VERIFIED,
+                    Icon(
+                        imageVector = Icons.Default.Verified,
                         contentDescription = "Verified",
-                        fontSize = 14,
+                        modifier = Modifier.size(14.dp),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -346,9 +350,10 @@ private fun PopularClubCard(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TextIcon(
-                    symbol = UISymbols.GROUP,
-                    fontSize = 14,
+                Icon(
+                    imageVector = Icons.Default.Group,
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(

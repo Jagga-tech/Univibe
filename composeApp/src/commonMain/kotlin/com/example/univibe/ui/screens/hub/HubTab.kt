@@ -18,15 +18,9 @@ object HubTab : Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val isSelected = LocalTabNavigator.current.current == this
-            val icon = if (isSelected) UISymbols.DASHBOARD_FILLED else UISymbols.DASHBOARD_OUTLINED
-
             return TabOptions(
                 index = 2u,
-                title = "Hub",
-                icon = {
-                    TextIcon(symbol = icon)
-                }
+                title = "Hub"
             )
         }
 

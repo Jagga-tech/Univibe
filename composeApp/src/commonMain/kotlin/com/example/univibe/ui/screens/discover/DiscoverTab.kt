@@ -18,15 +18,9 @@ object DiscoverTab : Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val isSelected = LocalTabNavigator.current.current == this
-            val icon = if (isSelected) UISymbols.SEARCH_FILLED else UISymbols.SEARCH_OUTLINED
-
             return TabOptions(
                 index = 1u,
-                title = "Discover",
-                icon = {
-                    TextIcon(symbol = icon)
-                }
+                title = "Discover"
             )
         }
 

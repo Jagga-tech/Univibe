@@ -4,14 +4,14 @@ import com.example.univibe.domain.models.StudySession
 import com.example.univibe.domain.models.SessionLocation
 import com.example.univibe.domain.models.LocationType
 import com.example.univibe.domain.models.SessionFilter
-import kotlin.system.getTimeMillis
 
 /**
  * Mock data for Study Sessions feature.
  * Contains realistic study sessions with varied topics, times, and participants.
  */
 object MockStudySessions {
-    private val currentTime = getTimeMillis()
+    // Using a fixed timestamp for mock data (represents a baseline "now" for consistent behavior)
+    private val currentTime = 1704067200000L // January 1, 2024 00:00:00 UTC
     private val oneHour = 3600000L
     private val oneDay = 86400000L
     
@@ -238,7 +238,7 @@ object MockStudySessions {
      */
     fun getUpcomingSessions(): List<StudySession> {
         return sessions
-            .filter { it.startTime > getTimeMillis() }
+            .filter { it.startTime > currentTime }
             .sortedBy { it.startTime }
     }
     
@@ -246,17 +246,16 @@ object MockStudySessions {
      * Get sessions filtered by various criteria.
      */
     fun getSessionsByFilter(filter: SessionFilter): List<StudySession> {
-        val now = getTimeMillis()
         val oneDayMs = 86400000L
         val oneWeekMs = 7 * oneDayMs
         
         return when (filter) {
             SessionFilter.ALL -> getUpcomingSessions()
             SessionFilter.TODAY -> sessions.filter { 
-                it.startTime > now && it.startTime < now + oneDayMs 
+                it.startTime > currentTime && it.startTime < currentTime + oneDayMs 
             }.sortedBy { it.startTime }
             SessionFilter.THIS_WEEK -> sessions.filter { 
-                it.startTime > now && it.startTime < now + oneWeekMs 
+                it.startTime > currentTime && it.startTime < currentTime + oneWeekMs 
             }.sortedBy { it.startTime }
             SessionFilter.MY_COURSES -> sessions.filter { 
                 it.course == "CS 4780" || it.course == "CS 1110" // Mock: Sarah's courses

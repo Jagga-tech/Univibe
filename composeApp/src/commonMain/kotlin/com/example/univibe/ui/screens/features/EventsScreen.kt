@@ -4,10 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -20,8 +23,6 @@ import com.example.univibe.ui.screens.detail.EventDetailScreen
 import com.example.univibe.ui.screens.create.CreateEventScreen
 import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.utils.UISymbols
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * Events Screen - Browse and discover campus events
@@ -92,10 +93,9 @@ private fun EventsScreenContent() {
                     IconButton(
                         onClick = { navigator.pop() }
                     ) {
-                        TextIcon(
-                            symbol = UISymbols.BACK,
-                            contentDescription = "Back",
-                            fontSize = 20
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back"
                         )
                     }
                 },
@@ -103,19 +103,17 @@ private fun EventsScreenContent() {
                     IconButton(
                         onClick = { isSearching = !isSearching }
                     ) {
-                        TextIcon(
-                            symbol = UISymbols.SEARCH,
-                            contentDescription = "Search",
-                            fontSize = 20
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search"
                         )
                     }
                     IconButton(
                         onClick = { /* TODO: Calendar view */ }
                     ) {
-                        TextIcon(
-                            symbol = UISymbols.CALENDAR,
-                            contentDescription = "Calendar View",
-                            fontSize = 20
+                        Icon(
+                            imageVector = Icons.Default.CalendarMonth,
+                            contentDescription = "Calendar View"
                         )
                     }
                 }
@@ -126,10 +124,9 @@ private fun EventsScreenContent() {
                 onClick = { navigator.push(CreateEventScreen) },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
-                TextIcon(
-                    symbol = UISymbols.ADD,
-                    contentDescription = "Create Event",
-                    fontSize = 20
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Create Event"
                 )
             }
         }
@@ -148,9 +145,9 @@ private fun EventsScreenContent() {
                         onValueChange = { searchQuery = it },
                         placeholder = { Text("Search events...") },
                         leadingIcon = {
-                            TextIcon(
-                                symbol = UISymbols.SEARCH,
-                                fontSize = 16
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null
                             )
                         },
                         trailingIcon = {
@@ -158,9 +155,9 @@ private fun EventsScreenContent() {
                                 IconButton(
                                     onClick = { searchQuery = "" }
                                 ) {
-                                    TextIcon(
-                                        symbol = UISymbols.CLOSE,
-                                        fontSize = 16
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "Clear"
                                     )
                                 }
                             }
@@ -234,9 +231,10 @@ private fun EventsScreenContent() {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(Spacing.default)
                         ) {
-                            TextIcon(
-                                symbol = UISymbols.EVENT,
-                                fontSize = 48,
+                            Icon(
+                                imageVector = Icons.Default.EventNote,
+                                contentDescription = null,
+                                modifier = Modifier.size(48.dp),
                                 tint = MaterialTheme.colorScheme.outline
                             )
                             Text(
@@ -499,12 +497,12 @@ private fun EventCard(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = SimpleDateFormat("MMM", Locale.getDefault()).format(Date(event.startTime)),
+                        text = formatDateMonth(event.startTime),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Text(
-                        text = SimpleDateFormat("dd", Locale.getDefault()).format(Date(event.startTime)),
+                        text = formatDateDay(event.startTime),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -604,17 +602,102 @@ private fun formatEventTime(timestamp: Long): String {
     return when {
         diff < 0 -> "Ended"
         diff < 3600000 -> "In ${diff / 60000}m"
-        diff < 86400000 -> {
-            val sdf = SimpleDateFormat("h:mm a", Locale.getDefault())
-            "Today at ${sdf.format(Date(timestamp))}"
-        }
-        diff < 172800000 -> {
-            val sdf = SimpleDateFormat("h:mm a", Locale.getDefault())
-            "Tomorrow at ${sdf.format(Date(timestamp))}"
-        }
-        else -> {
-            val sdf = SimpleDateFormat("EEE, MMM d 'at' h:mm a", Locale.getDefault())
-            sdf.format(Date(timestamp))
-        }
+        diff < 86400000 -> "Today at ${formatTime(timestamp)}"
+        diff < 172800000 -> "Tomorrow at ${formatTime(timestamp)}"
+        else -> formatDateLong(timestamp)
     }
 }
+
+/**
+ * Format date month from timestamp (e.g., "Jan")
+ */
+private fun formatDateMonth(timestamp: Long): String {
+    val months = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    val calendar = getCalendarFromTimestamp(timestamp)
+    return months.getOrNull(calendar.monthOfYear - 1) ?: "Jan"
+}
+
+/**
+ * Format date day from timestamp (e.g., "15")
+ */
+private fun formatDateDay(timestamp: Long): String {
+    val calendar = getCalendarFromTimestamp(timestamp)
+    return calendar.dayOfMonth.toString().padStart(2, '0')
+}
+
+/**
+ * Format time from timestamp (e.g., "2:30 PM")
+ */
+private fun formatTime(timestamp: Long): String {
+    val calendar = getCalendarFromTimestamp(timestamp)
+    val hour = calendar.hour % 12
+    val displayHour = if (hour == 0) 12 else hour
+    val minute = calendar.minute.toString().padStart(2, '0')
+    val period = if (calendar.hour < 12) "AM" else "PM"
+    return "$displayHour:$minute $period"
+}
+
+/**
+ * Format long date from timestamp (e.g., "Mon, Jan 15 at 2:30 PM")
+ */
+private fun formatDateLong(timestamp: Long): String {
+    val calendar = getCalendarFromTimestamp(timestamp)
+    val days = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+    val months = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    val dayName = days.getOrNull(calendar.dayOfWeek - 1) ?: "Mon"
+    val monthName = months.getOrNull(calendar.monthOfYear - 1) ?: "Jan"
+    val day = calendar.dayOfMonth
+    val time = formatTime(timestamp)
+    return "$dayName, $monthName $day at $time"
+}
+
+/**
+ * Get calendar from timestamp (KMP compatible)
+ */
+private fun getCalendarFromTimestamp(timestamp: Long): CalendarData {
+    // Simple implementation for KMP - in production, use Kotlinx-datetime
+    val totalSeconds = timestamp / 1000
+    val totalMinutes = totalSeconds / 60
+    val totalHours = totalMinutes / 60
+    val totalDays = totalHours / 24
+    
+    // Epoch is Jan 1, 1970 (Thursday)
+    val daysPerYear = 365
+    val daysPerLeapYear = 366
+    val yearsSinceEpoch = totalDays / daysPerYear
+    val year = 1970 + yearsSinceEpoch.toInt()
+    
+    val dayOfYear = (totalDays % daysPerYear).toInt() + 1
+    val hour = ((totalHours % 24).toInt())
+    val minute = (totalMinutes % 60).toInt()
+    val second = (totalSeconds % 60).toInt()
+    
+    // Simple approximation for month and day (weekday)
+    val isLeapYear = year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
+    val daysInMonth = intArrayOf(31, if (isLeapYear) 29 else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+    
+    var monthOfYear = 1
+    var dayOfMonth = dayOfYear
+    for (i in daysInMonth.indices) {
+        if (dayOfMonth <= daysInMonth[i]) {
+            monthOfYear = i + 1
+            break
+        }
+        dayOfMonth -= daysInMonth[i]
+    }
+    
+    // Simple day of week calculation
+    val dayOfWeek = ((totalDays + 4) % 7).toInt() + 1 // Epoch was Thursday (4)
+    
+    return CalendarData(year, monthOfYear, dayOfMonth, hour, minute, second, dayOfWeek)
+}
+
+data class CalendarData(
+    val year: Int,
+    val monthOfYear: Int,
+    val dayOfMonth: Int,
+    val hour: Int,
+    val minute: Int,
+    val second: Int,
+    val dayOfWeek: Int
+)

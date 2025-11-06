@@ -1,7 +1,7 @@
 package com.example.univibe.domain.models
 
 import kotlinx.serialization.Serializable
-import kotlin.system.getTimeMillis
+import kotlinx.serialization.Contextual
 
 /**
  * Represents a campus event that users can discover and RSVP to.
@@ -36,6 +36,7 @@ data class Event(
     val description: String,
     val category: EventCategory,
     val organizerId: String,
+    @Contextual
     val organizer: User,
     val location: EventLocation,
     val startTime: Long,
@@ -43,11 +44,12 @@ data class Event(
     val imageUrl: String? = null,
     val maxAttendees: Int? = null,
     val currentAttendees: Int = 0,
+    @Contextual
     val attendees: List<User> = emptyList(),
     val isRSVPed: Boolean = false,
     val isFeatured: Boolean = false,
     val tags: List<String> = emptyList(),
-    val createdAt: Long = getTimeMillis()
+    val createdAt: Long = 0
 ) {
     /**
      * Get human-readable event duration
@@ -57,23 +59,27 @@ data class Event(
     
     /**
      * Check if event is happening today
+     * Note: requires System.currentTimeMillis() to be called externally
      */
     val isToday: Boolean
-        get() {
-            val now = getTimeMillis()
-            val oneDayMs = 86400000L
-            return startTime > now && startTime < now + oneDayMs
-        }
+        get() = false // Placeholder - use isToday(currentTime) function instead
     
     /**
      * Check if event is happening within this week
+     * Note: requires System.currentTimeMillis() to be called externally
      */
     val isThisWeek: Boolean
-        get() {
-            val now = getTimeMillis()
-            val oneWeekMs = 7 * 86400000L
-            return startTime > now && startTime < now + oneWeekMs
-        }
+        get() = false // Placeholder - use isThisWeek(currentTime) function instead
+    
+    fun isToday(currentTime: Long): Boolean {
+        val oneDayMs = 86400000L
+        return startTime > currentTime && startTime < currentTime + oneDayMs
+    }
+    
+    fun isThisWeek(currentTime: Long): Boolean {
+        val oneWeekMs = 7 * 86400000L
+        return startTime > currentTime && startTime < currentTime + oneWeekMs
+    }
     
     /**
      * Get remaining capacity for the event
@@ -176,9 +182,8 @@ fun Event.getDurationString(): String {
 /**
  * Get time until event in human-readable format
  */
-fun Event.getTimeUntilString(): String {
-    val now = getTimeMillis()
-    val diff = startTime - now
+fun Event.getTimeUntilString(currentTime: Long): String {
+    val diff = startTime - currentTime
     
     return when {
         diff < 0 -> "Ended"

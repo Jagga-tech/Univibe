@@ -17,18 +17,28 @@ import androidx.compose.ui.unit.dp
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.theme.Dimensions
 
+/**
+ * Enhanced NotificationItem component that displays a single notification with:
+ * - User avatar or notification type icon
+ * - Title and message
+ * - Timestamp
+ * - Action buttons (for interactive notifications)
+ * - Unread indicator
+ * - Dismiss button
+ */
 @Composable
 fun NotificationItem(
     notification: Notification,
     onNotificationClick: (Notification) -> Unit,
     onDismiss: (Notification) -> Unit,
+    onActionClick: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val backgroundColor = if (notification.isRead)
         MaterialTheme.colorScheme.surface
     else
         MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-    
+
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -36,80 +46,157 @@ fun NotificationItem(
             .background(backgroundColor),
         color = backgroundColor
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimensions.Spacing.md),
-            horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.md),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(Dimensions.Spacing.md)
         ) {
-            // Avatar or Icon
-            Box(
+            Row(
                 modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.md),
+                verticalAlignment = Alignment.Top
             ) {
-                if (notification.fromUser != null) {
-                    NotificationAvatar(notification.fromUser)
-                } else {
-                    NotificationTypeIcon(notification.type)
+                // Avatar or Icon
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (notification.fromUser != null) {
+                        NotificationAvatar(notification.fromUser)
+                    } else {
+                        NotificationTypeIcon(notification.type)
+                    }
+                }
+
+                // Content
+                Column(
+                    modifier = Modifier
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    // Title
+                    Text(
+                        text = notification.title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = if (notification.isRead) FontWeight.Normal else FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    // Message
+                    if (notification.message.isNotEmpty()) {
+                        Text(
+                            text = notification.message,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 2
+                        )
+                    }
+
+                    // Timestamp
+                    Text(
+                        text = formatNotificationTime(notification.createdAt),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                // Dismiss button
+                IconButton(
+                    onClick = { onDismiss(notification) },
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Dismiss",
+                        modifier = Modifier.size(18.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
-            
-            // Content
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = notification.title,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = if (notification.isRead) FontWeight.Normal else FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                
-                Spacer(modifier = Modifier.height(4.dp))
-                
-                Text(
-                    text = notification.message,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2
-                )
-                
-                Spacer(modifier = Modifier.height(4.dp))
-                
-                Text(
-                    text = formatNotificationTime(notification.createdAt),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+
+            // Action buttons (for notifications that require user action)
+            val actions = getNotificationActions(notification.type)
+            if (actions.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(Dimensions.Spacing.sm))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 56.dp), // Align with content, not avatar
+                    horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
+                ) {
+                    actions.forEach { (actionLabel, actionId) ->
+                        if (actions.indexOf(actionLabel to actionId) == 0) {
+                            // Primary action button
+                            Button(
+                                onClick = { onActionClick?.invoke(actionId) },
+                                modifier = Modifier.height(32.dp)
+                            ) {
+                                Text(
+                                    actionLabel,
+                                    style = MaterialTheme.typography.labelSmall
+                                )
+                            }
+                        } else {
+                            // Secondary action button
+                            OutlinedButton(
+                                onClick = { onActionClick?.invoke(actionId) },
+                                modifier = Modifier.height(32.dp)
+                            ) {
+                                Text(
+                                    actionLabel,
+                                    style = MaterialTheme.typography.labelSmall
+                                )
+                            }
+                        }
+                    }
+                }
             }
-            
-            // Close button
-            IconButton(
-                onClick = { onDismiss(notification) },
-                modifier = Modifier.size(32.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Dismiss",
-                    modifier = Modifier.size(18.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+
+            // Unread indicator dot (if unread)
+            if (!notification.isRead) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .background(
+                            MaterialTheme.colorScheme.primary,
+                            shape = CircleShape
+                        )
+                        .padding(start = Dimensions.Spacing.md)
                 )
             }
         }
     }
-    
+
     Divider(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 0.dp)
     )
+}
+
+/**
+ * Get action buttons appropriate for each notification type.
+ * Returns a list of pairs: (actionLabel, actionId)
+ */
+private fun getNotificationActions(type: NotificationType): List<Pair<String, String>> {
+    return when (type) {
+        NotificationType.FOLLOW -> listOf("Follow Back" to "follow_back")
+        NotificationType.MESSAGE -> listOf("Reply" to "reply_message")
+        NotificationType.LIKE_POST -> listOf("View Post" to "view_post")
+        NotificationType.LIKE_COMMENT -> listOf("View Post" to "view_post")
+        NotificationType.COMMENT_ON_POST -> listOf("Reply" to "reply_comment", "View Post" to "view_post")
+        NotificationType.REPLY_TO_COMMENT -> listOf("Reply" to "reply_comment", "View Post" to "view_post")
+        NotificationType.MENTION -> listOf("View Post" to "view_post")
+        NotificationType.POST_SHARED -> listOf("View Post" to "view_post")
+        NotificationType.FOLLOW_ACCEPTED -> listOf("View Profile" to "view_profile")
+        NotificationType.ACHIEVEMENT_UNLOCKED -> listOf("Claim" to "claim_achievement")
+        NotificationType.CUSTOM -> emptyList()
+    }
 }
 
 @Composable
@@ -122,7 +209,7 @@ private fun NotificationAvatar(user: User) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = user.fullName.first().toString().uppercase(),
+            text = user.fullName.firstOrNull()?.toString()?.uppercase() ?: "?",
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onPrimary,
             fontWeight = FontWeight.Bold
@@ -142,7 +229,7 @@ private fun NotificationTypeIcon(type: NotificationType) {
         NotificationType.ACHIEVEMENT_UNLOCKED -> Icons.Default.Star
         NotificationType.CUSTOM -> Icons.Default.Info
     }
-    
+
     Icon(
         imageVector = icon,
         contentDescription = type.name,
@@ -154,7 +241,7 @@ private fun NotificationTypeIcon(type: NotificationType) {
 private fun formatNotificationTime(createdAt: Long): String {
     val currentTime = System.currentTimeMillis()
     val differenceInMillis = currentTime - createdAt
-    
+
     return when {
         differenceInMillis < 60000 -> "now"
         differenceInMillis < 3600000 -> "${differenceInMillis / 60000}m ago"

@@ -1,7 +1,7 @@
 package com.example.univibe.domain.models
 
 import kotlinx.serialization.Serializable
-import kotlin.system.getTimeMillis
+import kotlinx.serialization.Contextual
 
 // Base notification model with custom action mapping
 @Serializable
@@ -11,12 +11,13 @@ data class Notification(
     val title: String,
     val message: String,
     val fromUserId: String,
+    @Contextual
     val fromUser: User? = null,
     val relatedId: String? = null, // Post ID, Comment ID, etc.
     val relatedType: RelatedContentType? = null,
     val actionUrl: String? = null,
     val isRead: Boolean = false,
-    val createdAt: Long = getTimeMillis(),
+    val createdAt: Long = 0,
     val metadata: Map<String, String> = emptyMap() // For custom data
 )
 

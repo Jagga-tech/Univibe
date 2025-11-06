@@ -18,15 +18,9 @@ object MessagesTab : Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val isSelected = LocalTabNavigator.current.current == this
-            val icon = UISymbols.CHAT_BUBBLE
-
             return TabOptions(
                 index = 3u,
-                title = "Messages",
-                icon = {
-                    TextIcon(symbol = icon)
-                }
+                title = "Messages"
             )
         }
 

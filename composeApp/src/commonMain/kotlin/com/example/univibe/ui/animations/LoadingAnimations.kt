@@ -22,7 +22,7 @@ object LoadingAnimations {
     fun ShimmerEffect(modifier: Modifier = Modifier) {
         val transition = rememberInfiniteTransition(label = "shimmer")
         
-        val translateAnim by transition.animateFloat(
+        val translateAnim = transition.animateFloat(
             initialValue = 0f,
             targetValue = 1000f,
             animationSpec = infiniteRepeatable(
@@ -33,7 +33,7 @@ object LoadingAnimations {
                 repeatMode = RepeatMode.Restart
             ),
             label = "shimmerTranslate"
-        )
+        ).value
         
         val brush = Brush.linearGradient(
             colors = listOf(
@@ -57,7 +57,7 @@ object LoadingAnimations {
     fun circularProgressAnimation(): Float {
         val transition = rememberInfiniteTransition(label = "circularProgress")
         
-        val rotation by transition.animateFloat(
+        val rotation = transition.animateFloat(
             initialValue = 0f,
             targetValue = 360f,
             animationSpec = infiniteRepeatable(
@@ -68,7 +68,7 @@ object LoadingAnimations {
                 repeatMode = RepeatMode.Restart
             ),
             label = "progressRotation"
-        )
+        ).value
         
         return rotation
     }
@@ -93,14 +93,14 @@ object LoadingAnimations {
      */
     @Composable
     fun uploadProgressAnimation(currentProgress: Float): Pair<Float, String> {
-        val animatedProgress by animateFloatAsState(
+        val animatedProgress = animateFloatAsState(
             targetValue = currentProgress,
             animationSpec = tween(
                 durationMillis = 500,
                 easing = EaseInOutCubic
             ),
             label = "uploadProgress"
-        )
+        ).value
         
         val percentage = (animatedProgress * 100).toInt()
         
@@ -114,7 +114,7 @@ object LoadingAnimations {
     fun successCheckmarkAnimation(): Float {
         val transition = rememberInfiniteTransition(label = "successCheckmark")
         
-        val scale by transition.animateFloat(
+        val scale = transition.animateFloat(
             initialValue = 0f,
             targetValue = 1f,
             animationSpec = tween(
@@ -122,7 +122,7 @@ object LoadingAnimations {
                 easing = AnimationConstants.standardEasing
             ),
             label = "checkmarkScale"
-        )
+        ).value
         
         return scale
     }
@@ -134,7 +134,7 @@ object LoadingAnimations {
     fun bounceLoadingAnimation(): Float {
         val transition = rememberInfiniteTransition(label = "bounceLoading")
         
-        val offsetY by transition.animateFloat(
+        val offsetY = transition.animateFloat(
             initialValue = 0f,
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
@@ -145,7 +145,7 @@ object LoadingAnimations {
                 repeatMode = RepeatMode.Reverse
             ),
             label = "bounceOffset"
-        )
+        ).value
         
         return offsetY
     }
@@ -157,7 +157,7 @@ object LoadingAnimations {
     fun pulsingAnimation(startAlpha: Float = 0.3f, endAlpha: Float = 1f): Float {
         val transition = rememberInfiniteTransition(label = "pulsing")
         
-        val alpha by transition.animateFloat(
+        val alpha = transition.animateFloat(
             initialValue = startAlpha,
             targetValue = endAlpha,
             animationSpec = infiniteRepeatable(
@@ -168,7 +168,7 @@ object LoadingAnimations {
                 repeatMode = RepeatMode.Reverse
             ),
             label = "pulsingAlpha"
-        )
+        ).value
         
         return alpha
     }

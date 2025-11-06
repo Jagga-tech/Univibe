@@ -1,7 +1,6 @@
 package com.example.univibe.data.mock
 
 import com.example.univibe.domain.models.*
-import kotlin.system.getTimeMillis
 
 /**
  * Mock events data provider for testing and demonstration
@@ -22,7 +21,8 @@ import kotlin.system.getTimeMillis
  * - Add pagination for large datasets
  */
 object MockEvents {
-    private val currentTime = getTimeMillis()
+    // Using a fixed timestamp for mock data (represents a baseline "now" for consistent behavior)
+    private val currentTime = 1704067200000L // January 1, 2024 00:00:00 UTC
     private val oneHour = 3600000L
     private val oneDay = 86400000L
     
@@ -271,7 +271,7 @@ object MockEvents {
      */
     fun getUpcomingEvents(): List<Event> {
         return events
-            .filter { it.startTime > getTimeMillis() }
+            .filter { it.startTime > currentTime }
             .sortedBy { it.startTime }
     }
     
@@ -279,14 +279,14 @@ object MockEvents {
      * Get featured events (promoted by organizers)
      */
     fun getFeaturedEvents(): List<Event> {
-        return events.filter { it.isFeatured && it.startTime > getTimeMillis() }
+        return events.filter { it.isFeatured && it.startTime > currentTime }
     }
     
     /**
      * Get events by specific category
      */
     fun getEventsByCategory(category: EventCategory): List<Event> {
-        return events.filter { it.category == category && it.startTime > getTimeMillis() }
+        return events.filter { it.category == category && it.startTime > currentTime }
     }
     
     /**
@@ -301,7 +301,6 @@ object MockEvents {
      * - FEATURED: Featured/promoted events
      */
     fun getEventsByFilter(filter: EventFilter): List<Event> {
-        val now = getTimeMillis()
         val oneDayMs = 86400000L
         val oneWeekMs = 7 * oneDayMs
         val oneMonthMs = 30 * oneDayMs
@@ -309,13 +308,13 @@ object MockEvents {
         return when (filter) {
             EventFilter.ALL -> getUpcomingEvents()
             EventFilter.TODAY -> events.filter { 
-                it.startTime > now && it.startTime < now + oneDayMs 
+                it.startTime > currentTime && it.startTime < currentTime + oneDayMs 
             }.sortedBy { it.startTime }
             EventFilter.THIS_WEEK -> events.filter { 
-                it.startTime > now && it.startTime < now + oneWeekMs 
+                it.startTime > currentTime && it.startTime < currentTime + oneWeekMs 
             }.sortedBy { it.startTime }
             EventFilter.THIS_MONTH -> events.filter { 
-                it.startTime > now && it.startTime < now + oneMonthMs 
+                it.startTime > currentTime && it.startTime < currentTime + oneMonthMs 
             }.sortedBy { it.startTime }
             EventFilter.RSVPED -> events.filter { it.isRSVPed }.sortedBy { it.startTime }
             EventFilter.FEATURED -> getFeaturedEvents()
@@ -351,7 +350,7 @@ object MockEvents {
      * Get events by organizer
      */
     fun getEventsByOrganizer(organizerId: String): List<Event> {
-        return events.filter { it.organizerId == organizerId && it.startTime > getTimeMillis() }
+        return events.filter { it.organizerId == organizerId && it.startTime > currentTime }
     }
     
     /**
@@ -368,7 +367,7 @@ object MockEvents {
      */
     fun getAllCategories(): List<EventCategory> {
         return EventCategory.values().filter { category ->
-            events.any { it.category == category && it.startTime > getTimeMillis() }
+            events.any { it.category == category && it.startTime > currentTime }
         }
     }
     
@@ -390,7 +389,7 @@ object MockEvents {
      */
     fun getEventsByLocationType(isVirtual: Boolean): List<Event> {
         return events.filter { 
-            it.location.isVirtual == isVirtual && it.startTime > getTimeMillis() 
+            it.location.isVirtual == isVirtual && it.startTime > currentTime 
         }.sortedBy { it.startTime }
     }
     

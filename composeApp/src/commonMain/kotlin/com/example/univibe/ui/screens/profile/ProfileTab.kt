@@ -18,15 +18,9 @@ object ProfileTab : Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val isSelected = LocalTabNavigator.current.current == this
-            val icon = if (isSelected) UISymbols.PERSON_FILLED else UISymbols.PERSON_OUTLINED
-
             return TabOptions(
                 index = 4u,
-                title = "Profile",
-                icon = {
-                    TextIcon(symbol = icon)
-                }
+                title = "Profile"
             )
         }
 
