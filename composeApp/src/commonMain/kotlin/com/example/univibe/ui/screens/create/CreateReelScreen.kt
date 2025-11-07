@@ -1,5 +1,6 @@
 package com.example.univibe.ui.screens.create
 
+import com.example.univibe.util.getCurrentTimeMillis
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -155,7 +156,7 @@ private fun CreateReelScreenContent() {
                         onClick = {
                             selectedVideoId = video.id
                             val reelDraft = ReelDraft(
-                                id = "reel_${System.currentTimeMillis()}",
+                                id = "reel_${getCurrentTimeMillis()}",
                                 videoUrl = video.videoUrl,
                                 thumbnailUrl = video.thumbnailUrl,
                                 videoDuration = video.duration,

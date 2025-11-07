@@ -1,4 +1,5 @@
 package com.example.univibe.data.mock
+import com.example.univibe.util.getCurrentTimeMillis
 
 import com.example.univibe.domain.models.Story
 import com.example.univibe.domain.models.StoryGroup
@@ -341,7 +342,7 @@ object MockStories {
      * Get all active (non-expired) stories.
      */
     fun getActiveStories(): List<Story> {
-        val now = System.currentTimeMillis()
+        val now = getCurrentTimeMillis()
         return stories.filter { it.expiresAt > now }
     }
 }

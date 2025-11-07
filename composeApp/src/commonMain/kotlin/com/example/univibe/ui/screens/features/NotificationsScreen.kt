@@ -1,5 +1,6 @@
 package com.example.univibe.ui.screens.features
 
+import com.example.univibe.util.getCurrentTimeMillis
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -286,7 +287,7 @@ private fun NotificationListWithGrouping(
 private fun groupNotificationsByTimeHeader(
     notifications: List<Notification>
 ): Map<String, List<Notification>> {
-    val now = System.currentTimeMillis()
+    val now = getCurrentTimeMillis()
     val oneDayMs = 24 * 60 * 60 * 1000
     val result = linkedMapOf<String, MutableList<Notification>>()
 

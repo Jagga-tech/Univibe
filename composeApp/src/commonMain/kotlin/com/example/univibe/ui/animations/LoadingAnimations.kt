@@ -95,7 +95,7 @@ object LoadingAnimations {
     fun uploadProgressAnimation(currentProgress: Float): Pair<Float, String> {
         val animatedProgress = animateFloatAsState(
             targetValue = currentProgress,
-            animationSpec = tween(
+            animationSpec = tween<Float>(
                 durationMillis = 500,
                 easing = EaseInOutCubic
             ),
@@ -117,7 +117,7 @@ object LoadingAnimations {
         val scale = transition.animateFloat(
             initialValue = 0f,
             targetValue = 1f,
-            animationSpec = tween(
+            animationSpec = tween<Float>(
                 durationMillis = 500,
                 easing = AnimationConstants.standardEasing
             ),

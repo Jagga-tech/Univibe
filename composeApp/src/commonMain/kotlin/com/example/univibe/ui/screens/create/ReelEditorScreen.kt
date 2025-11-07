@@ -1,5 +1,6 @@
 package com.example.univibe.ui.screens.create
 
+import com.example.univibe.util.getCurrentTimeMillis
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -186,7 +187,7 @@ private fun ReelEditorContent(initialDraft: ReelDraft) {
             onDismiss = { showTextDialog = false },
             onAddText = { text, style, color ->
                 val newTextOverlay = ReelTextOverlay(
-                    id = "text_${System.currentTimeMillis()}",
+                    id = "text_${getCurrentTimeMillis()}",
                     text = text,
                     style = style,
                     color = color
@@ -450,7 +451,7 @@ private fun StickersToolPanel(
                             .size(48.dp)
                             .clickable {
                                 val newSticker = ReelStickerElement(
-                                    id = "sticker_${System.currentTimeMillis()}",
+                                    id = "sticker_${getCurrentTimeMillis()}",
                                     emoji = emoji
                                 )
                                 onUpdateDraft(

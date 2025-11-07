@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.univibe.ui.theme.BurgundyPrimary
+import androidx.compose.foundation.horizontalScroll
 
 /**
  * Quick action button for story creation toolbar

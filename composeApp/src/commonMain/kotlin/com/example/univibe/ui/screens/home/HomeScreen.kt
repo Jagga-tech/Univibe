@@ -242,9 +242,9 @@ fun HomeScreen(
         }
         
         // Pull-to-refresh indicator
-        PullToRefreshContainer(
-            state = pullToRefreshState,
-            modifier = Modifier.align(Alignment.TopCenter)
+            //         PullToRefreshContainer(
+            //             state = pullToRefreshState,
+            //             modifier = Modifier.align(Alignment.TopCenter)
         )
     }
 }

@@ -1,5 +1,6 @@
 package com.example.univibe.ui.components.social
 
+import com.example.univibe.util.getCurrentTimeMillis
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -72,7 +73,7 @@ fun ChatMessage(
 }
 
 private fun formatMessageTime(createdAt: Long): String {
-    val currentTime = System.currentTimeMillis()
+    val currentTime = getCurrentTimeMillis()
     val differenceInMillis = currentTime - createdAt
     
     return when {

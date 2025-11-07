@@ -10,6 +10,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.univibe.ui.theme.Dimensions
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.background
 
 /**
  * UniVibe Modal Bottom Sheet component.
@@ -26,6 +29,7 @@ import com.example.univibe.ui.theme.Dimensions
  * @param content The content to display in the bottom sheet
  */
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun UniVibeBottomSheet(
     isOpen: Boolean,
     onDismiss: () -> Unit,

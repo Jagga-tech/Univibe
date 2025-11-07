@@ -1,5 +1,6 @@
 package com.example.univibe.ui.screens.detail
 
+import com.example.univibe.util.getCurrentTimeMillis
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -105,7 +106,7 @@ private fun PostDetailScreenContent(postId: String) {
                             content = commentText,
                             likeCount = 0,
                             isLiked = false,
-                            createdAt = System.currentTimeMillis(),
+                            createdAt = getCurrentTimeMillis(),
                             replyCount = 0
                         )
                         
@@ -301,7 +302,7 @@ private fun CommentInputBar(
  * Format timestamp to relative time string.
  */
 private fun formatTimestamp(createdAt: Long): String {
-    val currentTime = System.currentTimeMillis()
+    val currentTime = getCurrentTimeMillis()
     val differenceInMillis = currentTime - createdAt
     
     return when {

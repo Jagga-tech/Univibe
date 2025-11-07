@@ -1,5 +1,6 @@
 package com.example.univibe.ui.components.social
 
+import com.example.univibe.util.getCurrentTimeMillis
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -239,7 +240,7 @@ private fun NotificationTypeIcon(type: NotificationType) {
 }
 
 private fun formatNotificationTime(createdAt: Long): String {
-    val currentTime = System.currentTimeMillis()
+    val currentTime = getCurrentTimeMillis()
     val differenceInMillis = currentTime - createdAt
 
     return when {

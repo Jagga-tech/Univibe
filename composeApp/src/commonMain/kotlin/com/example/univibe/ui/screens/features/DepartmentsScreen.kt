@@ -18,6 +18,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.MockDepartments
 import com.example.univibe.domain.models.Department
+import com.example.univibe.ui.animations.fadeInAnimation
+import com.example.univibe.ui.animations.scaleInAnimation
+import com.example.univibe.ui.animations.slideInFromBottom
 import com.example.univibe.ui.components.*
 import com.example.univibe.ui.utils.OnBottomReached
 import com.example.univibe.ui.utils.rememberPaginationState
@@ -73,10 +76,19 @@ private fun DepartmentsScreenContent() {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Departments") },
+                title = { 
+                    Text(
+                        "Departments",
+                        modifier = Modifier.fadeInAnimation()
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.Default.ArrowBack, 
+                            contentDescription = "Back",
+                            modifier = Modifier.scaleInAnimation()
+                        )
                     }
                 }
             )
@@ -92,7 +104,8 @@ private fun DepartmentsScreenContent() {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp),
+                        .padding(16.dp)
+                        .fadeInAnimation(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(4) {
@@ -113,10 +126,13 @@ private fun DepartmentsScreenContent() {
                     modifier = Modifier
                         .fillMaxSize()
                         .align(Alignment.Center)
+                        .scaleInAnimation()
                 )
             } else {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .fadeInAnimation(),
                     state = listState,
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -127,41 +143,53 @@ private fun DepartmentsScreenContent() {
                                 title = "No departments",
                                 description = "No departments to display",
                                 icon = Icons.Default.SchoolOff,
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .scaleInAnimation()
                             )
                         }
                     } else {
-                        items(paginationState.items) { dept ->
-                            DepartmentCard(dept)
+                        items(
+                            items = paginationState.items,
+                            key = { it.id }
+                        ) { dept ->
+                            DepartmentCardWithAnimation(dept)
                         }
                     }
                     
                     if (paginationState.isLoading && paginationState.items.isNotEmpty()) {
                         item {
-                            PaginationLoadingIndicator()
+                            PaginationLoadingIndicator(
+                                modifier = Modifier.slideInFromBottom()
+                            )
                         }
                     }
                     
                     if (!paginationState.hasMorePages && paginationState.items.isNotEmpty()) {
                         item {
-                            EndOfListIndicator()
+                            EndOfListIndicator(
+                                modifier = Modifier.slideInFromBottom()
+                            )
                         }
                     }
                 }
             }
             
-            PullToRefreshContainer(
-                state = pullToRefreshState,
-                modifier = Modifier.align(Alignment.TopCenter)
+            //             PullToRefreshContainer(
+            //                 state = pullToRefreshState,
+            //                 modifier = Modifier.align(Alignment.TopCenter)
             )
         }
     }
 }
 
 @Composable
-private fun DepartmentCard(department: Department) {
+private fun DepartmentCardWithAnimation(department: Department) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .scaleInAnimation()
+            .slideInFromBottom(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {

@@ -72,13 +72,11 @@ class ProfilePreferencesManager {
     }
     
     companion object {
-        @Volatile
+        // Simple cross-platform singleton pattern (no @Volatile or synchronized)
         private var instance: ProfilePreferencesManager? = null
         
         fun getInstance(): ProfilePreferencesManager {
-            return instance ?: synchronized(this) {
-                instance ?: ProfilePreferencesManager().also { instance = it }
-            }
+            return instance ?: ProfilePreferencesManager().also { instance = it }
         }
     }
 }

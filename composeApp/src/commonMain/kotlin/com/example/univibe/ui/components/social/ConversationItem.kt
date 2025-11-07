@@ -1,5 +1,6 @@
 package com.example.univibe.ui.components.social
 
+import com.example.univibe.util.getCurrentTimeMillis
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -116,7 +117,7 @@ fun ConversationItem(
 }
 
 private fun formatConversationTime(timestamp: Long): String {
-    val currentTime = System.currentTimeMillis()
+    val currentTime = getCurrentTimeMillis()
     val differenceInMillis = currentTime - timestamp
     
     return when {

@@ -1,5 +1,6 @@
 package com.example.univibe.ui.screens.features
 
+import com.example.univibe.util.getCurrentTimeMillis
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -838,7 +839,7 @@ private fun PlaceholderContent() {
  * Examples: "2m ago", "1h ago", "Yesterday", etc.
  */
 private fun formatStoryTime(createdAt: Long): String {
-    val now = System.currentTimeMillis()
+    val now = getCurrentTimeMillis()
     val diffMs = now - createdAt
     
     return when {

@@ -18,6 +18,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Warning
 
 // ==================== SKELETON LOADING COMPONENTS ====================
 

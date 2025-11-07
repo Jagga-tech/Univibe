@@ -1,5 +1,6 @@
 package com.example.univibe.ui.screens.detail
 
+import com.example.univibe.util.getCurrentTimeMillis
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -538,7 +539,7 @@ private fun DetailRow(
  * Format date and time for display.
  */
 private fun formatDateTime(startTime: Long, endTime: Long): String {
-    val now = System.currentTimeMillis()
+    val now = getCurrentTimeMillis()
     val diffDays = (startTime - now) / 86400000L
     
     // For now, return simple format; in real app would use date formatter

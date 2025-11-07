@@ -1,5 +1,6 @@
 package com.example.univibe.ui.screens.settings
 
+import com.example.univibe.util.getCurrentTimeMillis
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -74,7 +75,7 @@ fun CustomThemeScreen(
                 Button(
                     onClick = {
                         val customTheme = AppTheme(
-                            id = "custom_${System.currentTimeMillis()}",
+                            id = "custom_${getCurrentTimeMillis()}",
                             name = themeName,
                             primary = primaryColor,
                             secondary = secondaryColor,

@@ -4,7 +4,7 @@ import com.example.univibe.domain.models.*
 
 object MockNotifications {
     
-    private val notifications = mutableListOf<Notification>()
+    val notifications = mutableListOf<Notification>()
     
     // Counter for generating unique IDs (KMP-compatible alternative to UUID)
     private var idCounter = 5000

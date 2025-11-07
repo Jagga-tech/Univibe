@@ -1,22 +1,12 @@
 package com.example.univibe.domain.models
 
 import kotlinx.serialization.Serializable
-
-/**
- * Enumeration of text styles available in story editor.
- */
-enum class TextStyle {
-    MODERN,
-    BOLD,
-    ITALIC,
-    OUTLINED,
-    SHADOW,
-    CLASSIC
-}
+import com.example.univibe.util.getCurrentTimeMillis
 
 /**
  * Enumeration of available story filters.
  */
+@Serializable
 enum class StoryFilter {
     NONE,
     WARM,
@@ -118,8 +108,8 @@ data class StoryDraft(
     val linkUrl: String? = null,
     val linkTitle: String? = null,
     val duration: Int = 5,
-    val createdAt: Long = System.currentTimeMillis(),
-    val lastModifiedAt: Long = System.currentTimeMillis(),
+    val createdAt: Long = 0L, // Use 0L as placeholder, set at creation time
+    val lastModifiedAt: Long = 0L, // Use 0L as placeholder, set at creation time
     val isPublished: Boolean = false
 )
 

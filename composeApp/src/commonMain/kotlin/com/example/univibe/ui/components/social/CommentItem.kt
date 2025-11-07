@@ -1,5 +1,6 @@
 package com.example.univibe.ui.components.social
 
+import com.example.univibe.util.getCurrentTimeMillis
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -201,7 +202,7 @@ fun CommentItem(
  * Format timestamp to relative time string (e.g., "2m ago", "1h ago")
  */
 private fun formatTimeAgo(createdAt: Long): String {
-    val currentTime = System.currentTimeMillis()
+    val currentTime = getCurrentTimeMillis()
     val differenceInMillis = currentTime - createdAt
     
     return when {

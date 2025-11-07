@@ -154,9 +154,9 @@ private fun NotificationsScreenContent() {
                 }
             }
             
-            PullToRefreshContainer(
-                state = pullToRefreshState,
-                modifier = Modifier.align(Alignment.TopCenter)
+            //             PullToRefreshContainer(
+            //                 state = pullToRefreshState,
+            //                 modifier = Modifier.align(Alignment.TopCenter)
             )
         }
     }
