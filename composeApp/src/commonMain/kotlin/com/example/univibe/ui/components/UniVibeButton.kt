@@ -89,7 +89,7 @@ fun PrimaryButton(
                 horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(Dimensions.IconSize.sm),
+                    modifier = Modifier.size(Dimensions.IconSize.small),
                     color = MaterialTheme.colorScheme.onPrimary,
                     strokeWidth = 2.dp
                 )
@@ -174,7 +174,7 @@ fun SecondaryButton(
                 horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(Dimensions.IconSize.sm),
+                    modifier = Modifier.size(Dimensions.IconSize.small),
                     color = MaterialTheme.colorScheme.onSecondary,
                     strokeWidth = 2.dp
                 )
@@ -259,7 +259,7 @@ fun TertiaryButton(
                 horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(Dimensions.IconSize.sm),
+                    modifier = Modifier.size(Dimensions.IconSize.small),
                     color = MaterialTheme.colorScheme.onTertiary,
                     strokeWidth = 2.dp
                 )
@@ -343,7 +343,7 @@ fun OutlineButton(
                 horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(Dimensions.IconSize.sm),
+                    modifier = Modifier.size(Dimensions.IconSize.small),
                     color = MaterialTheme.colorScheme.primary,
                     strokeWidth = 2.dp
                 )
@@ -422,7 +422,7 @@ fun TextButtonVariant(
                 horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm)
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(Dimensions.IconSize.sm),
+                    modifier = Modifier.size(Dimensions.IconSize.small),
                     color = MaterialTheme.colorScheme.primary,
                     strokeWidth = 2.dp
                 )

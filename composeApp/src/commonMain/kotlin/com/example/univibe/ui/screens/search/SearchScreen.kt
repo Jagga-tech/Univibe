@@ -151,7 +151,6 @@ private fun SearchScreenContent() {
             //             PullToRefreshContainer(
             //                 state = pullToRefreshState,
             //                 modifier = Modifier.align(Alignment.TopCenter)
-            )
         }
     }
 }

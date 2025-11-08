@@ -60,7 +60,7 @@ fun UniVibeListItem(
             Icon(
                 imageVector = leadingIcon,
                 contentDescription = null,
-                modifier = Modifier.size(Dimensions.IconSize.md),
+                modifier = Modifier.size(Dimensions.IconSize.medium),
                 tint = if (enabled) {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 } else {
@@ -106,7 +106,7 @@ fun UniVibeListItem(
             Icon(
                 imageVector = trailingIcon,
                 contentDescription = null,
-                modifier = Modifier.size(Dimensions.IconSize.md),
+                modifier = Modifier.size(Dimensions.IconSize.medium),
                 tint = if (enabled) {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 } else {
@@ -156,7 +156,7 @@ fun SwitchListItem(
             Icon(
                 imageVector = leadingIcon,
                 contentDescription = null,
-                modifier = Modifier.size(Dimensions.IconSize.md),
+                modifier = Modifier.size(Dimensions.IconSize.medium),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }

@@ -5,10 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import com.example.univibe.ui.theme.PlatformIcons
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,8 +17,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Warning
 
 // ==================== SKELETON LOADING COMPONENTS ====================
 
@@ -306,7 +303,7 @@ fun ErrorState(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Icon(
-            imageVector = Icons.Default.ErrorOutline,
+            imageVector = PlatformIcons.ErrorOutline,
             contentDescription = "Error",
             modifier = Modifier.size(48.dp),
             tint = MaterialTheme.colorScheme.error
@@ -332,7 +329,7 @@ fun ErrorState(
                 .height(48.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Refresh,
+                imageVector = PlatformIcons.Refresh,
                 contentDescription = null,
                 modifier = Modifier.size(20.dp)
             )
@@ -348,7 +345,7 @@ fun ErrorState(
 fun EmptyState(
     title: String,
     description: String = "",
-    icon: androidx.compose.ui.graphics.vector.ImageVector = Icons.Default.SearchOff,
+    icon: androidx.compose.ui.graphics.vector.ImageVector = PlatformIcons.SearchOff,
     actionButton: @Composable (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {

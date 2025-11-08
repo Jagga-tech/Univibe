@@ -50,9 +50,9 @@ fun IconButtonSize.size(): Dp = when (this) {
  * Get icon size for button size variant.
  */
 fun IconButtonSize.iconSize(): Dp = when (this) {
-    IconButtonSize.Small -> Dimensions.IconSize.sm
-    IconButtonSize.Medium -> Dimensions.IconSize.md
-    IconButtonSize.Large -> Dimensions.IconSize.lg
+    IconButtonSize.Small -> Dimensions.IconSize.small
+    IconButtonSize.Medium -> Dimensions.IconSize.medium
+    IconButtonSize.Large -> Dimensions.IconSize.large
 }
 
 /**

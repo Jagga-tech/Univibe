@@ -109,7 +109,7 @@ fun UniVibeInputChip(
         trailingIcon = {
             IconButton(
                 onClick = onDismiss,
-                modifier = Modifier.size(Dimensions.IconSize.small)
+                modifier = Modifier.size(24.dp)
             ) {
                 TextIcon(
                     symbol = UISymbols.CLOSE,

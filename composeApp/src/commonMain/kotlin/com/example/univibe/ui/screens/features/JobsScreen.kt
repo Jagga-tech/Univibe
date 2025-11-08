@@ -153,7 +153,6 @@ private fun JobsScreenContent() {
             //             PullToRefreshContainer(
             //                 state = pullToRefreshState,
             //                 modifier = Modifier.align(Alignment.TopCenter)
-            )
         }
     }
 }

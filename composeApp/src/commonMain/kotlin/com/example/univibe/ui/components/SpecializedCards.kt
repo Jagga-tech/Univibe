@@ -79,7 +79,7 @@ fun UserCard(
                         UserAvatar(
                             imageUrl = userImageUrl,
                             size = Dimensions.AvatarSize.medium,
-                            isOnline
+                            isOnline = isOnline
                         )
                     }
                     

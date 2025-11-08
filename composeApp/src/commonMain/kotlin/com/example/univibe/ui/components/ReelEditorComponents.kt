@@ -8,8 +8,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import com.example.univibe.ui.theme.BrandColors
 import androidx.compose.runtime.*
@@ -180,7 +178,7 @@ private fun FilterButton(
                 if (isSelected) {
                     Spacer(modifier = Modifier.width(4.dp))
                     Icon(
-                        Icons.Default.Check,
+                        PlatformIcons.Default.Check,
                         contentDescription = "Selected",
                         tint = Color.White,
                         modifier = Modifier.size(16.dp)
@@ -342,9 +340,10 @@ fun TrimmingSlider(
 private fun formatTime(seconds: Int): String {
     val mins = seconds / 60
     val secs = seconds % 60
+    val secStr = if (secs < 10) "0$secs" else "$secs"
     return if (mins > 0) {
-        String.format("%d:%02d", mins, secs)
+        "$mins:$secStr"
     } else {
-        String.format("0:%02d", secs)
+        "0:$secStr"
     }
 }
