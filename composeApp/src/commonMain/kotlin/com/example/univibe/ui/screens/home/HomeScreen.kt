@@ -8,8 +8,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +22,7 @@ import com.example.univibe.ui.screens.create.*
 import com.example.univibe.ui.screens.detail.*
 import com.example.univibe.ui.screens.features.*
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.util.ShareHelper
 import com.example.univibe.ui.utils.OnBottomReached
 import com.example.univibe.ui.utils.PaginationState
@@ -194,7 +193,7 @@ fun HomeScreen(
                                 }
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Refresh,
+                                    imageVector = PlatformIcons.Refresh,
                                     contentDescription = "Refresh"
                                 )
                             }
@@ -208,7 +207,7 @@ fun HomeScreen(
                         EmptyState(
                             title = "No posts yet",
                             description = "Be the first to share something with your campus!",
-                            icon = Icons.Default.SearchOff,
+                            icon = PlatformIcons.SearchOff,
                             modifier = Modifier.fillMaxSize()
                         )
                     }
@@ -245,7 +244,6 @@ fun HomeScreen(
             //         PullToRefreshContainer(
             //             state = pullToRefreshState,
             //             modifier = Modifier.align(Alignment.TopCenter)
-        )
     }
 }
 
@@ -291,7 +289,7 @@ private fun PostCard(
                     )
                 }
                 IconButton(onClick = onMoreClick) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "More")
+                    Icon(PlatformIcons.MoreVert, contentDescription = "More")
                 }
             }
             
@@ -334,19 +332,19 @@ private fun PostCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 ActionButton(
-                    icon = if (post.isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    icon = if (post.isLiked) PlatformIcons.Favorite else PlatformIcons.FavoriteBorder,
                     label = "Like",
                     onClick = onLikeClick,
                     modifier = Modifier.weight(1f)
                 )
                 ActionButton(
-                    icon = Icons.Default.ChatBubbleOutline,
+                    icon = PlatformIcons.ChatBubbleOutline,
                     label = "Comment",
                     onClick = onCommentClick,
                     modifier = Modifier.weight(1f)
                 )
                 ActionButton(
-                    icon = Icons.Default.IosShare,
+                    icon = PlatformIcons.IosShare,
                     label = "Share",
                     onClick = onShareClick,
                     modifier = Modifier.weight(1f)
