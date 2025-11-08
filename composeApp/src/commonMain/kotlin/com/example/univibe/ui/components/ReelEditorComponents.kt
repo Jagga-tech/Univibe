@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
+import com.example.univibe.ui.theme.BrandColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.univibe.ui.theme.BurgundyPrimary
 
 @Composable
 fun ReelQuickActionButton(
@@ -34,7 +34,7 @@ fun ReelQuickActionButton(
             .height(40.dp)
             .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
-            containerColor = BurgundyPrimary,
+            containerColor = BrandColors.Burgundy,
             disabledContainerColor = Color.Gray
         ),
         enabled = enabled
@@ -92,10 +92,10 @@ private fun SpeedButton(
             .clickable(onClick = onClick)
             .border(
                 width = if (isSelected) 2.dp else 1.dp,
-                color = if (isSelected) BurgundyPrimary else Color.Gray,
+                color = if (isSelected) BrandColors.Burgundy else Color.Gray,
                 shape = RoundedCornerShape(8.dp)
             ),
-        color = if (isSelected) BurgundyPrimary.copy(alpha = 0.2f) else Color.DarkGray,
+        color = if (isSelected) BrandColors.Burgundy.copy(alpha = 0.2f) else Color.DarkGray,
         shape = RoundedCornerShape(8.dp)
     ) {
         Box(
@@ -155,10 +155,10 @@ private fun FilterButton(
             .clickable(onClick = onClick)
             .border(
                 width = if (isSelected) 2.dp else 1.dp,
-                color = if (isSelected) BurgundyPrimary else Color.Gray,
+                color = if (isSelected) BrandColors.Burgundy else Color.Gray,
                 shape = RoundedCornerShape(8.dp)
             ),
-        color = if (isSelected) BurgundyPrimary.copy(alpha = 0.2f) else Color.DarkGray,
+        color = if (isSelected) BrandColors.Burgundy.copy(alpha = 0.2f) else Color.DarkGray,
         shape = RoundedCornerShape(8.dp)
     ) {
         Box(
@@ -210,7 +210,7 @@ fun AdjustmentSlider(
             Text(label, color = Color.White, fontWeight = FontWeight.SemiBold)
             Text(
                 value.toString(),
-                color = BurgundyPrimary,
+                color = BrandColors.Burgundy,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -266,10 +266,10 @@ private fun TextStyleButton(
             .clickable(onClick = onClick)
             .border(
                 width = if (isSelected) 2.dp else 1.dp,
-                color = if (isSelected) BurgundyPrimary else Color.Gray,
+                color = if (isSelected) BrandColors.Burgundy else Color.Gray,
                 shape = RoundedCornerShape(8.dp)
             ),
-        color = if (isSelected) BurgundyPrimary.copy(alpha = 0.2f) else Color.DarkGray,
+        color = if (isSelected) BrandColors.Burgundy.copy(alpha = 0.2f) else Color.DarkGray,
         shape = RoundedCornerShape(8.dp)
     ) {
         Box(

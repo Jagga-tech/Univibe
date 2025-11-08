@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import com.example.univibe.ui.theme.BrandColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.univibe.ui.theme.BurgundyPrimary
 import androidx.compose.foundation.horizontalScroll
 
 /**
@@ -30,7 +30,7 @@ fun QuickActionButton(
             .height(36.dp)
             .defaultMinSize(minWidth = 80.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = BurgundyPrimary.copy(alpha = 0.8f)
+            containerColor = BrandColors.Burgundy.copy(alpha = 0.8f)
         ),
         shape = RoundedCornerShape(18.dp)
     ) {
@@ -121,7 +121,7 @@ fun FontSizeSelector(
                     .height(36.dp)
                     .width(60.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selectedSize == size) BurgundyPrimary else Color.Gray.copy(alpha = 0.2f)
+                    containerColor = if (selectedSize == size) BrandColors.Burgundy else Color.Gray.copy(alpha = 0.2f)
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
@@ -159,7 +159,7 @@ fun TextAlignmentSelector(
                     .height(40.dp)
                     .width(50.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selectedAlignment == alignment) BurgundyPrimary else Color.Gray.copy(alpha = 0.2f)
+                    containerColor = if (selectedAlignment == alignment) BrandColors.Burgundy else Color.Gray.copy(alpha = 0.2f)
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {

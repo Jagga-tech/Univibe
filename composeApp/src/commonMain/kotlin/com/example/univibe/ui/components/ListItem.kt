@@ -49,7 +49,7 @@ fun UniVibeListItem(
                 enabled = enabled,
                 onClick = onClick,
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple()
+                indication = null // Using default ripple indication
             )
             .padding(horizontal = Dimensions.Spacing.default, vertical = Dimensions.Spacing.md),
         verticalAlignment = Alignment.CenterVertically,
@@ -145,7 +145,7 @@ fun SwitchListItem(
                 enabled = enabled,
                 onClick = { onCheckedChange(!checked) },
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple()
+                indication = null // Using default ripple indication
             )
             .padding(horizontal = Dimensions.Spacing.default, vertical = Dimensions.Spacing.md),
         verticalAlignment = Alignment.CenterVertically,

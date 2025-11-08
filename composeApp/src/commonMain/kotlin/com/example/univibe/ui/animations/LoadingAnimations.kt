@@ -117,9 +117,12 @@ object LoadingAnimations {
         val scale = transition.animateFloat(
             initialValue = 0f,
             targetValue = 1f,
-            animationSpec = tween<Float>(
-                durationMillis = 500,
-                easing = AnimationConstants.standardEasing
+            animationSpec = infiniteRepeatable(
+                animation = tween<Float>(
+                    durationMillis = 500,
+                    easing = AnimationConstants.standardEasing
+                ),
+                repeatMode = RepeatMode.Restart
             ),
             label = "checkmarkScale"
         ).value

@@ -492,7 +492,7 @@ fun SettingsScreen(
                         .height(44.dp)
                         .padding(horizontal = Dimensions.Spacing.md)
                         .padding(top = Dimensions.Spacing.md),
-                    backgroundColor = MaterialTheme.colorScheme.error
+                    containerColor = MaterialTheme.colorScheme.error
                 )
             }
 
