@@ -1,12 +1,12 @@
 package com.example.univibe.ui.screens.features
 
+import com.example.univibe.ui.theme.PlatformIcons
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -76,7 +76,7 @@ private fun JobsScreenContent() {
                 title = { Text("Campus Jobs") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(PlatformIcons.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -126,7 +126,7 @@ private fun JobsScreenContent() {
                             EmptyState(
                                 title = "No jobs available",
                                 description = "Check back soon for new opportunities",
-                                icon = Icons.Default.WorkOff,
+                                icon = PlatformIcons.WorkOff,
                                 modifier = Modifier.fillMaxSize()
                             )
                         }

@@ -175,7 +175,7 @@ private fun AvatarImageContent(
         // )
         
         Icon(
-            imageVector = PlatformIcons.Default.Person,
+            imageVector = PlatformPlatformIcons.Person,
             contentDescription = "User avatar",
             modifier = Modifier.size(size * 0.6f),
             tint = MaterialTheme.colorScheme.primary

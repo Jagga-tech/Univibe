@@ -3,14 +3,6 @@ package com.example.univibe.ui.screens.hub
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.BookmarkBorder
-import androidx.compose.material.icons.filled.BookmarkFilled
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +19,7 @@ import com.example.univibe.ui.components.OutlineButton
 import com.example.univibe.ui.components.UniVibeCard
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 
 /**
  * Data class representing an event organizer/host.
@@ -173,7 +166,7 @@ private fun EventDetailsHeader(
             modifier = Modifier.size(Dimensions.IconSize.large)
         ) {
             Icon(
-                imageVector = Icons.Default.ArrowBack,
+                imageVector = PlatformIcons.ArrowBack,
                 contentDescription = "Back",
                 modifier = Modifier.size(Dimensions.IconSize.medium),
                 tint = MaterialTheme.colorScheme.primary
@@ -188,7 +181,7 @@ private fun EventDetailsHeader(
                 modifier = Modifier.size(Dimensions.IconSize.large)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Share,
+                    imageVector = PlatformIcons.Share,
                     contentDescription = "Share event",
                     modifier = Modifier.size(Dimensions.IconSize.medium),
                     tint = MaterialTheme.colorScheme.primary
@@ -200,7 +193,7 @@ private fun EventDetailsHeader(
                 modifier = Modifier.size(Dimensions.IconSize.large)
             ) {
                 Icon(
-                    imageVector = if (isSaved) Icons.Default.BookmarkFilled else Icons.Default.BookmarkBorder,
+                    imageVector = if (isSaved) PlatformIcons.BookmarkFilled else PlatformIcons.BookmarkBorder,
                     contentDescription = if (isSaved) "Saved" else "Save event",
                     modifier = Modifier.size(Dimensions.IconSize.medium),
                     tint = if (isSaved) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
@@ -284,19 +277,19 @@ private fun EventDetailsSection(event: EventItem) {
         verticalArrangement = Arrangement.spacedBy(Dimensions.Spacing.md)
     ) {
         EventDetailRowLarge(
-            icon = Icons.Default.AccessTime,
+            icon = PlatformIcons.AccessTime,
             label = "Date & Time",
             value = "${event.date} • ${event.time}"
         )
 
         EventDetailRowLarge(
-            icon = Icons.Default.LocationOn,
+            icon = PlatformIcons.LocationOn,
             label = "Location",
             value = event.location
         )
 
         EventDetailRowLarge(
-            icon = Icons.Default.People,
+            icon = PlatformIcons.People,
             label = "Attendees",
             value = "${event.attendeeCount} people attending"
         )
@@ -426,7 +419,7 @@ private fun OrganizerCard(
             }
 
             Icon(
-                imageVector = Icons.Default.People,
+                imageVector = PlatformIcons.People,
                 contentDescription = "View organizer",
                 modifier = Modifier.size(Dimensions.IconSize.medium),
                 tint = MaterialTheme.colorScheme.primary

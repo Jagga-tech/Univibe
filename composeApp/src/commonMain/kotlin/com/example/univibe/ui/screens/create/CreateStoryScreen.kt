@@ -7,10 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Camera
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,6 +21,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.domain.models.StoryDraft
 import com.example.univibe.domain.models.StoryType
 import com.example.univibe.ui.theme.BurgundyPrimary
+import com.example.univibe.ui.theme.PlatformIcons
 import java.util.*
 
 /**
@@ -65,7 +62,7 @@ private fun CreateStoryScreenContent() {
                 .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
         ) {
             Icon(
-                imageVector = Icons.Default.Close,
+                imageVector = PlatformIcons.Close,
                 contentDescription = "Close",
                 tint = Color.White,
                 modifier = Modifier.size(24.dp)
@@ -102,7 +99,7 @@ private fun CreateStoryScreenContent() {
                 enter = fadeIn() + slideInVertically(initialOffsetY = { 100 })
             ) {
                 StoryCreationOption(
-                    icon = Icons.Default.Camera,
+                    icon = PlatformIcons.Camera,
                     title = "Take Photo",
                     description = "Use your device camera",
                     onClick = {
@@ -118,7 +115,7 @@ private fun CreateStoryScreenContent() {
                 enter = fadeIn() + slideInVertically(initialOffsetY = { 100 })
             ) {
                 StoryCreationOption(
-                    icon = Icons.Default.Image,
+                    icon = PlatformIcons.Image,
                     title = "Choose from Gallery",
                     description = "Select from your photos",
                     onClick = {
@@ -333,5 +330,5 @@ private fun GalleryPickerDialog(
 }
 
 // For icon reference
-private val androidx.compose.material.icons.Icons.Filled.KeyboardArrowRight
+private val androidx.compose.material.icons.PlatformIcons.KeyboardArrowRight
     get() = androidx.compose.material.icons.filled.KeyboardArrowRight

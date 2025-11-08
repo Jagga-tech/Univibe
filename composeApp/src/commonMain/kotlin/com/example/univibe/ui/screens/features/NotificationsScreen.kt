@@ -4,8 +4,6 @@ import com.example.univibe.util.getCurrentTimeMillis
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +19,7 @@ import com.example.univibe.ui.components.EmptyState
 import com.example.univibe.ui.components.LoadingView
 import com.example.univibe.ui.components.social.NotificationItem
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 import kotlinx.coroutines.delay
 
 object NotificationsScreen : Screen {
@@ -52,7 +51,7 @@ private fun NotificationsScreenContent() {
                 title = { Text("Notifications") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                        Icon(PlatformIcons.ArrowBack, "Back")
                     }
                 },
                 actions = {
@@ -64,7 +63,7 @@ private fun NotificationsScreenContent() {
                                 notifications = MockNotifications.getAllNotifications()
                             }
                         ) {
-                            Icon(Icons.Default.DoneAll, "Mark all as read")
+                            Icon(PlatformIcons.DoneAll, "Mark all as read")
                         }
                     }
                 }
@@ -94,7 +93,7 @@ private fun NotificationsScreenContent() {
                             message = if (selectedTab == NotificationFilterTab.UNREAD)
                                 "All caught up! No unread notifications." else
                                 "No notifications yet. When you get activity, it will show up here.",
-                            icon = Icons.Default.NotificationsNone,
+                            icon = PlatformIcons.NotificationsNone,
                             modifier = Modifier.fillMaxSize()
                         )
                     }
@@ -140,7 +139,7 @@ private fun NotificationsScreenContent() {
     if (showDeleteDialog && notificationToDelete != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            icon = { Icon(Icons.Default.Delete, "Delete") },
+            icon = { Icon(PlatformIcons.Delete, "Delete") },
             title = { Text("Delete Notification") },
             text = { Text("Are you sure you want to delete this notification?") },
             confirmButton = {

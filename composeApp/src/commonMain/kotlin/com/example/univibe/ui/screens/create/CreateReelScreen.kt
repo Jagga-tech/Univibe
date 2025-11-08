@@ -11,8 +11,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,6 +26,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
 import com.example.univibe.domain.models.ReelDraft
 import com.example.univibe.ui.theme.BurgundyPrimary
+import com.example.univibe.ui.theme.PlatformIcons
 
 data class VideoItem(
     val id: String,
@@ -68,7 +67,7 @@ private fun CreateReelScreenContent() {
                 title = { Text("Create Reel") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.Close, "Close")
+                        Icon(PlatformIcons.Close, "Close")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -105,7 +104,7 @@ private fun CreateReelScreenContent() {
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Videocam,
+                            imageVector = PlatformIcons.Videocam,
                             contentDescription = "Record Video",
                             modifier = Modifier.size(64.dp),
                             tint = Color.White
@@ -214,7 +213,7 @@ private fun VideoThumbnailCard(
         
         // Play icon
         Icon(
-            imageVector = Icons.Default.PlayCircleFilled,
+            imageVector = PlatformIcons.PlayCircleFilled,
             contentDescription = "Play",
             tint = Color.White,
             modifier = Modifier
@@ -246,7 +245,7 @@ private fun VideoThumbnailCard(
                     .background(BurgundyPrimary.copy(alpha = 0.5f))
             ) {
                 Icon(
-                    Icons.Default.CheckCircle,
+                    PlatformIcons.CheckCircle,
                     contentDescription = "Selected",
                     tint = Color.White,
                     modifier = Modifier

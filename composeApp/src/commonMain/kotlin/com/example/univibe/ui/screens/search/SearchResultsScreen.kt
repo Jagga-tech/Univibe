@@ -24,6 +24,7 @@ import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.components.UniVibeCard
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.ui.utils.UISymbols
 
 /**
@@ -263,7 +264,7 @@ private fun SearchHeader(
                         modifier = Modifier.size(24.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Close,
+                            imageVector = PlatformIcons.Close,
                             contentDescription = "Clear",
                             modifier = Modifier.size(16.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant

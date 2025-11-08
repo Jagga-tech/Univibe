@@ -1,11 +1,11 @@
 package com.example.univibe.ui.screens.settings
 
+import com.example.univibe.ui.theme.PlatformIcons
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -95,7 +95,7 @@ private fun AccountSettingsContent() {
                 title = { Text("Account Settings") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(PlatformIcons.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -124,7 +124,7 @@ private fun AccountSettingsContent() {
                 AccountInfoCard(
                     label = "Email",
                     value = accountInfo.email,
-                    icon = Icons.Default.Email
+                    icon = PlatformIcons.Email
                 )
             }
             
@@ -132,7 +132,7 @@ private fun AccountSettingsContent() {
                 AccountInfoCard(
                     label = "Username",
                     value = accountInfo.username,
-                    icon = Icons.Default.Person
+                    icon = PlatformIcons.Person
                 )
             }
             
@@ -140,7 +140,7 @@ private fun AccountSettingsContent() {
                 AccountInfoCard(
                     label = "Account Created",
                     value = accountInfo.accountCreationDate,
-                    icon = Icons.Default.CalendarToday
+                    icon = PlatformIcons.CalendarToday
                 )
             }
             
@@ -148,7 +148,7 @@ private fun AccountSettingsContent() {
                 AccountInfoCard(
                     label = "Last Password Change",
                     value = accountInfo.lastPasswordChange,
-                    icon = Icons.Default.Lock
+                    icon = PlatformIcons.Lock
                 )
             }
             
@@ -208,7 +208,7 @@ private fun AccountSettingsContent() {
                     onClick = { showChangePasswordDialog = true },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(Icons.Default.Lock, contentDescription = null)
+                    Icon(PlatformIcons.Lock, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Change Password")
                 }
@@ -242,7 +242,7 @@ private fun AccountSettingsContent() {
                         ).brush
                     )
                 ) {
-                    Icon(Icons.Default.Delete, contentDescription = null)
+                    Icon(PlatformIcons.Delete, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Delete Account")
                 }
@@ -328,7 +328,7 @@ private fun ChangePasswordDialog(
                     trailingIcon = {
                         IconButton(onClick = { currentPasswordVisible = !currentPasswordVisible }) {
                             Icon(
-                                imageVector = if (currentPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                imageVector = if (currentPasswordVisible) PlatformIcons.Visibility else PlatformIcons.VisibilityOff,
                                 contentDescription = "Toggle password visibility"
                             )
                         }
@@ -344,7 +344,7 @@ private fun ChangePasswordDialog(
                     trailingIcon = {
                         IconButton(onClick = { newPasswordVisible = !newPasswordVisible }) {
                             Icon(
-                                imageVector = if (newPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                imageVector = if (newPasswordVisible) PlatformIcons.Visibility else PlatformIcons.VisibilityOff,
                                 contentDescription = "Toggle password visibility"
                             )
                         }
@@ -360,7 +360,7 @@ private fun ChangePasswordDialog(
                     trailingIcon = {
                         IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                             Icon(
-                                imageVector = if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                imageVector = if (confirmPasswordVisible) PlatformIcons.Visibility else PlatformIcons.VisibilityOff,
                                 contentDescription = "Toggle password visibility"
                             )
                         }

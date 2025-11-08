@@ -1,11 +1,11 @@
 package com.example.univibe.ui.screens.notifications
 
+import com.example.univibe.ui.theme.PlatformIcons
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -75,12 +75,12 @@ private fun NotificationsScreenContent() {
                 title = { Text("Notifications") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(PlatformIcons.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
                     IconButton(onClick = {}) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "More")
+                        Icon(PlatformIcons.MoreVert, contentDescription = "More")
                     }
                 }
             )
@@ -130,7 +130,7 @@ private fun NotificationsScreenContent() {
                             EmptyState(
                                 title = "No notifications",
                                 description = "You're all caught up!",
-                                icon = Icons.Default.NotificationsNone,
+                                icon = PlatformIcons.NotificationsNone,
                                 modifier = Modifier.fillMaxSize()
                             )
                         }
@@ -180,10 +180,10 @@ private fun NotificationCard(notification: Notification) {
             ) {
                 Icon(
                     imageVector = when {
-                        notification.type.contains("like", ignoreCase = true) -> Icons.Default.Favorite
-                        notification.type.contains("comment", ignoreCase = true) -> Icons.Default.ChatBubble
-                        notification.type.contains("follow", ignoreCase = true) -> Icons.Default.PersonAdd
-                        else -> Icons.Default.Notifications
+                        notification.type.contains("like", ignoreCase = true) -> PlatformIcons.Favorite
+                        notification.type.contains("comment", ignoreCase = true) -> PlatformIcons.ChatBubble
+                        notification.type.contains("follow", ignoreCase = true) -> PlatformIcons.PersonAdd
+                        else -> PlatformIcons.Notifications
                     },
                     contentDescription = null,
                     modifier = Modifier.size(24.dp)

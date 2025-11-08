@@ -14,6 +14,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.ui.theme.*
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.ui.components.social.CommentItem
 import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.screens.home.PostCard
@@ -285,7 +286,7 @@ private fun CommentInputBar(
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Send,
+                    imageVector = PlatformIcons.Send,
                     contentDescription = "Send comment",
                     tint = if (enabled && value.isNotBlank())
                         MaterialTheme.colorScheme.primary

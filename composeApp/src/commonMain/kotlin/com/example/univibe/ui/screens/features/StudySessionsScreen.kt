@@ -19,6 +19,7 @@ import com.example.univibe.domain.models.SessionFilter
 import com.example.univibe.domain.models.LocationType
 import com.example.univibe.ui.screens.detail.StudySessionDetailScreen
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.utils.UISymbols
 import kotlin.system.getTimeMillis
@@ -420,7 +421,7 @@ private fun EmptyState() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            Icons.Default.EventBusy,
+            PlatformIcons.EventBusy,
             contentDescription = null,
             modifier = Modifier
                 .size(64.dp)

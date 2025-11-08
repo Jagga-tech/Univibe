@@ -13,6 +13,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.ui.theme.*
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.components.TextIcon
@@ -102,7 +103,7 @@ private fun MarketplaceItemDetailScreenContent(itemId: String) {
                     )
                 ) {
                     Icon(
-                        Icons.Default.Chat,
+                        PlatformIcons.Chat,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp),
                         tint = MaterialTheme.colorScheme.onPrimary
@@ -250,13 +251,13 @@ private fun MarketplaceItemDetailScreenContent(itemId: String) {
                     )
                     
                     ItemDetailRow(
-                        icon = Icons.Default.Category,
+                        icon = PlatformIcons.Category,
                         label = "Category",
                         value = item.category.displayName
                     )
                     
                     ItemDetailRow(
-                        icon = Icons.Default.Place,
+                        icon = PlatformIcons.Place,
                         label = "Location",
                         value = item.location
                     )

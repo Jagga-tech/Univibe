@@ -3,14 +3,8 @@ package com.example.univibe.ui.screens.studysessions
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +14,7 @@ import com.example.univibe.ui.components.ChipGroup
 import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.components.UniVibeTextField
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.ui.utils.UISymbols
 
 /**
@@ -106,7 +101,7 @@ fun StudySessionsScreen(
                     }
                 },
                 placeholder = "Search sessions...",
-                leadingIcon = Icons.Default.Search,
+                leadingIcon = PlatformIcons.Search,
                 modifier = Modifier.fillMaxWidth()
             )
         }

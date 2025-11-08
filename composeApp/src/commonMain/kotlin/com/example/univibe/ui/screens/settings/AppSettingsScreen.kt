@@ -1,11 +1,11 @@
 package com.example.univibe.ui.screens.settings
 
+import com.example.univibe.ui.theme.PlatformIcons
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -88,7 +88,7 @@ private fun AppSettingsContent() {
                 title = { Text("Settings") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(PlatformIcons.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -107,7 +107,7 @@ private fun AppSettingsContent() {
             item {
                 SettingsSectionHeader(
                     title = "Profile & Account",
-                    icon = Icons.Default.Person
+                    icon = PlatformIcons.Person
                 )
             }
             
@@ -115,7 +115,7 @@ private fun AppSettingsContent() {
                 SettingMenuCard(
                     title = "Edit Profile",
                     description = "Update your profile information",
-                    icon = Icons.Default.Edit,
+                    icon = PlatformIcons.Edit,
                     onClick = { /* TODO: Navigate to edit profile */ }
                 )
             }
@@ -124,7 +124,7 @@ private fun AppSettingsContent() {
                 SettingMenuCard(
                     title = "Account Settings",
                     description = "Manage your account security",
-                    icon = Icons.Default.VpnKey,
+                    icon = PlatformIcons.VpnKey,
                     onClick = { navigator.push(AccountSettingsScreen) }
                 )
             }
@@ -137,7 +137,7 @@ private fun AppSettingsContent() {
             item {
                 SettingsSectionHeader(
                     title = "Preferences",
-                    icon = Icons.Default.Settings
+                    icon = PlatformIcons.Settings
                 )
             }
             
@@ -145,7 +145,7 @@ private fun AppSettingsContent() {
                 SettingToggleCard(
                     title = "Dark Mode",
                     description = "Use dark theme",
-                    icon = Icons.Default.DarkMode,
+                    icon = PlatformIcons.DarkMode,
                     isEnabled = generalSettings.darkModeEnabled,
                     onToggle = {
                         generalSettings = generalSettings.copy(darkModeEnabled = it)
@@ -158,7 +158,7 @@ private fun AppSettingsContent() {
                 SettingToggleCard(
                     title = "Compact View",
                     description = "Use compact layout for lists",
-                    icon = Icons.Default.ViewCompact,
+                    icon = PlatformIcons.ViewCompact,
                     isEnabled = generalSettings.compactViewEnabled,
                     onToggle = {
                         generalSettings = generalSettings.copy(compactViewEnabled = it)
@@ -171,7 +171,7 @@ private fun AppSettingsContent() {
                 SettingToggleCard(
                     title = "Auto-play Videos",
                     description = "Automatically play videos in feed",
-                    icon = Icons.Default.Videocam,
+                    icon = PlatformIcons.Videocam,
                     isEnabled = generalSettings.autoPlayVideos,
                     onToggle = {
                         generalSettings = generalSettings.copy(autoPlayVideos = it)
@@ -188,7 +188,7 @@ private fun AppSettingsContent() {
             item {
                 SettingsSectionHeader(
                     title = "Notifications & Privacy",
-                    icon = Icons.Default.Security
+                    icon = PlatformIcons.Security
                 )
             }
             
@@ -196,7 +196,7 @@ private fun AppSettingsContent() {
                 SettingMenuCard(
                     title = "Notification Settings",
                     description = "Manage notification preferences",
-                    icon = Icons.Default.Notifications,
+                    icon = PlatformIcons.Notifications,
                     onClick = { navigator.push(NotificationSettingsScreen) }
                 )
             }
@@ -205,7 +205,7 @@ private fun AppSettingsContent() {
                 SettingMenuCard(
                     title = "Privacy Settings",
                     description = "Control who can see your profile",
-                    icon = Icons.Default.PrivacyTip,
+                    icon = PlatformIcons.PrivacyTip,
                     onClick = { navigator.push(PrivacySettingsScreen) }
                 )
             }
@@ -218,7 +218,7 @@ private fun AppSettingsContent() {
             item {
                 SettingsSectionHeader(
                     title = "About & Support",
-                    icon = Icons.Default.Info
+                    icon = PlatformIcons.Info
                 )
             }
             
@@ -240,7 +240,7 @@ private fun AppSettingsContent() {
                 SettingMenuCard(
                     title = "Help & Support",
                     description = "Get help and report issues",
-                    icon = Icons.Default.Help,
+                    icon = PlatformIcons.Help,
                     onClick = { /* TODO: Open help */ }
                 )
             }
@@ -249,7 +249,7 @@ private fun AppSettingsContent() {
                 SettingMenuCard(
                     title = "About UniVibe",
                     description = "Learn more about the app",
-                    icon = Icons.Default.Info,
+                    icon = PlatformIcons.Info,
                     onClick = { /* TODO: Open about */ }
                 )
             }
@@ -262,7 +262,7 @@ private fun AppSettingsContent() {
             item {
                 SettingsSectionHeader(
                     title = "Session",
-                    icon = Icons.Default.Logout
+                    icon = PlatformIcons.Logout
                 )
             }
             
@@ -274,7 +274,7 @@ private fun AppSettingsContent() {
                         contentColor = MaterialTheme.colorScheme.error
                     )
                 ) {
-                    Icon(Icons.Default.Logout, contentDescription = null)
+                    Icon(PlatformIcons.Logout, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Logout")
                 }
@@ -363,7 +363,7 @@ private fun SettingMenuCard(
             }
             
             Icon(
-                imageVector = Icons.Default.ChevronRight,
+                imageVector = PlatformIcons.ChevronRight,
                 contentDescription = "Navigate",
                 modifier = Modifier.size(24.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant

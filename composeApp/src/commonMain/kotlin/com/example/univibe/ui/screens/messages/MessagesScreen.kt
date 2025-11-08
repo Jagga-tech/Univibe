@@ -1,13 +1,13 @@
 package com.example.univibe.ui.screens.messages
 
+import com.example.univibe.ui.theme.PlatformIcons
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -78,12 +78,12 @@ private fun MessagesScreenContent() {
                 title = { Text("Messages") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(PlatformIcons.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
                     IconButton(onClick = {}) {
-                        Icon(Icons.Default.Add, contentDescription = "New message")
+                        Icon(PlatformIcons.Add, contentDescription = "New message")
                     }
                 }
             )
@@ -144,7 +144,7 @@ private fun MessagesScreenContent() {
                             EmptyState(
                                 title = "No messages",
                                 description = "Start a conversation with someone",
-                                icon = Icons.Default.MailOutline,
+                                icon = PlatformIcons.MailOutline,
                                 modifier = Modifier.fillMaxSize()
                             )
                         }

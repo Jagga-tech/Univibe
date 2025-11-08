@@ -5,8 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 
 /**
  * Enhanced NotificationItem component that displays a single notification with:
@@ -111,7 +110,7 @@ fun NotificationItem(
                     modifier = Modifier.size(32.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Close,
+                        imageVector = PlatformIcons.Close,
                         contentDescription = "Dismiss",
                         modifier = Modifier.size(18.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -221,14 +220,14 @@ private fun NotificationAvatar(user: User) {
 @Composable
 private fun NotificationTypeIcon(type: NotificationType) {
     val icon = when (type) {
-        NotificationType.LIKE_POST, NotificationType.LIKE_COMMENT -> Icons.Default.Favorite
-        NotificationType.COMMENT_ON_POST, NotificationType.REPLY_TO_COMMENT -> Icons.Default.ChatBubble
-        NotificationType.FOLLOW, NotificationType.FOLLOW_ACCEPTED -> Icons.Default.PersonAdd
-        NotificationType.MESSAGE -> Icons.Default.Mail
-        NotificationType.MENTION -> Icons.Default.Tag
-        NotificationType.POST_SHARED -> Icons.Default.Share
-        NotificationType.ACHIEVEMENT_UNLOCKED -> Icons.Default.Star
-        NotificationType.CUSTOM -> Icons.Default.Info
+        NotificationType.LIKE_POST, NotificationType.LIKE_COMMENT -> PlatformIcons.Favorite
+        NotificationType.COMMENT_ON_POST, NotificationType.REPLY_TO_COMMENT -> PlatformIcons.ChatBubble
+        NotificationType.FOLLOW, NotificationType.FOLLOW_ACCEPTED -> PlatformIcons.PersonAdd
+        NotificationType.MESSAGE -> PlatformIcons.Mail
+        NotificationType.MENTION -> PlatformIcons.Tag
+        NotificationType.POST_SHARED -> PlatformIcons.Share
+        NotificationType.ACHIEVEMENT_UNLOCKED -> PlatformIcons.Star
+        NotificationType.CUSTOM -> PlatformIcons.Info
     }
 
     Icon(

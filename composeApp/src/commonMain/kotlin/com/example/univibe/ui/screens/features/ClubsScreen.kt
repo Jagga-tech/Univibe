@@ -1,13 +1,13 @@
 package com.example.univibe.ui.screens.features
 
+import com.example.univibe.ui.theme.PlatformIcons
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -78,7 +78,7 @@ private fun ClubsScreenContent() {
                 title = { Text("Clubs") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(PlatformIcons.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -128,7 +128,7 @@ private fun ClubsScreenContent() {
                             EmptyState(
                                 title = "No clubs found",
                                 description = "Join a club to get started",
-                                icon = Icons.Default.Groups,
+                                icon = PlatformIcons.Groups,
                                 modifier = Modifier.fillMaxSize()
                             )
                         }

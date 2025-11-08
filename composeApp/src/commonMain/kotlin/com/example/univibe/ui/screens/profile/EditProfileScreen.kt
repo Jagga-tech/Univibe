@@ -1,11 +1,11 @@
 package com.example.univibe.ui.screens.profile
 
+import com.example.univibe.ui.theme.PlatformIcons
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -185,7 +185,7 @@ private fun EditProfileContent(currentUser: User) {
                             navigator.pop()
                         }
                     }) {
-                        Icon(Icons.Default.Close, "Cancel")
+                        Icon(PlatformIcons.Close, "Cancel")
                     }
                 },
                 actions = {
@@ -246,7 +246,7 @@ private fun EditProfileContent(currentUser: User) {
                         shadowElevation = 2.dp
                     ) {
                         Icon(
-                            Icons.Default.CameraAlt,
+                            PlatformIcons.CameraAlt,
                             contentDescription = "Change photo",
                             modifier = Modifier.padding(8.dp),
                             tint = MaterialTheme.colorScheme.onPrimary
@@ -291,7 +291,7 @@ private fun EditProfileContent(currentUser: User) {
                     supportingText = nameError?.let { { Text(it) } },
                     singleLine = true,
                     leadingIcon = {
-                        Icon(Icons.Default.Person, contentDescription = null)
+                        Icon(PlatformIcons.Person, contentDescription = null)
                     }
                 )
                 
@@ -310,7 +310,7 @@ private fun EditProfileContent(currentUser: User) {
                     singleLine = true,
                     prefix = { Text("@") },
                     leadingIcon = {
-                        Icon(Icons.Default.AlternateEmail, contentDescription = null)
+                        Icon(PlatformIcons.AlternateEmail, contentDescription = null)
                     }
                 )
                 
@@ -329,7 +329,7 @@ private fun EditProfileContent(currentUser: User) {
                     singleLine = true,
                     keyboardType = KeyboardType.Email,
                     leadingIcon = {
-                        Icon(Icons.Default.Email, contentDescription = null)
+                        Icon(PlatformIcons.Email, contentDescription = null)
                     }
                 )
                 
@@ -343,7 +343,7 @@ private fun EditProfileContent(currentUser: User) {
                     maxLines = 4,
                     supportingText = { Text("${bio.length}/150") },
                     leadingIcon = {
-                        Icon(Icons.Default.Description, contentDescription = null)
+                        Icon(PlatformIcons.Description, contentDescription = null)
                     }
                 )
                 
@@ -365,7 +365,7 @@ private fun EditProfileContent(currentUser: User) {
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     leadingIcon = {
-                        Icon(Icons.Default.School, contentDescription = null)
+                        Icon(PlatformIcons.School, contentDescription = null)
                     }
                 )
                 
@@ -387,7 +387,7 @@ private fun EditProfileContent(currentUser: User) {
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = yearExpanded) },
                         leadingIcon = {
-                            Icon(Icons.Default.CalendarToday, contentDescription = null)
+                            Icon(PlatformIcons.CalendarToday, contentDescription = null)
                         }
                     )
                     
@@ -431,7 +431,7 @@ private fun EditProfileContent(currentUser: User) {
                     singleLine = true,
                     keyboardType = KeyboardType.Phone,
                     leadingIcon = {
-                        Icon(Icons.Default.Phone, contentDescription = null)
+                        Icon(PlatformIcons.Phone, contentDescription = null)
                     }
                 )
                 
@@ -450,7 +450,7 @@ private fun EditProfileContent(currentUser: User) {
                     singleLine = true,
                     keyboardType = KeyboardType.Uri,
                     leadingIcon = {
-                        Icon(Icons.Default.Language, contentDescription = null)
+                        Icon(PlatformIcons.Language, contentDescription = null)
                     }
                 )
                 
@@ -463,7 +463,7 @@ private fun EditProfileContent(currentUser: User) {
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     leadingIcon = {
-                        Icon(Icons.Default.LocationOn, contentDescription = null)
+                        Icon(PlatformIcons.LocationOn, contentDescription = null)
                     }
                 )
                 

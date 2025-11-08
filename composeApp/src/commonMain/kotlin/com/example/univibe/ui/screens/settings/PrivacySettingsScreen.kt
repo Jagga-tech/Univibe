@@ -1,10 +1,10 @@
 package com.example.univibe.ui.screens.settings
 
+import com.example.univibe.ui.theme.PlatformIcons
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -59,7 +59,7 @@ private fun PrivacySettingsContent() {
                 title = { Text("Privacy Settings") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(PlatformIcons.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -107,7 +107,7 @@ private fun PrivacySettingsContent() {
                                 readOnly = true,
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = visibilityExpanded) },
                                 leadingIcon = {
-                                    Icon(Icons.Default.Visibility, contentDescription = null)
+                                    Icon(PlatformIcons.Visibility, contentDescription = null)
                                 }
                             )
                             
@@ -160,7 +160,7 @@ private fun PrivacySettingsContent() {
                 PrivacyToggleCard(
                     title = "Show Online Status",
                     description = "Let others see when you're online",
-                    icon = Icons.Default.Info,
+                    icon = PlatformIcons.Info,
                     isEnabled = preferences.showOnlineStatus,
                     onToggle = {
                         preferences = preferences.copy(showOnlineStatus = it)
@@ -173,7 +173,7 @@ private fun PrivacySettingsContent() {
                 PrivacyToggleCard(
                     title = "Show Activity Status",
                     description = "Display what you're currently doing",
-                    icon = Icons.Default.Timeline,
+                    icon = PlatformIcons.Timeline,
                     isEnabled = preferences.showActivityStatus,
                     onToggle = {
                         preferences = preferences.copy(showActivityStatus = it)
@@ -200,7 +200,7 @@ private fun PrivacySettingsContent() {
                 PrivacyToggleCard(
                     title = "Allow Messages from Anyone",
                     description = "If off, only friends can message you",
-                    icon = Icons.Default.Mail,
+                    icon = PlatformIcons.Mail,
                     isEnabled = preferences.allowMessagesFromAnyone,
                     onToggle = {
                         preferences = preferences.copy(allowMessagesFromAnyone = it)
@@ -227,7 +227,7 @@ private fun PrivacySettingsContent() {
                 PrivacyToggleCard(
                     title = "Show Posts to Public",
                     description = "Allow non-friends to see your posts",
-                    icon = Icons.Default.Article,
+                    icon = PlatformIcons.Article,
                     isEnabled = preferences.showPostsToPublic,
                     onToggle = {
                         preferences = preferences.copy(showPostsToPublic = it)
@@ -240,7 +240,7 @@ private fun PrivacySettingsContent() {
                 PrivacyToggleCard(
                     title = "Show Followers List",
                     description = "Allow others to see who follows you",
-                    icon = Icons.Default.Groups,
+                    icon = PlatformIcons.Groups,
                     isEnabled = preferences.showFollowersList,
                     onToggle = {
                         preferences = preferences.copy(showFollowersList = it)
@@ -253,7 +253,7 @@ private fun PrivacySettingsContent() {
                 PrivacyToggleCard(
                     title = "Show Following List",
                     description = "Allow others to see who you follow",
-                    icon = Icons.Default.PersonAdd,
+                    icon = PlatformIcons.PersonAdd,
                     isEnabled = preferences.showFollowingList,
                     onToggle = {
                         preferences = preferences.copy(showFollowingList = it)
@@ -266,7 +266,7 @@ private fun PrivacySettingsContent() {
                 PrivacyToggleCard(
                     title = "Allow Tags in Photos",
                     description = "Allow others to tag you in photos",
-                    icon = Icons.Default.PhotoLibrary,
+                    icon = PlatformIcons.PhotoLibrary,
                     isEnabled = preferences.allowTagsInPhotos,
                     onToggle = {
                         preferences = preferences.copy(allowTagsInPhotos = it)
@@ -293,7 +293,7 @@ private fun PrivacySettingsContent() {
                 PrivacyToggleCard(
                     title = "Search Engine Indexing",
                     description = "Allow search engines to index your profile",
-                    icon = Icons.Default.Search,
+                    icon = PlatformIcons.Search,
                     isEnabled = preferences.searchEngineIndexing,
                     onToggle = {
                         preferences = preferences.copy(searchEngineIndexing = it)

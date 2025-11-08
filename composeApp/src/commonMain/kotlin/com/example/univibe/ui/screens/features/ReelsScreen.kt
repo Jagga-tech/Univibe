@@ -10,8 +10,6 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,6 +31,7 @@ import com.example.univibe.domain.models.Reel
 import com.example.univibe.data.mock.MockReels
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.theme.BurgundyPrimary
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.ui.screens.detail.UserProfileScreen
 
 object ReelsScreen : Screen {
@@ -101,7 +100,7 @@ private fun ReelsScreenContent() {
                     modifier = Modifier.padding(32.dp)
                 ) {
                     Icon(
-                        Icons.Default.VideoLibrary,
+                        PlatformIcons.VideoLibrary,
                         contentDescription = null,
                         modifier = Modifier.size(64.dp),
                         tint = Color.White.copy(alpha = 0.6f)
@@ -149,7 +148,7 @@ private fun ReelsScreenContent() {
             actions = {
                 IconButton(onClick = { showSearch = !showSearch }) {
                     Icon(
-                        Icons.Default.Search,
+                        PlatformIcons.Search,
                         contentDescription = "Search",
                         tint = Color.White
                     )
@@ -223,7 +222,7 @@ private fun ReelPlayer(
         // Play/Pause Indicator (center)
         if (!isPlaying) {
             Icon(
-                imageVector = Icons.Default.PlayArrow,
+                imageVector = PlatformIcons.PlayArrow,
                 contentDescription = "Play",
                 modifier = Modifier
                     .size(80.dp)
@@ -240,7 +239,7 @@ private fun ReelPlayer(
                 .padding(16.dp)
         ) {
             Icon(
-                imageVector = if (isMuted) Icons.Default.VolumeOff else Icons.Default.VolumeUp,
+                imageVector = if (isMuted) PlatformIcons.VolumeOff else PlatformIcons.VolumeUp,
                 contentDescription = if (isMuted) "Unmute" else "Mute",
                 tint = Color.White,
                 modifier = Modifier.size(24.dp)
@@ -338,7 +337,7 @@ private fun ReelPlayer(
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Icon(
-                        Icons.Default.MusicNote,
+                        PlatformIcons.MusicNote,
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier.size(14.dp)
@@ -365,7 +364,7 @@ private fun ReelPlayer(
         ) {
             // Like Button
             ReelActionButton(
-                icon = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                icon = if (isLiked) PlatformIcons.Favorite else PlatformIcons.FavoriteBorder,
                 count = likeCount,
                 tint = if (isLiked) Color.Red else Color.White,
                 onClick = {
@@ -376,21 +375,21 @@ private fun ReelPlayer(
 
             // Comment Button
             ReelActionButton(
-                icon = Icons.Default.ChatBubble,
+                icon = PlatformIcons.ChatBubble,
                 count = reel.commentCount,
                 onClick = { showComments = !showComments }
             )
 
             // Share Button
             ReelActionButton(
-                icon = Icons.Default.Share,
+                icon = PlatformIcons.Share,
                 count = reel.shareCount,
                 onClick = { /* Share reel */ }
             )
 
             // Save Button
             ReelActionButton(
-                icon = if (isSaved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                icon = if (isSaved) PlatformIcons.Bookmark else PlatformIcons.BookmarkBorder,
                 count = 0,
                 tint = if (isSaved) Color.Yellow else Color.White,
                 showCount = false,
@@ -403,7 +402,7 @@ private fun ReelPlayer(
                 modifier = Modifier.size(32.dp)
             ) {
                 Icon(
-                    Icons.Default.MoreVert,
+                    PlatformIcons.MoreVert,
                     contentDescription = "More",
                     tint = Color.White,
                     modifier = Modifier.size(20.dp)

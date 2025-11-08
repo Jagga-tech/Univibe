@@ -11,8 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -32,6 +30,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.theme.BurgundyPrimary
+import com.example.univibe.ui.theme.PlatformIcons
 import java.util.*
 
 /**
@@ -91,7 +90,7 @@ private fun StoryEditorScreenContent(
             title = { Text("Edit Story") },
             navigationIcon = {
                 IconButton(onClick = { navigator.pop() }) {
-                    Icon(Icons.Default.Close, contentDescription = "Close")
+                    Icon(PlatformIcons.Close, contentDescription = "Close")
                 }
             },
             actions = {
@@ -194,7 +193,7 @@ private fun StoryEditorScreenContent(
                         .padding(16.dp),
                     containerColor = BurgundyPrimary
                 ) {
-                    Icon(Icons.Default.TextFields, contentDescription = "Add text")
+                    Icon(PlatformIcons.TextFields, contentDescription = "Add text")
                 }
             }
 
@@ -578,7 +577,7 @@ private fun FiltersToolPanel(
                     )
                     if (selectedFilter == filter) {
                         Icon(
-                            Icons.Default.Check,
+                            PlatformIcons.Check,
                             contentDescription = null,
                             tint = BurgundyPrimary,
                             modifier = Modifier.size(20.dp)

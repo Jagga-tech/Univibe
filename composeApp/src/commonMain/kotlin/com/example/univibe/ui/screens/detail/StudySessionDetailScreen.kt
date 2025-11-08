@@ -16,6 +16,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.MockStudySessions
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.utils.UISymbols
 import com.example.univibe.util.ShareHelper
@@ -243,28 +244,28 @@ private fun DetailsSection(session: com.example.univibe.domain.models.StudySessi
         
         // Location
         DetailRow(
-            icon = Icons.Default.LocationOn,
+            icon = PlatformIcons.LocationOn,
             label = "Location",
             value = session.location.getDisplayString()
         )
         
         // Date and Time
         DetailRow(
-            icon = Icons.Default.EventNote,
+            icon = PlatformIcons.EventNote,
             label = "Date & Time",
             value = formatDateTime(session.startTime, session.endTime)
         )
         
         // Duration
         DetailRow(
-            icon = Icons.Default.AccessTime,
+            icon = PlatformIcons.AccessTime,
             label = "Duration",
             value = session.getDurationString()
         )
         
         // Location Type
         DetailRow(
-            icon = Icons.Default.Place,
+            icon = PlatformIcons.Place,
             label = "Type",
             value = session.location.type.name.replace("_", " ")
         )
@@ -487,7 +488,7 @@ private fun ParticipantItem(participant: com.example.univibe.domain.models.User)
         
         if (participant.isVerified) {
             Icon(
-                Icons.Default.VerifiedUser,
+                PlatformIcons.VerifiedUser,
                 contentDescription = "Verified",
                 modifier = Modifier.size(16.dp),
                 tint = MaterialTheme.colorScheme.primary

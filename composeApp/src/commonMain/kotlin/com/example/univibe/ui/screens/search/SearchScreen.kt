@@ -1,11 +1,11 @@
 package com.example.univibe.ui.screens.search
 
+import com.example.univibe.ui.theme.PlatformIcons
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -69,7 +69,7 @@ private fun SearchScreenContent() {
                 title = { Text("Search") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(PlatformIcons.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -93,7 +93,7 @@ private fun SearchScreenContent() {
                         onValueChange = { searchQuery = it },
                         placeholder = { Text("Search posts, people, topics...") },
                         modifier = Modifier.fillMaxWidth(),
-                        leadingIcon = { Icon(Icons.Default.Search, null) },
+                        leadingIcon = { Icon(PlatformIcons.Search, null) },
                         singleLine = true
                     )
                 }
@@ -103,7 +103,7 @@ private fun SearchScreenContent() {
                         EmptyState(
                             title = "Search for content",
                             description = "Enter keywords to find posts, people, and more",
-                            icon = Icons.Default.SearchOff,
+                            icon = PlatformIcons.SearchOff,
                             modifier = Modifier.fillMaxSize()
                         )
                     }
@@ -113,7 +113,7 @@ private fun SearchScreenContent() {
                             EmptyState(
                                 title = "No results found",
                                 description = "Try different keywords",
-                                icon = Icons.Default.SearchOff,
+                                icon = PlatformIcons.SearchOff,
                                 modifier = Modifier.fillMaxSize()
                             )
                         }

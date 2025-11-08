@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import com.example.univibe.ui.theme.BrandColors
+import com.example.univibe.ui.theme.PlatformIcons
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -178,7 +179,7 @@ private fun FilterButton(
                 if (isSelected) {
                     Spacer(modifier = Modifier.width(4.dp))
                     Icon(
-                        PlatformIcons.Default.Check,
+                        PlatformPlatformIcons.Check,
                         contentDescription = "Selected",
                         tint = Color.White,
                         modifier = Modifier.size(16.dp)

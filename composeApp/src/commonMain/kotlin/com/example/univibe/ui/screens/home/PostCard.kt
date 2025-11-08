@@ -19,6 +19,7 @@ import com.example.univibe.ui.components.UniVibeCard
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.ui.utils.UISymbols
 import com.example.univibe.domain.models.Post
 import kotlin.math.absoluteValue
@@ -174,7 +175,7 @@ fun PostCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ActionButton(
-                    icon = if (liked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    icon = if (liked) PlatformIcons.Favorite else PlatformIcons.FavoriteBorder,
                     label = "Like",
                     iconTint = if (liked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                     scale = likeScale,
@@ -185,13 +186,13 @@ fun PostCard(
                 )
 
                 ActionButton(
-                    icon = Icons.Outlined.ChatBubbleOutline,
+                    icon = PlatformIcons.ChatBubbleOutline,
                     label = "Comment",
                     onClick = { onCommentClick(id) }
                 )
 
                 ActionButton(
-                    icon = Icons.Outlined.ShareOutlined,
+                    icon = PlatformIcons.ShareOutlined,
                     label = "Share",
                     onClick = { onShareClick(id) }
                 )
@@ -419,7 +420,7 @@ fun PostCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ActionButton(
-                    icon = if (liked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    icon = if (liked) PlatformIcons.Favorite else PlatformIcons.FavoriteBorder,
                     label = "Like",
                     iconTint = if (liked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                     scale = likeScale,
@@ -431,13 +432,13 @@ fun PostCard(
                 )
 
                 ActionButton(
-                    icon = Icons.Outlined.ChatBubbleOutline,
+                    icon = PlatformIcons.ChatBubbleOutline,
                     label = "Comment",
                     onClick = { onCommentClick(post) }
                 )
 
                 ActionButton(
-                    icon = Icons.Outlined.ShareOutlined,
+                    icon = PlatformIcons.ShareOutlined,
                     label = "Share",
                     onClick = { onShareClick(post) }
                 )

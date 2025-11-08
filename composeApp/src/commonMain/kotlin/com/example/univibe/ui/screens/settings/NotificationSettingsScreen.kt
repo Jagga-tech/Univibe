@@ -1,10 +1,10 @@
 package com.example.univibe.ui.screens.settings
 
+import com.example.univibe.ui.theme.PlatformIcons
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -62,7 +62,7 @@ private fun NotificationSettingsContent() {
                 title = { Text("Notification Settings") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(PlatformIcons.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -121,7 +121,7 @@ private fun NotificationSettingsContent() {
                 NotificationTypeToggle(
                     title = "New Posts",
                     description = "Notify when friends post",
-                    icon = Icons.Default.Article,
+                    icon = PlatformIcons.Article,
                     isEnabled = preferences.postsNotifications,
                     onToggle = { 
                         preferences = preferences.copy(postsNotifications = it)
@@ -134,7 +134,7 @@ private fun NotificationSettingsContent() {
                 NotificationTypeToggle(
                     title = "Messages",
                     description = "Notify for new messages",
-                    icon = Icons.Default.Mail,
+                    icon = PlatformIcons.Mail,
                     isEnabled = preferences.messagesNotifications,
                     onToggle = { 
                         preferences = preferences.copy(messagesNotifications = it)
@@ -147,7 +147,7 @@ private fun NotificationSettingsContent() {
                 NotificationTypeToggle(
                     title = "Comments",
                     description = "Notify when someone comments on your post",
-                    icon = Icons.Default.Comment,
+                    icon = PlatformIcons.Comment,
                     isEnabled = preferences.commentsNotifications,
                     onToggle = { 
                         preferences = preferences.copy(commentsNotifications = it)
@@ -160,7 +160,7 @@ private fun NotificationSettingsContent() {
                 NotificationTypeToggle(
                     title = "Likes",
                     description = "Notify when someone likes your post",
-                    icon = Icons.Default.Favorite,
+                    icon = PlatformIcons.Favorite,
                     isEnabled = preferences.likesNotifications,
                     onToggle = { 
                         preferences = preferences.copy(likesNotifications = it)
@@ -173,7 +173,7 @@ private fun NotificationSettingsContent() {
                 NotificationTypeToggle(
                     title = "New Followers",
                     description = "Notify when someone follows you",
-                    icon = Icons.Default.PersonAdd,
+                    icon = PlatformIcons.PersonAdd,
                     isEnabled = preferences.followNotifications,
                     onToggle = { 
                         preferences = preferences.copy(followNotifications = it)
@@ -186,7 +186,7 @@ private fun NotificationSettingsContent() {
                 NotificationTypeToggle(
                     title = "Events",
                     description = "Notify for event updates and reminders",
-                    icon = Icons.Default.Event,
+                    icon = PlatformIcons.Event,
                     isEnabled = preferences.eventsNotifications,
                     onToggle = { 
                         preferences = preferences.copy(eventsNotifications = it)

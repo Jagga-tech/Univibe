@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.example.univibe.domain.models.Comment
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 import kotlin.math.absoluteValue
 
 /**
@@ -151,7 +152,7 @@ fun CommentItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        imageVector = if (isLiked) PlatformIcons.Favorite else PlatformIcons.FavoriteBorder,
                         contentDescription = if (isLiked) "Unlike" else "Like",
                         tint = likeButtonColor,
                         modifier = Modifier
@@ -177,7 +178,7 @@ fun CommentItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.ChatBubbleOutline,
+                        imageVector = PlatformIcons.ChatBubbleOutline,
                         contentDescription = "Reply",
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(16.dp)

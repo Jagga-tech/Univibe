@@ -7,8 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +18,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.ui.theme.Spacing
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.data.mock.MockEvents
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.screens.detail.EventDetailScreen
@@ -127,12 +126,12 @@ private fun EventsScreenContent() {
                 title = { Text("Events") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(PlatformIcons.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
                     IconButton(onClick = { isSearching = !isSearching }) {
-                        Icon(Icons.Default.Search, contentDescription = "Search")
+                        Icon(PlatformIcons.Search, contentDescription = "Search")
                     }
                 }
             )
@@ -199,7 +198,7 @@ private fun EventsScreenContent() {
                             EmptyState(
                                 title = "No events found",
                                 description = "Try adjusting your filters",
-                                icon = Icons.Default.EventBusy,
+                                icon = PlatformIcons.EventBusy,
                                 modifier = Modifier.fillMaxSize()
                             )
                         }

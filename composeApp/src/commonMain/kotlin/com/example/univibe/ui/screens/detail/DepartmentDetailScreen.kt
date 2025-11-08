@@ -14,6 +14,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.ui.theme.*
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.components.TextIcon
@@ -161,13 +162,13 @@ private fun DepartmentDetailScreenContent(departmentId: String) {
                     )
                     
                     DepartmentInfoRow(
-                        icon = Icons.Default.Place,
+                        icon = PlatformIcons.Place,
                         label = "Location",
                         value = department.building
                     )
                     
                     DepartmentInfoRow(
-                        icon = Icons.Default.Person,
+                        icon = PlatformIcons.Person,
                         label = "Department Chair",
                         value = department.chair.fullName,
                         onClick = { /* TODO: Navigate to user profile */ }
@@ -175,7 +176,7 @@ private fun DepartmentDetailScreenContent(departmentId: String) {
                     
                     if (department.website != null) {
                         DepartmentInfoRow(
-                            icon = Icons.Default.Language,
+                            icon = PlatformIcons.Language,
                             label = "Website",
                             value = department.website,
                             onClick = { /* TODO: Open website */ }
@@ -184,7 +185,7 @@ private fun DepartmentDetailScreenContent(departmentId: String) {
                     
                     if (department.email != null) {
                         DepartmentInfoRow(
-                            icon = Icons.Default.Email,
+                            icon = PlatformIcons.Email,
                             label = "Email",
                             value = department.email,
                             onClick = { /* TODO: Send email */ }
@@ -193,7 +194,7 @@ private fun DepartmentDetailScreenContent(departmentId: String) {
                     
                     if (department.phone != null) {
                         DepartmentInfoRow(
-                            icon = Icons.Default.Phone,
+                            icon = PlatformIcons.Phone,
                             label = "Phone",
                             value = department.phone,
                             onClick = { /* TODO: Call */ }

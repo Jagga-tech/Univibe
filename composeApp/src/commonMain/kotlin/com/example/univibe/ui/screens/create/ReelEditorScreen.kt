@@ -16,8 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,6 +34,7 @@ import com.example.univibe.domain.models.*
 import com.example.univibe.ui.theme.BurgundyPrimary
 import com.example.univibe.ui.theme.GoldAccent
 import com.example.univibe.ui.theme.TealAccent
+import com.example.univibe.ui.theme.PlatformIcons
 
 data class ReelEditorScreen(
     val reelDraft: ReelDraft
@@ -65,7 +64,7 @@ private fun ReelEditorContent(initialDraft: ReelDraft) {
                 title = { Text("Edit Reel") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
-                        Icon(Icons.Default.Close, "Close")
+                        Icon(PlatformIcons.Close, "Close")
                     }
                 },
                 actions = {
@@ -255,7 +254,7 @@ private fun TextToolPanel(
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = BurgundyPrimary)
         ) {
-            Icon(Icons.Default.Add, null, modifier = Modifier.size(20.dp))
+            Icon(PlatformIcons.Add, null, modifier = Modifier.size(20.dp))
             Spacer(modifier = Modifier.width(4.dp))
             Text("Add Text Overlay")
         }
@@ -283,7 +282,7 @@ private fun TextToolPanel(
                         },
                         modifier = Modifier.size(32.dp)
                     ) {
-                        Icon(Icons.Default.Delete, null, tint = Color.Red)
+                        Icon(PlatformIcons.Delete, null, tint = Color.Red)
                     }
                 }
             }
@@ -317,7 +316,7 @@ private fun MusicToolPanel(
                     modifier = Modifier.size(36.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                 ) {
-                    Icon(Icons.Default.Close, null, tint = Color.White)
+                    Icon(PlatformIcons.Close, null, tint = Color.White)
                 }
             }
         } else {
@@ -342,7 +341,7 @@ private fun MusicTrackItem(track: MusicTrack, onSelect: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Icon(Icons.Default.MusicNote, null, tint = BurgundyPrimary, modifier = Modifier.size(24.dp))
+        Icon(PlatformIcons.MusicNote, null, tint = BurgundyPrimary, modifier = Modifier.size(24.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(track.name, color = Color.White, fontWeight = FontWeight.Bold)
             Text("${track.artist} • ${formatTime(track.duration)}", color = Color.White.copy(alpha = 0.7f))

@@ -16,6 +16,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.ui.theme.*
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.screens.home.PostCard
@@ -184,7 +185,7 @@ private fun ClubDetailScreenContent(clubId: String) {
                                 
                                 if (club.meetingSchedule != null) {
                                     ClubInfoRow(
-                                        icon = Icons.Default.Schedule,
+                                        icon = PlatformIcons.Schedule,
                                         label = "Meeting Schedule",
                                         value = club.meetingSchedule
                                     )
@@ -192,7 +193,7 @@ private fun ClubDetailScreenContent(clubId: String) {
                                 
                                 if (club.meetingLocation != null) {
                                     ClubInfoRow(
-                                        icon = Icons.Default.Place,
+                                        icon = PlatformIcons.Place,
                                         label = "Meeting Location",
                                         value = club.meetingLocation
                                     )
@@ -237,19 +238,19 @@ private fun ClubDetailScreenContent(clubId: String) {
                                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                         club.socialMedia.instagram?.let {
                                             SocialMediaLink(
-                                                icon = Icons.Default.PhotoCamera,
+                                                icon = PlatformIcons.PhotoCamera,
                                                 label = it
                                             )
                                         }
                                         club.socialMedia.website?.let {
                                             SocialMediaLink(
-                                                icon = Icons.Default.Language,
+                                                icon = PlatformIcons.Language,
                                                 label = it
                                             )
                                         }
                                         club.socialMedia.email?.let {
                                             SocialMediaLink(
-                                                icon = Icons.Default.Email,
+                                                icon = PlatformIcons.Email,
                                                 label = it
                                             )
                                         }
@@ -291,7 +292,7 @@ private fun ClubDetailScreenContent(clubId: String) {
                                         verticalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
                                         Icon(
-                                            Icons.Default.Event,
+                                            PlatformIcons.Event,
                                             contentDescription = null,
                                             modifier = Modifier.size(48.dp),
                                             tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -384,7 +385,7 @@ private fun ClubDetailScreenContent(clubId: String) {
                                         verticalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
                                         Icon(
-                                            Icons.Default.Article,
+                                            PlatformIcons.Article,
                                             contentDescription = null,
                                             modifier = Modifier.size(48.dp),
                                             tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -459,7 +460,7 @@ private fun ClubHeader(
             )
             if (club.isVerified) {
                 Icon(
-                    imageVector = Icons.Default.Verified,
+                    imageVector = PlatformIcons.Verified,
                     contentDescription = "Verified",
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)

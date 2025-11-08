@@ -3,11 +3,6 @@ package com.example.univibe.ui.screens.hub
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +19,7 @@ import com.example.univibe.ui.components.OutlineButton
 import com.example.univibe.ui.components.UniVibeCard
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 
 /**
  * Data class representing a group moderator/admin.
@@ -165,7 +161,7 @@ private fun GroupDetailsHeader(
             modifier = Modifier.size(Dimensions.IconSize.large)
         ) {
             Icon(
-                imageVector = Icons.Default.ArrowBack,
+                imageVector = PlatformIcons.ArrowBack,
                 contentDescription = "Back",
                 modifier = Modifier.size(Dimensions.IconSize.medium),
                 tint = MaterialTheme.colorScheme.primary
@@ -188,7 +184,7 @@ private fun GroupDetailsHeader(
             modifier = Modifier.size(Dimensions.IconSize.large)
         ) {
             Icon(
-                imageVector = Icons.Default.Share,
+                imageVector = PlatformIcons.Share,
                 contentDescription = "Share group",
                 modifier = Modifier.size(Dimensions.IconSize.medium),
                 tint = MaterialTheme.colorScheme.primary
@@ -271,14 +267,14 @@ private fun GroupInfoSection(group: GroupItem) {
         horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.lg)
     ) {
         GroupInfoRow(
-            icon = Icons.Default.People,
+            icon = PlatformIcons.People,
             label = "Members",
             value = group.memberCount.toString(),
             modifier = Modifier.weight(1f)
         )
 
         GroupInfoRow(
-            icon = Icons.Default.Info,
+            icon = PlatformIcons.Info,
             label = "Category",
             value = group.category,
             modifier = Modifier.weight(1f)
@@ -428,7 +424,7 @@ private fun ModeratorCard(
             }
 
             Icon(
-                imageVector = Icons.Default.ArrowBack,
+                imageVector = PlatformIcons.ArrowBack,
                 contentDescription = "View profile",
                 modifier = Modifier
                     .size(Dimensions.IconSize.medium)

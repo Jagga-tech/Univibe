@@ -10,8 +10,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,6 +32,7 @@ import com.example.univibe.data.mock.MockStories
 import com.example.univibe.data.mock.MockUsers
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.theme.Colors
+import com.example.univibe.ui.theme.PlatformIcons
 import kotlinx.coroutines.delay
 
 /**
@@ -355,7 +354,7 @@ private fun StoryContentDisplay(story: Story) {
                     )
                 }
                 Icon(
-                    imageVector = Icons.Default.PlayArrow,
+                    imageVector = PlatformIcons.PlayArrow,
                     contentDescription = "Video",
                     tint = Color.White.copy(alpha = 0.8f),
                     modifier = Modifier.size(80.dp)
@@ -429,7 +428,7 @@ private fun StoryContentDisplay(story: Story) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowUp,
+                            imageVector = PlatformIcons.KeyboardArrowUp,
                             contentDescription = "Swipe up",
                             tint = Color.White,
                             modifier = Modifier.size(20.dp)
@@ -547,7 +546,7 @@ private fun StoryHeaderBar(
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             IconButton(onClick = onMore, modifier = Modifier.size(40.dp)) {
                 Icon(
-                    imageVector = Icons.Default.MoreVert,
+                    imageVector = PlatformIcons.MoreVert,
                     contentDescription = "More options",
                     tint = Color.White,
                     modifier = Modifier.size(24.dp)
@@ -556,7 +555,7 @@ private fun StoryHeaderBar(
             
             IconButton(onClick = onClose, modifier = Modifier.size(40.dp)) {
                 Icon(
-                    imageVector = Icons.Default.Close,
+                    imageVector = PlatformIcons.Close,
                     contentDescription = "Close",
                     tint = Color.White,
                     modifier = Modifier.size(24.dp)
@@ -589,28 +588,28 @@ private fun StoryBottomBar(
         ) {
             // React button
             StoryActionButton(
-                icon = Icons.Default.Favorite,
+                icon = PlatformIcons.Favorite,
                 label = if (story.reactions.isEmpty()) "React" else "${story.reactions.size}",
                 onClick = onReact
             )
             
             // Reply button
             StoryActionButton(
-                icon = Icons.Default.Message,
+                icon = PlatformIcons.Message,
                 label = if (story.replyCount == 0) "Reply" else story.replyCount.toString(),
                 onClick = onReply
             )
             
             // Share button
             StoryActionButton(
-                icon = Icons.Default.Share,
+                icon = PlatformIcons.Share,
                 label = "Share",
                 onClick = onShare
             )
             
             // More options button
             StoryActionButton(
-                icon = Icons.Default.MoreVert,
+                icon = PlatformIcons.MoreVert,
                 label = "More",
                 onClick = onMore
             )
@@ -792,7 +791,7 @@ private fun ReplyInputOverlay(
                         modifier = Modifier.size(36.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Send,
+                            imageVector = PlatformIcons.Send,
                             contentDescription = "Send",
                             tint = Color.Red,
                             modifier = Modifier.size(20.dp)
@@ -820,7 +819,7 @@ private fun PlaceholderContent() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Image,
+                imageVector = PlatformIcons.Image,
                 contentDescription = "No image",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(64.dp)

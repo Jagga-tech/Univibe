@@ -16,6 +16,7 @@ import com.example.univibe.domain.models.EventCategory
 import com.example.univibe.ui.components.PrimaryButton
 import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Spacing
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.ui.utils.UISymbols
 import java.text.SimpleDateFormat
 import java.util.*
@@ -233,7 +234,7 @@ private fun CreateEventScreenContent() {
                             singleLine = true,
                             leadingIcon = {
                                 Icon(
-                                    if (isVirtual) Icons.Default.VideoCall else Icons.Default.LocationOn,
+                                    if (isVirtual) PlatformIcons.VideoCall else PlatformIcons.LocationOn,
                                     contentDescription = null
                                 )
                             },
@@ -311,7 +312,7 @@ private fun CreateEventScreenContent() {
                         .fillMaxWidth()
                         .height(48.dp),
                     loading = isCreating,
-                    leadingIcon = Icons.Default.Add
+                    leadingIcon = PlatformIcons.Add
                 )
             }
             

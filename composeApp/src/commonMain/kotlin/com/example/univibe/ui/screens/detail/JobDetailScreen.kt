@@ -14,6 +14,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.ui.theme.*
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.*
 import com.example.univibe.ui.components.TextIcon
@@ -131,7 +132,7 @@ private fun JobDetailScreenContent(jobId: String) {
                 ) {
                     // Location
                     QuickInfoItem(
-                        icon = if (job.isRemote) Icons.Default.Laptop else Icons.Default.Place,
+                        icon = if (job.isRemote) PlatformIcons.Laptop else PlatformIcons.Place,
                         label = if (job.isRemote) "Remote" else "Location",
                         value = if (job.isRemote) "Work from anywhere" else job.location,
                         modifier = Modifier.weight(1f)
@@ -139,7 +140,7 @@ private fun JobDetailScreenContent(jobId: String) {
                     
                     // Type
                     QuickInfoItem(
-                        icon = Icons.Default.Work,
+                        icon = PlatformIcons.Work,
                         label = "Type",
                         value = job.type.displayName,
                         modifier = Modifier.weight(1f)
@@ -156,7 +157,7 @@ private fun JobDetailScreenContent(jobId: String) {
                         modifier = Modifier.padding(horizontal = Dimensions.Spacing.default)
                     ) {
                         Icon(
-                            Icons.Default.AttachMoney,
+                            PlatformIcons.AttachMoney,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -243,7 +244,7 @@ private fun JobDetailScreenContent(jobId: String) {
                         modifier = Modifier.padding(horizontal = Dimensions.Spacing.default)
                     ) {
                         Icon(
-                            Icons.Default.Schedule,
+                            PlatformIcons.Schedule,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.error
                         )
@@ -277,7 +278,7 @@ private fun JobDetailScreenContent(jobId: String) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                Icons.Default.Email,
+                                PlatformIcons.Email,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp)
                             )
