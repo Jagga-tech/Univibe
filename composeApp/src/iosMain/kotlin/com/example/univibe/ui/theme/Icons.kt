@@ -267,4 +267,162 @@ actual object PlatformIcons {
             curveTo(21.4f, 17.62f, 19.86f, 16.08f, 18f, 16.08f)
         }
     }.build()
+
+    actual val Person: ImageVector = ImageVector.Builder(
+        name = "person",
+        defaultWidth = 24.dp,
+        defaultHeight = 24.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f
+    ).apply {
+        path(
+            fill = SolidColor(Color.Black),
+            stroke = null,
+            pathFillType = androidx.compose.ui.graphics.PathFillType.NonZero
+        ) {
+            moveTo(12f, 12f)
+            curveTo(13.66f, 12f, 15f, 10.66f, 15f, 9f)
+            curveTo(15f, 7.34f, 13.66f, 6f, 12f, 6f)
+            curveTo(10.34f, 6f, 9f, 7.34f, 9f, 9f)
+            curveTo(9f, 10.66f, 10.34f, 12f, 12f, 12f)
+            moveTo(12f, 14f)
+            curveTo(10.67f, 14f, 8f, 14.75f, 8f, 16.14f)
+            lineTo(8f, 18f)
+            lineTo(16f, 18f)
+            lineTo(16f, 16.14f)
+            curveTo(16f, 14.75f, 13.33f, 14f, 12f, 14f)
+        }
+    }.build()
+
+    actual val Check: ImageVector = ImageVector.Builder(
+        name = "check",
+        defaultWidth = 24.dp,
+        defaultHeight = 24.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f
+    ).apply {
+        path(
+            fill = SolidColor(Color.Black),
+            stroke = null,
+            pathFillType = androidx.compose.ui.graphics.PathFillType.NonZero
+        ) {
+            moveTo(9f, 16.17f)
+            lineTo(4.83f, 12f)
+            lineTo(3.41f, 13.41f)
+            lineTo(9f, 19f)
+            lineTo(21f, 7f)
+            lineTo(19.59f, 5.59f)
+            lineTo(9f, 16.17f)
+        }
+    }.build()
+
+    actual val Close: ImageVector = ImageVector.Builder(
+        name = "close",
+        defaultWidth = 24.dp,
+        defaultHeight = 24.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f
+    ).apply {
+        path(
+            fill = SolidColor(Color.Black),
+            stroke = null,
+            pathFillType = androidx.compose.ui.graphics.PathFillType.NonZero
+        ) {
+            moveTo(19f, 6.41f)
+            lineTo(17.59f, 5f)
+            lineTo(12f, 10.59f)
+            lineTo(6.41f, 5f)
+            lineTo(5f, 6.41f)
+            lineTo(10.59f, 12f)
+            lineTo(5f, 17.59f)
+            lineTo(6.41f, 19f)
+            lineTo(12f, 13.41f)
+            lineTo(17.59f, 19f)
+            lineTo(19f, 17.59f)
+            lineTo(13.41f, 12f)
+            lineTo(19f, 6.41f)
+        }
+    }.build()
+
+    actual val ChatBubble: ImageVector = ImageVector.Builder(
+        name = "chat_bubble",
+        defaultWidth = 24.dp,
+        defaultHeight = 24.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f
+    ).apply {
+        path(
+            fill = SolidColor(Color.Black),
+            stroke = null,
+            pathFillType = androidx.compose.ui.graphics.PathFillType.NonZero
+        ) {
+            moveTo(20f, 2f)
+            lineTo(4f, 2f)
+            curveTo(2.9f, 2f, 2f, 2.9f, 2f, 4f)
+            lineTo(2f, 18f)
+            curveTo(2f, 19.1f, 2.9f, 20f, 4f, 20f)
+            lineTo(18f, 20f)
+            lineTo(22f, 24f)
+            lineTo(22f, 4f)
+            curveTo(22f, 2.9f, 21.1f, 2f, 20f, 2f)
+        }
+    }.build()
+
+    actual val Tag: ImageVector = ImageVector.Builder(
+        name = "tag",
+        defaultWidth = 24.dp,
+        defaultHeight = 24.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f
+    ).apply {
+        path(
+            fill = SolidColor(Color.Black),
+            stroke = null,
+            pathFillType = androidx.compose.ui.graphics.PathFillType.NonZero
+        ) {
+            moveTo(12f, 2f)
+            lineTo(6.5f, 6.5f)
+            curveTo(6.08f, 6.92f, 6f, 7.55f, 6.35f, 8.04f)
+            lineTo(9.88f, 14f)
+            lineTo(5f, 14f)
+            curveTo(3.9f, 14f, 3f, 14.9f, 3f, 16f)
+            lineTo(3f, 20f)
+            curveTo(3f, 21.1f, 3.9f, 22f, 5f, 22f)
+            lineTo(19f, 22f)
+            curveTo(20.1f, 22f, 21f, 21.1f, 21f, 20f)
+            lineTo(21f, 12f)
+            lineTo(12f, 2f)
+            moveTo(18f, 20f)
+            lineTo(5f, 20f)
+            lineTo(5f, 16f)
+            lineTo(18f, 16f)
+            lineTo(18f, 20f)
+        }
+    }.build()
+
+    actual val Star: ImageVector = ImageVector.Builder(
+        name = "star",
+        defaultWidth = 24.dp,
+        defaultHeight = 24.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f
+    ).apply {
+        path(
+            fill = SolidColor(Color.Black),
+            stroke = null,
+            pathFillType = androidx.compose.ui.graphics.PathFillType.NonZero
+        ) {
+            moveTo(12f, 17.27f)
+            lineTo(18.18f, 21f)
+            lineTo(16.54f, 14.83f)
+            lineTo(22f, 10.5f)
+            lineTo(15.81f, 10.13f)
+            lineTo(12f, 4f)
+            lineTo(8.19f, 10.13f)
+            lineTo(2f, 10.5f)
+            lineTo(7.46f, 14.83f)
+            lineTo(5.82f, 21f)
+            lineTo(12f, 17.27f)
+        }
+    }.build()
 }

@@ -225,7 +225,7 @@ private fun NotificationTypeIcon(type: NotificationType) {
         NotificationType.FOLLOW, NotificationType.FOLLOW_ACCEPTED -> PlatformIcons.PersonAdd
         NotificationType.MESSAGE -> PlatformIcons.Mail
         NotificationType.MENTION -> PlatformIcons.Tag
-        NotificationType.POST_SHARED -> PlatformIcons.Share
+        NotificationType.POST_SHARED -> PlatformIcons.IosShare
         NotificationType.ACHIEVEMENT_UNLOCKED -> PlatformIcons.Star
         NotificationType.CUSTOM -> PlatformIcons.Info
     }
