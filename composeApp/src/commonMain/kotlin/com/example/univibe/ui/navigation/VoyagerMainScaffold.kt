@@ -37,11 +37,11 @@ fun VoyagerMainScaffold() {
     // TODO: Implement actual window size detection using WindowSizeClass
     val windowSize = WindowSize.Compact // For now, default to phone
     
-    TabNavigator(HomeTab) {
+    TabNavigator(HomeTab) { navigator ->
         when (windowSize) {
-            WindowSize.Compact -> CompactScaffold()
-            WindowSize.Medium -> MediumScaffold()
-            WindowSize.Expanded -> ExpandedScaffold()
+            WindowSize.Compact -> navigator.CompactScaffold()
+            WindowSize.Medium -> navigator.MediumScaffold()
+            WindowSize.Expanded -> navigator.ExpandedScaffold()
         }
     }
 }
