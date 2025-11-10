@@ -79,7 +79,8 @@ fun ConversationCard(
                 UserAvatar(
                     imageUrl = item.userAvatarUrl,
                     size = Dimensions.AvatarSize.medium,
-                    showOnlineStatus = item.isUserOnline
+                    showOnlineIndicator = true,
+                    isOnline = item.isUserOnline
                 )
             }
 

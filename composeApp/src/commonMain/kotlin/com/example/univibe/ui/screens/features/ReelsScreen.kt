@@ -26,11 +26,10 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import coil3.compose.AsyncImage
 import com.example.univibe.domain.models.Reel
 import com.example.univibe.data.mock.MockReels
 import com.example.univibe.ui.components.UserAvatar
-import com.example.univibe.ui.theme.BurgundyPrimary
+import com.example.univibe.ui.theme.BrandColors
 import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.ui.screens.detail.UserProfileScreen
 
@@ -205,11 +204,10 @@ private fun ReelPlayer(
             }
     ) {
         // Video Thumbnail (placeholder for actual video)
-        AsyncImage(
-            model = reel.thumbnailUrl,
-            contentDescription = "Reel thumbnail",
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Gray)
         )
 
         // Dark overlay for readability

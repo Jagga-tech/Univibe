@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -254,7 +255,7 @@ private fun CreateEventScreenContent() {
                         placeholder = { Text("Leave empty for unlimited") },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        keyboardType = KeyboardType.Number,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         leadingIcon = {
                             TextIcon(
                                 symbol = UISymbols.GROUP,

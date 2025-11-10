@@ -54,6 +54,8 @@ expect object PlatformIcons {
     val ViewCompact: ImageVector
     val Videocam: ImageVector
     val VideoCall: ImageVector
+    val PlayCircleFilled: ImageVector
+    val CheckCircle: ImageVector
     
     // Additional icons
     val Person: ImageVector
@@ -66,6 +68,36 @@ expect object PlatformIcons {
     val CalendarToday: ImageVector
     val Lock: ImageVector
     val Delete: ImageVector
-    val Visibility: ImageVector
     val VisibilityOff: ImageVector
+    
+    // Edit and form icons
+    val Edit: ImageVector
+    val Phone: ImageVector
+    val Language: ImageVector
+    
+    // Notifications and settings
+    val NotificationsNone: ImageVector
+    val Notifications: ImageVector
+    val VpnKey: ImageVector
+    val Security: ImageVector
+    
+    // Email
+    val MailOutline: ImageVector
+    
+    // Schedule and location
+    val Schedule: ImageVector
+    val Place: ImageVector
+    val PhotoCamera: ImageVector
+    val Verified: ImageVector
+    
+    // Job and work related
+    val Laptop: ImageVector
+    val Work: ImageVector
+    val AttachMoney: ImageVector
+    
+    // Media
+    val MusicNote: ImageVector
+    val Camera: ImageVector
+    val Image: ImageVector
+    val TextFields: ImageVector
 }

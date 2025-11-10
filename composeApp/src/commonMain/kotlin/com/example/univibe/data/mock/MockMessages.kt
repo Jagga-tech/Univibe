@@ -5,7 +5,7 @@ import com.example.univibe.domain.models.*
 object MockMessages {
     
     private val messages = mutableListOf<Message>()
-    private val conversations = mutableListOf<Conversation>()
+    val conversations = mutableListOf<Conversation>()
     
     // Counter for generating unique IDs (KMP-compatible alternative to UUID)
     private var idCounter = 1000

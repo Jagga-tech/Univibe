@@ -29,12 +29,11 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import coil3.compose.AsyncImage
 import com.example.univibe.domain.models.*
-import com.example.univibe.ui.theme.BurgundyPrimary
-import com.example.univibe.ui.theme.GoldAccent
-import com.example.univibe.ui.theme.TealAccent
+import com.example.univibe.ui.theme.BrandColors
 import com.example.univibe.ui.theme.PlatformIcons
+import com.example.univibe.ui.components.AsyncImage
+import com.example.univibe.ui.utils.formatTime
 
 data class ReelEditorScreen(
     val reelDraft: ReelDraft
@@ -252,7 +251,7 @@ private fun TextToolPanel(
         Button(
             onClick = onAddText,
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = BurgundyPrimary)
+            colors = ButtonDefaults.buttonColors(containerColor = BrandColors.Burgundy)
         ) {
             Icon(PlatformIcons.Add, null, modifier = Modifier.size(20.dp))
             Spacer(modifier = Modifier.width(4.dp))
@@ -303,7 +302,7 @@ private fun MusicToolPanel(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
-                    .background(GoldAccent.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
+                    .background(BrandColors.Gold.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
                     .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -341,7 +340,7 @@ private fun MusicTrackItem(track: MusicTrack, onSelect: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Icon(PlatformIcons.MusicNote, null, tint = BurgundyPrimary, modifier = Modifier.size(24.dp))
+        Icon(PlatformIcons.MusicNote, null, tint = BrandColors.Burgundy, modifier = Modifier.size(24.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(track.name, color = Color.White, fontWeight = FontWeight.Bold)
             Text("${track.artist} • ${formatTime(track.duration)}", color = Color.White.copy(alpha = 0.7f))

@@ -9,7 +9,6 @@ import com.example.univibe.ui.screens.profile.ProfileScreen
 import com.example.univibe.ui.screens.search.SearchResultsScreen
 import com.example.univibe.ui.screens.settings.SettingsScreen
 import com.example.univibe.ui.screens.settings.ThemePickerScreen
-import com.example.univibe.ui.screens.settings.CustomThemeScreen
 import com.example.univibe.ui.screens.messages.ChatScreen
 import com.example.univibe.ui.screens.hub.EventDetailsScreen
 import com.example.univibe.ui.screens.hub.GroupDetailsScreen
@@ -58,8 +57,8 @@ fun AppNavigationGraph(
         
         currentRoute == NavigationRoute.Messages.route -> {
             MessagesScreen(
-                onConversationClick = { userId ->
-                    navigationState.navigate(NavigationRoute.ChatDetail(userId).route)
+                onConversationClick = { conversationId ->
+                    navigationState.navigate(NavigationRoute.ChatDetail(conversationId).route)
                 },
                 onBackClick = { navigationState.goBack() }
             )
@@ -110,17 +109,13 @@ fun AppNavigationGraph(
         
         // PARAMETERIZED ROUTES
         currentRoute.startsWith("chat_detail/") -> {
-            val userId = currentRoute.substringAfterLast("/")
-            ChatScreen(
-                userId = userId,
-                onBackClick = { navigationState.goBack() }
-            )
+            val conversationId = currentRoute.substringAfterLast("/")
+            ChatScreen(conversationId).Content()
         }
         
         currentRoute.startsWith("event_details/") -> {
             val eventId = currentRoute.substringAfterLast("/")
             EventDetailsScreen(
-                eventId = eventId,
                 onBackClick = { navigationState.goBack() }
             )
         }
@@ -128,7 +123,6 @@ fun AppNavigationGraph(
         currentRoute.startsWith("group_details/") -> {
             val groupId = currentRoute.substringAfterLast("/")
             GroupDetailsScreen(
-                groupId = groupId,
                 onBackClick = { navigationState.goBack() }
             )
         }

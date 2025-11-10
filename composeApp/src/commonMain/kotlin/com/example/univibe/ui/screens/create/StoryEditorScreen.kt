@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -27,11 +28,13 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import coil3.compose.AsyncImage
 import com.example.univibe.domain.models.*
-import com.example.univibe.ui.theme.BurgundyPrimary
+import com.example.univibe.ui.theme.BrandColors
 import com.example.univibe.ui.theme.PlatformIcons
-import java.util.*
+import com.example.univibe.ui.components.AsyncImage
+import com.example.univibe.util.UUID
+import com.example.univibe.ui.utils.parseHexColor
+import kotlin.random.Random
 
 /**
  * StoryEditorScreen - Full-featured story editor
@@ -127,28 +130,37 @@ private fun StoryEditorScreenContent(
                     }
             ) {
                 // Image with filters
-                AsyncImage(
-                    model = draft.imageUri,
-                    contentDescription = "Story image",
+                draft.imageUri?.let { imageUri ->
+                    AsyncImage(
+                        model = imageUri,
+                        contentDescription = "Story image",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .graphicsLayer {
+                                // Apply filter effects
+                                when (draft.filter) {
+                                    StoryFilter.WARM -> {
+                                        alpha = 1f
+                                    }
+                                    StoryFilter.COOL -> {
+                                        alpha = 1f
+                                    }
+                                    StoryFilter.GRAYSCALE -> {
+                                        alpha = 1f
+                                    }
+                                    else -> {}
+                                }
+                            },
+                        contentScale = ContentScale.Crop
+                    )
+                } ?: Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .graphicsLayer {
-                            // Apply filter effects
-                            when (draft.filter) {
-                                StoryFilter.WARM -> {
-                                    alpha = 1f
-                                }
-                                StoryFilter.COOL -> {
-                                    alpha = 1f
-                                }
-                                StoryFilter.GRAYSCALE -> {
-                                    alpha = 1f
-                                }
-                                else -> {}
-                            }
-                        },
-                    contentScale = ContentScale.Crop
-                )
+                        .background(Color.DarkGray),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("No image selected", color = Color.White)
+                }
 
                 // Brightness/Contrast/Saturation Overlay
                 if (draft.brightness != 0 || draft.contrast != 0 || draft.saturation != 0) {
@@ -191,7 +203,7 @@ private fun StoryEditorScreenContent(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(16.dp),
-                    containerColor = BurgundyPrimary
+                    containerColor = BrandColors.Burgundy
                 ) {
                     Icon(PlatformIcons.TextFields, contentDescription = "Add text")
                 }
@@ -222,6 +234,14 @@ private fun StoryEditorScreenContent(
                     .verticalScroll(rememberScrollState())
             ) {
                 when (selectedTab) {
+                    EditorTab.CANVAS -> {
+                        Text(
+                            "Canvas Ready",
+                            color = Color.White,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+
                     EditorTab.TEXT -> TextToolsPanel(
                         textElement = editingTextElement,
                         onStyleChange = { style ->
@@ -326,7 +346,7 @@ private fun StoryTextElement(
             text = element.text,
             style = TextStyle(
                 fontSize = element.fontSize.sp,
-                color = Color(android.graphics.Color.parseColor(element.color))
+                color = parseHexColor(element.color)
             ),
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -385,7 +405,7 @@ private fun StoryStickerElement(
 @Composable
 private fun TextToolsPanel(
     textElement: TextElement?,
-    onStyleChange: (TextStyle) -> Unit
+    onStyleChange: (com.example.univibe.domain.models.TextStyle) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -560,7 +580,7 @@ private fun FiltersToolPanel(
                         .height(44.dp)
                         .background(
                             if (selectedFilter == filter)
-                                BurgundyPrimary.copy(alpha = 0.3f)
+                                BrandColors.Burgundy.copy(alpha = 0.3f)
                             else
                                 Color.Gray.copy(alpha = 0.1f),
                             shape = RoundedCornerShape(8.dp)
@@ -579,7 +599,7 @@ private fun FiltersToolPanel(
                         Icon(
                             PlatformIcons.Check,
                             contentDescription = null,
-                            tint = BurgundyPrimary,
+                            tint = BrandColors.Burgundy,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -661,7 +681,7 @@ private fun AdjustmentSlider(
             Text(
                 text = value.toString(),
                 fontSize = 12.sp,
-                color = BurgundyPrimary,
+                color = BrandColors.Burgundy,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -732,7 +752,7 @@ private fun StyleButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) BurgundyPrimary else Color.Gray.copy(alpha = 0.2f)
+            containerColor = if (isSelected) BrandColors.Burgundy else Color.Gray.copy(alpha = 0.2f)
         ),
         modifier = Modifier.height(40.dp)
     ) {
@@ -811,15 +831,25 @@ private fun StoryPreviewModal(
             )
 
             // Preview image area
-            AsyncImage(
-                model = draft.imageUri,
-                contentDescription = "Story preview",
+            draft.imageUri?.let { imageUri ->
+                AsyncImage(
+                    model = imageUri,
+                    contentDescription = "Story preview",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .background(Color.Gray, RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            } ?: Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(300.dp)
                     .background(Color.Gray, RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
+                contentAlignment = Alignment.Center
+            ) {
+                Text("No image", color = Color.White)
+            }
 
             Text(
                 "Story details:\n" +
@@ -851,7 +881,7 @@ private fun StoryPreviewModal(
                     onClick = onPost,
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = BurgundyPrimary
+                        containerColor = BrandColors.Burgundy
                     )
                 ) {
                     Text("Post Story")

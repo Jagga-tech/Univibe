@@ -23,10 +23,10 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import coil3.compose.AsyncImage
 import com.example.univibe.domain.models.ReelDraft
-import com.example.univibe.ui.theme.BurgundyPrimary
+import com.example.univibe.ui.theme.BrandColors
 import com.example.univibe.ui.theme.PlatformIcons
+import com.example.univibe.ui.utils.formatDuration
 
 data class VideoItem(
     val id: String,
@@ -92,7 +92,7 @@ private fun CreateReelScreenContent() {
                     .padding(16.dp)
                     .clickable { showRecordDialog = true },
                 colors = CardDefaults.cardColors(
-                    containerColor = BurgundyPrimary
+                    containerColor = BrandColors.Burgundy
                 )
             ) {
                 Box(
@@ -196,12 +196,11 @@ private fun VideoThumbnailCard(
             .clip(RoundedCornerShape(8.dp))
             .clickable { onClick() }
     ) {
-        // Thumbnail
-        AsyncImage(
-            model = video.thumbnailUrl,
-            contentDescription = "Video thumbnail",
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+        // Thumbnail (placeholder - in production would use AsyncImage from Coil)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Gray)
         )
         
         // Dark overlay
@@ -242,7 +241,7 @@ private fun VideoThumbnailCard(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(BurgundyPrimary.copy(alpha = 0.5f))
+                    .background(BrandColors.Burgundy.copy(alpha = 0.5f))
             ) {
                 Icon(
                     PlatformIcons.CheckCircle,
@@ -254,15 +253,5 @@ private fun VideoThumbnailCard(
                 )
             }
         }
-    }
-}
-
-private fun formatDuration(seconds: Int): String {
-    val mins = seconds / 60
-    val secs = seconds % 60
-    return if (mins > 0) {
-        String.format("%d:%02d", mins, secs)
-    } else {
-        String.format("0:%02d", secs)
     }
 }

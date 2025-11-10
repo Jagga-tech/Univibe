@@ -14,62 +14,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.MockMessages
 import com.example.univibe.domain.models.Conversation
 import com.example.univibe.ui.components.*
-import com.example.univibe.ui.utils.OnBottomReached
-import com.example.univibe.ui.utils.rememberPaginationState
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-object MessagesScreen : Screen {
-    @Composable
-    override fun Content() {
-        MessagesScreenContent()
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MessagesScreenContent() {
+fun MessagesScreen(
+    onConversationClick: (String) -> Unit = {},
+    onBackClick: () -> Unit = {}
+) {
     val navigator = LocalNavigator.currentOrThrow
-    val scope = rememberCoroutineScope()
-    
-    val paginationState = rememberPaginationState(
-        initialItems = MockMessages.conversations.take(15)
-    )
-    
-    var isRefreshing by remember { mutableStateOf(false) }
-    val pullToRefreshState = rememberPullToRefreshState()
     val listState = rememberLazyListState()
     var isInitialLoading by remember { mutableStateOf(true) }
     var searchQuery by remember { mutableStateOf("") }
+    val conversations = remember { MockMessages.conversations }
     
     LaunchedEffect(Unit) {
         delay(500)
         isInitialLoading = false
-    }
-    
-    LaunchedEffect(pullToRefreshState.isRefreshing) {
-        if (pullToRefreshState.isRefreshing) {
-            isRefreshing = true
-            delay(1000)
-            paginationState.refresh(MockMessages.conversations.take(15))
-            isRefreshing = false
-            pullToRefreshState.endRefresh()
-        }
-    }
-    
-    listState.OnBottomReached {
-        scope.launch {
-            paginationState.loadNextPage { page ->
-                delay(1000)
-                MockMessages.conversations.drop((page + 1) * 15).take(15)
-            }
-        }
     }
     
     Scaffold(
@@ -93,7 +58,6 @@ private fun MessagesScreenContent() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
             if (isInitialLoading) {
                 LazyColumn(
@@ -106,21 +70,6 @@ private fun MessagesScreenContent() {
                         MessageSkeleton()
                     }
                 }
-            } else if (paginationState.error != null) {
-                ErrorState(
-                    error = paginationState.error ?: "Failed to load messages",
-                    onRetry = {
-                        scope.launch {
-                            paginationState.retry { page ->
-                                delay(1000)
-                                MockMessages.conversations.drop((page + 1) * 15).take(15)
-                            }
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .align(Alignment.Center)
-                )
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
@@ -139,7 +88,7 @@ private fun MessagesScreenContent() {
                         )
                     }
                     
-                    if (paginationState.items.isEmpty()) {
+                    if (conversations.isEmpty()) {
                         item {
                             EmptyState(
                                 title = "No messages",
@@ -149,34 +98,22 @@ private fun MessagesScreenContent() {
                             )
                         }
                     } else {
-                        items(paginationState.items) { conversation ->
-                            ConversationCard(conversation)
-                        }
-                    }
-                    
-                    if (paginationState.isLoading && paginationState.items.isNotEmpty()) {
-                        item {
-                            PaginationLoadingIndicator()
-                        }
-                    }
-                    
-                    if (!paginationState.hasMorePages && paginationState.items.isNotEmpty()) {
-                        item {
-                            EndOfListIndicator()
+                        items(conversations) { conversation ->
+                            ConversationCardItem(conversation)
                         }
                     }
                 }
             }
-            
-            //             PullToRefreshContainer(
-            //                 state = pullToRefreshState,
-            //                 modifier = Modifier.align(Alignment.TopCenter)
         }
     }
 }
 
 @Composable
-private fun ConversationCard(conversation: Conversation) {
+private fun ConversationCardItem(conversation: Conversation) {
+    val participantName = conversation.participants.firstOrNull()?.name ?: "Unknown"
+    val lastMessageText = conversation.lastMessage?.content ?: "No messages yet"
+    val lastMessageTime = formatMessageTime(conversation.lastMessageTime)
+    
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -198,14 +135,14 @@ private fun ConversationCard(conversation: Conversation) {
             
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = conversation.participantName,
+                    text = participantName,
                     style = MaterialTheme.typography.bodySmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = conversation.lastMessage,
+                    text = lastMessageText,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2,
@@ -214,7 +151,7 @@ private fun ConversationCard(conversation: Conversation) {
             }
             
             Text(
-                text = conversation.timestamp,
+                text = lastMessageTime,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -222,8 +159,8 @@ private fun ConversationCard(conversation: Conversation) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun rememberPullToRefreshState(): androidx.compose.material3.pulltorefresh.PullToRefreshState {
-    return androidx.compose.material3.pulltorefresh.rememberPullToRefreshState()
+private fun formatMessageTime(timestamp: Long): String {
+    if (timestamp == 0L) return ""
+    // Simplified format - just show time
+    return "now"
 }

@@ -18,7 +18,7 @@ import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.LogoutOutlined
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.People
@@ -34,7 +34,38 @@ import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material.icons.filled.VideoCall
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.ViewAgenda
+import androidx.compose.material.icons.filled.PlayCircleFilled
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ChatBubble
+import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.VpnKey
+import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.filled.Verified
+import androidx.compose.material.icons.filled.Laptop
+import androidx.compose.material.icons.filled.Work
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.PhotoCamera as PhotoCameraIcon
+import androidx.compose.material.icons.filled.Image as ImageIcon
+import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.SearchOff
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -74,7 +105,7 @@ actual object PlatformIcons {
     actual val PrivacyTip: ImageVector = Icons.Default.PrivacyTip
     actual val Visibility: ImageVector = Icons.Default.Visibility
     actual val Help: ImageVector = Icons.Default.Help
-    actual val Logout: ImageVector = Icons.Default.LogoutOutlined
+    actual val Logout: ImageVector = Icons.Default.Logout
     
     // Content types
     actual val Article: ImageVector = Icons.Default.Article
@@ -91,6 +122,8 @@ actual object PlatformIcons {
     actual val ViewCompact: ImageVector = Icons.Default.ViewAgenda
     actual val Videocam: ImageVector = Icons.Default.Videocam
     actual val VideoCall: ImageVector = Icons.Default.VideoCall
+    actual val PlayCircleFilled: ImageVector = Icons.Default.PlayCircleFilled
+    actual val CheckCircle: ImageVector = Icons.Default.CheckCircle
     
     // Additional icons
     actual val Person: ImageVector = Icons.Default.Person
@@ -103,6 +136,36 @@ actual object PlatformIcons {
     actual val CalendarToday: ImageVector = Icons.Default.DateRange
     actual val Lock: ImageVector = Icons.Default.Lock
     actual val Delete: ImageVector = Icons.Default.Delete
-    actual val Visibility: ImageVector = Icons.Default.Visibility
     actual val VisibilityOff: ImageVector = Icons.Default.VisibilityOff
+    
+    // Edit and form icons
+    actual val Edit: ImageVector = Icons.Default.Edit
+    actual val Phone: ImageVector = Icons.Default.Phone
+    actual val Language: ImageVector = Icons.Default.Language
+    
+    // Notifications and settings
+    actual val NotificationsNone: ImageVector = Icons.Default.NotificationsNone
+    actual val Notifications: ImageVector = Icons.Default.Notifications
+    actual val VpnKey: ImageVector = Icons.Default.VpnKey
+    actual val Security: ImageVector = Icons.Default.Security
+    
+    // Email
+    actual val MailOutline: ImageVector = Icons.Default.MailOutline
+    
+    // Schedule and location
+    actual val Schedule: ImageVector = Icons.Default.Schedule
+    actual val Place: ImageVector = Icons.Default.Place
+    actual val PhotoCamera: ImageVector = Icons.Default.PhotoCamera
+    actual val Verified: ImageVector = Icons.Default.Verified
+    
+    // Job and work related
+    actual val Laptop: ImageVector = Icons.Default.Laptop
+    actual val Work: ImageVector = Icons.Default.Work
+    actual val AttachMoney: ImageVector = Icons.Default.AttachMoney
+    
+    // Media
+    actual val MusicNote: ImageVector = Icons.Default.MusicNote
+    actual val Camera: ImageVector = Icons.Default.PhotoCamera
+    actual val Image: ImageVector = Icons.Default.Image
+    actual val TextFields: ImageVector = Icons.Default.TextFields
 }

@@ -145,7 +145,7 @@ private fun StoryItemView(
             contentAlignment = Alignment.Center
         ) {
             UserAvatar(
-                imageUrl = story.userAvatarUrl,
+                imageUrl = story.user.profileImageUrl,
                 size = Dimensions.AvatarSize.large - (if (story.isViewed) 0.dp else 4.dp)
             )
         }

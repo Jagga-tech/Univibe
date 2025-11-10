@@ -67,3 +67,70 @@ enum class ReelFilter {
     BRIGHT,
     CINEMATIC
 }
+
+/**
+ * Sticker categories for reels
+ */
+object StickerCategoriesReel {
+    val hearts = listOf("❤️", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍")
+    val faces = listOf("😂", "🤣", "😍", "😘", "😎", "🥰", "😌", "😭")
+    val hands = listOf("👋", "🙌", "👏", "✌️", "🤘", "🙏", "💪", "✊")
+    val party = listOf("🎉", "🎊", "🎈", "🎁", "🎀", "⭐", "✨", "🌟")
+    val misc = listOf("📸", "📷", "🎬", "🎭", "🎨", "🎪", "🎯", "🎲")
+
+    val all: Map<String, List<String>> = linkedMapOf(
+        "Hearts" to hearts,
+        "Faces" to faces,
+        "Hands" to hands,
+        "Party" to party,
+        "Misc" to misc
+    )
+}
+
+/**
+ * Default music tracks available for reels
+ */
+val DEFAULT_MUSIC_TRACKS = listOf(
+    MusicTrack(
+        id = "track_1",
+        name = "Upbeat Energy",
+        artist = "Modern Beats",
+        duration = 180,
+        audioUrl = ""
+    ),
+    MusicTrack(
+        id = "track_2",
+        name = "Chill Vibes",
+        artist = "Lo-Fi Beats",
+        duration = 240,
+        audioUrl = ""
+    ),
+    MusicTrack(
+        id = "track_3",
+        name = "Party Time",
+        artist = "DJ Mix",
+        duration = 200,
+        audioUrl = ""
+    ),
+    MusicTrack(
+        id = "track_4",
+        name = "Smooth Jazz",
+        artist = "Jazz Quartet",
+        duration = 210,
+        audioUrl = ""
+    ),
+    MusicTrack(
+        id = "track_5",
+        name = "Trending Remix",
+        artist = "Top Hits",
+        duration = 150,
+        audioUrl = ""
+    ),
+    MusicTrack(
+        id = "track_6",
+        name = "Summer Vibes",
+        artist = "Beach House",
+        duration = 220,
+        audioUrl = ""
+    )
+)

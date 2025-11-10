@@ -20,9 +20,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.domain.models.StoryDraft
 import com.example.univibe.domain.models.StoryType
-import com.example.univibe.ui.theme.BurgundyPrimary
+import com.example.univibe.ui.theme.BrandColors
 import com.example.univibe.ui.theme.PlatformIcons
-import java.util.*
+import com.example.univibe.util.UUID
+import kotlin.random.Random
 
 /**
  * CreateStoryScreen - First step in story creation flow
@@ -162,7 +163,7 @@ private fun CreateStoryScreenContent() {
  */
 @Composable
 private fun StoryCreationOption(
-    icon: androidx.compose.material.icons.Icons.Filled,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     title: String,
     description: String,
     onClick: () -> Unit
@@ -172,7 +173,7 @@ private fun StoryCreationOption(
             .fillMaxWidth()
             .height(80.dp)
             .background(
-                color = BurgundyPrimary.copy(alpha = 0.15f),
+                color = BrandColors.Burgundy.copy(alpha = 0.15f),
                 shape = RoundedCornerShape(16.dp)
             )
             .clickable(onClick = onClick)
@@ -183,7 +184,7 @@ private fun StoryCreationOption(
         Icon(
             imageVector = icon,
             contentDescription = title,
-            tint = BurgundyPrimary,
+            tint = BrandColors.Burgundy,
             modifier = Modifier.size(40.dp)
         )
 
@@ -206,7 +207,7 @@ private fun StoryCreationOption(
         }
 
         Icon(
-            imageVector = androidx.compose.material.icons.filled.KeyboardArrowRight,
+            imageVector = PlatformIcons.ChevronRight,
             contentDescription = null,
             tint = Color.White.copy(alpha = 0.5f),
             modifier = Modifier.size(24.dp)
@@ -298,14 +299,14 @@ private fun GalleryPickerDialog(
                                     onPhotoSelected(imageUrl)
                                     onDismiss()
                                 },
-                            color = BurgundyPrimary.copy(alpha = 0.2f),
+                            color = BrandColors.Burgundy.copy(alpha = 0.2f),
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .background(
-                                        color = BurgundyPrimary.copy(alpha = 0.3f)
+                                        color = BrandColors.Burgundy.copy(alpha = 0.3f)
                                     ),
                                 contentAlignment = Alignment.Center
                             ) {
@@ -328,7 +329,3 @@ private fun GalleryPickerDialog(
         }
     )
 }
-
-// For icon reference
-private val androidx.compose.material.icons.PlatformIcons.KeyboardArrowRight
-    get() = androidx.compose.material.icons.filled.KeyboardArrowRight

@@ -12,61 +12,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.MockNotifications
 import com.example.univibe.domain.models.Notification
 import com.example.univibe.ui.components.*
-import com.example.univibe.ui.utils.OnBottomReached
-import com.example.univibe.ui.utils.rememberPaginationState
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-object NotificationsScreen : Screen {
-    @Composable
-    override fun Content() {
-        NotificationsScreenContent()
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NotificationsScreenContent() {
+fun NotificationsScreen(
+    onBackClick: () -> Unit = {}
+) {
     val navigator = LocalNavigator.currentOrThrow
-    val scope = rememberCoroutineScope()
-    
-    val paginationState = rememberPaginationState(
-        initialItems = MockNotifications.notifications.take(15)
-    )
-    
-    var isRefreshing by remember { mutableStateOf(false) }
-    val pullToRefreshState = rememberPullToRefreshState()
     val listState = rememberLazyListState()
     var isInitialLoading by remember { mutableStateOf(true) }
     
     LaunchedEffect(Unit) {
         delay(500)
         isInitialLoading = false
-    }
-    
-    LaunchedEffect(pullToRefreshState.isRefreshing) {
-        if (pullToRefreshState.isRefreshing) {
-            isRefreshing = true
-            delay(1000)
-            paginationState.refresh(MockNotifications.notifications.take(15))
-            isRefreshing = false
-            pullToRefreshState.endRefresh()
-        }
-    }
-    
-    listState.OnBottomReached {
-        scope.launch {
-            paginationState.loadNextPage { page ->
-                delay(1000)
-                MockNotifications.notifications.drop((page + 1) * 15).take(15)
-            }
-        }
     }
     
     Scaffold(
@@ -90,7 +53,6 @@ private fun NotificationsScreenContent() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
             if (isInitialLoading) {
                 LazyColumn(
@@ -103,29 +65,16 @@ private fun NotificationsScreenContent() {
                         NotificationSkeleton()
                     }
                 }
-            } else if (paginationState.error != null) {
-                ErrorState(
-                    error = paginationState.error ?: "Failed to load notifications",
-                    onRetry = {
-                        scope.launch {
-                            paginationState.retry { page ->
-                                delay(1000)
-                                MockNotifications.notifications.drop((page + 1) * 15).take(15)
-                            }
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .align(Alignment.Center)
-                )
             } else {
+                val notifications = MockNotifications.notifications
+                
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     state = listState,
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    if (paginationState.items.isEmpty()) {
+                    if (notifications.isEmpty()) {
                         item {
                             EmptyState(
                                 title = "No notifications",
@@ -135,28 +84,12 @@ private fun NotificationsScreenContent() {
                             )
                         }
                     } else {
-                        items(paginationState.items) { notification ->
+                        items(notifications) { notification ->
                             NotificationCard(notification)
-                        }
-                    }
-                    
-                    if (paginationState.isLoading && paginationState.items.isNotEmpty()) {
-                        item {
-                            PaginationLoadingIndicator()
-                        }
-                    }
-                    
-                    if (!paginationState.hasMorePages && paginationState.items.isNotEmpty()) {
-                        item {
-                            EndOfListIndicator()
                         }
                     }
                 }
             }
-            
-            //             PullToRefreshContainer(
-            //                 state = pullToRefreshState,
-            //                 modifier = Modifier.align(Alignment.TopCenter)
         }
     }
 }
@@ -208,10 +141,4 @@ private fun NotificationCard(notification: Notification) {
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun rememberPullToRefreshState(): androidx.compose.material3.pulltorefresh.PullToRefreshState {
-    return androidx.compose.material3.pulltorefresh.rememberPullToRefreshState()
 }
