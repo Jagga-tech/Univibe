@@ -287,7 +287,7 @@ fun UniVibeFAB(
     
     if (!label.isNullOrEmpty()) {
         ExtendedFloatingActionButton(
-            onClick = onClick,
+            text = { Text(label) },
             icon = {
                 if (loading) {
                     CircularProgressIndicator(
@@ -303,21 +303,17 @@ fun UniVibeFAB(
                     )
                 }
             },
-            text = { Text(label) },
+            onClick = onClick,
             modifier = modifier.scale(scale),
-            enabled = enabled && !loading,
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            interactionSource = interactionSource
+            contentColor = MaterialTheme.colorScheme.onPrimary
         )
     } else {
         FloatingActionButton(
             onClick = onClick,
             modifier = modifier.scale(scale),
-            enabled = enabled && !loading,
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            interactionSource = interactionSource
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ) {
             if (loading) {
                 CircularProgressIndicator(

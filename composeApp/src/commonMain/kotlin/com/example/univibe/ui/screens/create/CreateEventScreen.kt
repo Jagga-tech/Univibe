@@ -18,8 +18,6 @@ import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Spacing
 import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.ui.utils.UISymbols
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * Create Event Screen - Form for creating new campus events
@@ -312,7 +310,7 @@ private fun CreateEventScreenContent() {
                         .fillMaxWidth()
                         .height(48.dp),
                     loading = isCreating,
-                    leadingIcon = PlatformIcons.Add
+                    leadingIcon = UISymbols.ADD
                 )
             }
             

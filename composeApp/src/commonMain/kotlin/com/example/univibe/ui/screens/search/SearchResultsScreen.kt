@@ -569,8 +569,7 @@ private fun UserSearchResultCard(
                 onClick = onFollowClick,
                 modifier = Modifier
                     .width(90.dp)
-                    .height(36.dp),
-                textStyle = MaterialTheme.typography.labelSmall
+                    .height(36.dp)
             )
         }
     }
@@ -664,7 +663,7 @@ private fun GroupSearchResultCard(
                         modifier = Modifier
                             .background(
                                 color = MaterialTheme.colorScheme.secondaryContainer,
-                                shape = RoundedCornerShape(Dimensions.CornerRadius.sm)
+                                shape = RoundedCornerShape(Dimensions.CornerRadius.small)
                             )
                             .padding(horizontal = Dimensions.Spacing.sm, vertical = 2.dp)
                     ) {
@@ -703,8 +702,7 @@ private fun GroupSearchResultCard(
                     onClick = onJoinClick,
                     modifier = Modifier
                         .width(80.dp)
-                        .height(32.dp),
-                    textStyle = MaterialTheme.typography.labelSmall
+                        .height(32.dp)
                 )
             }
         }
@@ -816,8 +814,7 @@ private fun EventSearchResultCard(
                     onClick = onRsvpClick,
                     modifier = Modifier
                         .width(90.dp)
-                        .height(32.dp),
-                    textStyle = MaterialTheme.typography.labelSmall
+                        .height(32.dp)
                 )
             }
         }

@@ -290,7 +290,7 @@ private fun AppSettingsContent() {
 @Composable
 private fun SettingsSectionHeader(
     title: String,
-    icon: androidx.compose.material.icons.materialIcon
+    icon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
     Row(
         modifier = Modifier

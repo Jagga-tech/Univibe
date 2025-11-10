@@ -6,6 +6,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.univibe.ui.components.TextIcon
 
 /**
  * Bottom navigation bar for UniVibe with 5 main navigation items.
@@ -26,8 +27,8 @@ fun BottomNavBar(
                 selected = currentRoute == item.route,
                 onClick = { onNavigate(item.route) },
                 icon = {
-                    Icon(
-                        imageVector = item.icon,
+                    TextIcon(
+                        symbol = item.icon,
                         contentDescription = item.label
                     )
                 },

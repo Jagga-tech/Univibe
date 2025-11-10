@@ -78,10 +78,10 @@ class ErrorHandler(
      * Maps exceptions to AppError types
      */
     private fun mapException(e: Exception): AppError {
-        return when (e) {
-            is java.net.UnknownHostException -> AppError.NetworkError()
-            is java.net.SocketTimeoutException -> AppError.TimeoutError()
-            is java.net.ConnectException -> AppError.NetworkError("Cannot connect to server")
+        return when (e.message?.lowercase()) {
+            "unknown host" -> AppError.NetworkError()
+            "timeout" -> AppError.TimeoutError()
+            "connection refused", "connect exception" -> AppError.NetworkError("Cannot connect to server")
             else -> AppError.Unknown(e.message ?: "Unknown error")
         }
     }
@@ -120,10 +120,10 @@ fun rememberErrorHandler(
  */
 fun <T> Result<T>.onError(handler: (AppError) -> Unit): Result<T> {
     exceptionOrNull()?.let { exception ->
-        val error = when (exception) {
-            is java.net.UnknownHostException -> AppError.NetworkError()
-            is java.net.SocketTimeoutException -> AppError.TimeoutError()
-            is java.net.ConnectException -> AppError.NetworkError("Cannot connect to server")
+        val error = when (exception.message?.lowercase()) {
+            "unknown host" -> AppError.NetworkError()
+            "timeout" -> AppError.TimeoutError()
+            "connection refused", "connect exception" -> AppError.NetworkError("Cannot connect to server")
             else -> AppError.Unknown(exception.message ?: "Unknown error")
         }
         handler(error)
@@ -145,9 +145,9 @@ fun <T> Result<T>.fold(
 ) {
     onSuccess(getOrNull() ?: run {
         exceptionOrNull()?.let { exception ->
-            val error = when (exception) {
-                is java.net.UnknownHostException -> AppError.NetworkError()
-                is java.net.SocketTimeoutException -> AppError.TimeoutError()
+            val error = when (exception.message?.lowercase()) {
+                "unknown host" -> AppError.NetworkError()
+                "timeout" -> AppError.TimeoutError()
                 else -> AppError.Unknown(exception.message ?: "Unknown error")
             }
             onError(error)

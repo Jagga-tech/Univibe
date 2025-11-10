@@ -225,6 +225,10 @@ object SemanticColors {
     val SuccessContainer = Color(0xFFC8F7DC)
     val OnSuccessContainer = Color(0xFF002109)
     
+    val Error = Color(0xFFEF4444)
+    val ErrorContainer = Color(0xFFFFEBEE)
+    val OnErrorContainer = Color(0xFF3D0000)
+    
     val Warning = Color(0xFFF59E0B)
     val WarningContainer = Color(0xFFFFEBCC)
     val OnWarningContainer = Color(0xFF4D2800)

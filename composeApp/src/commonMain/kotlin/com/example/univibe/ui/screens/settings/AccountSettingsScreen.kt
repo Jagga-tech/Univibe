@@ -267,7 +267,7 @@ private fun AccountSettingsContent() {
 private fun AccountInfoCard(
     label: String,
     value: String,
-    icon: androidx.compose.material.icons.materialIcon
+    icon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),

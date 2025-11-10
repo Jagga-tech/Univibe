@@ -40,19 +40,8 @@ private fun SearchScreenContent() {
     )
     
     var isRefreshing by remember { mutableStateOf(false) }
-    val pullToRefreshState = rememberPullToRefreshState()
     val listState = rememberLazyListState()
     var isInitialLoading by remember { mutableStateOf(false) }
-    
-    LaunchedEffect(pullToRefreshState.isRefreshing) {
-        if (pullToRefreshState.isRefreshing) {
-            isRefreshing = true
-            delay(1000)
-            paginationState.refresh(MockPosts.posts.take(10))
-            isRefreshing = false
-            pullToRefreshState.endRefresh()
-        }
-    }
     
     listState.OnBottomReached {
         scope.launch {
@@ -79,7 +68,6 @@ private fun SearchScreenContent() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),

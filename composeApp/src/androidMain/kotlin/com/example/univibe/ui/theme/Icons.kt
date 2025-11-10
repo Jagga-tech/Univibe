@@ -2,6 +2,7 @@ package com.example.univibe.ui.theme
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
@@ -31,6 +32,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material.icons.filled.VideoCall
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.material.icons.outlined.ErrorOutline
@@ -44,6 +46,7 @@ actual object PlatformIcons {
     actual val SearchOff: ImageVector = Icons.Outlined.SearchOff
     
     // Common action icons
+    actual val Add: ImageVector = Icons.Default.Add
     actual val MoreVert: ImageVector = Icons.Default.MoreVert
     actual val Favorite: ImageVector = Icons.Default.Favorite
     actual val FavoriteBorder: ImageVector = Icons.Default.FavoriteBorder
@@ -87,6 +90,7 @@ actual object PlatformIcons {
     actual val DarkMode: ImageVector = Icons.Default.DarkMode
     actual val ViewCompact: ImageVector = Icons.Default.ViewAgenda
     actual val Videocam: ImageVector = Icons.Default.Videocam
+    actual val VideoCall: ImageVector = Icons.Default.VideoCall
     
     // Additional icons
     actual val Person: ImageVector = Icons.Default.Person
@@ -95,4 +99,10 @@ actual object PlatformIcons {
     actual val ChatBubble: ImageVector = Icons.Default.ChatBubble
     actual val Tag: ImageVector = Icons.Default.Tag
     actual val Star: ImageVector = Icons.Default.Star
+    actual val Email: ImageVector = Icons.Default.Email
+    actual val CalendarToday: ImageVector = Icons.Default.DateRange
+    actual val Lock: ImageVector = Icons.Default.Lock
+    actual val Delete: ImageVector = Icons.Default.Delete
+    actual val Visibility: ImageVector = Icons.Default.Visibility
+    actual val VisibilityOff: ImageVector = Icons.Default.VisibilityOff
 }

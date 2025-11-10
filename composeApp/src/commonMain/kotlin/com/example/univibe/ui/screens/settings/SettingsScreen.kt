@@ -21,16 +21,6 @@ import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.ui.utils.UISymbols
 
 /**
- * Data class representing general app settings.
- */
-data class GeneralSettings(
-    val darkModeEnabled: Boolean = false,
-    val selectedLanguage: String = "English",
-    val compactViewEnabled: Boolean = false,
-    val autoPlayVideos: Boolean = true
-)
-
-/**
  * Data class representing notification settings.
  */
 data class NotificationSettings(

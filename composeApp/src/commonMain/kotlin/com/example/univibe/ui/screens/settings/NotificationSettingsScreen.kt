@@ -283,7 +283,7 @@ private fun NotificationSettingCard(
 private fun NotificationTypeToggle(
     title: String,
     description: String,
-    icon: androidx.compose.material.icons.materialIcon,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     isEnabled: Boolean,
     onToggle: (Boolean) -> Unit
 ) {

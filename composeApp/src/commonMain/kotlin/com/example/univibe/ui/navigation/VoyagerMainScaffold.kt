@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.*
 import com.example.univibe.ui.theme.*
+import com.example.univibe.ui.components.TextIcon
+import com.example.univibe.ui.components.UISymbols
 import com.example.univibe.ui.screens.home.HomeTab
 import com.example.univibe.ui.screens.discover.DiscoverTab
 import com.example.univibe.ui.screens.hub.HubTab
@@ -159,7 +161,7 @@ private fun TabNavigator.PermanentNavigationDrawerComponent() {
             label = { Text("Settings") },
             selected = false,
             onClick = { /* Navigate to settings */ },
-            icon = { Icon(Settings, contentDescription = "Settings") }
+            icon = { TextIcon(symbol = UISymbols.SETTINGS, contentDescription = "Settings") }
         )
     }
 }

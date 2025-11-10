@@ -9,6 +9,7 @@ expect object PlatformIcons {
     val SearchOff: ImageVector
     
     // Common action icons
+    val Add: ImageVector
     val MoreVert: ImageVector
     val Favorite: ImageVector
     val FavoriteBorder: ImageVector
@@ -52,6 +53,7 @@ expect object PlatformIcons {
     val DarkMode: ImageVector
     val ViewCompact: ImageVector
     val Videocam: ImageVector
+    val VideoCall: ImageVector
     
     // Additional icons
     val Person: ImageVector
@@ -60,4 +62,10 @@ expect object PlatformIcons {
     val ChatBubble: ImageVector
     val Tag: ImageVector
     val Star: ImageVector
+    val Email: ImageVector
+    val CalendarToday: ImageVector
+    val Lock: ImageVector
+    val Delete: ImageVector
+    val Visibility: ImageVector
+    val VisibilityOff: ImageVector
 }

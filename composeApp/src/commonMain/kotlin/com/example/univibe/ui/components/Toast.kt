@@ -25,13 +25,11 @@ enum class ToastType {
 /**
  * Get the appropriate color and icon symbol for a toast type.
  */
-private fun ToastType.getColorAndSymbol(): Pair<androidx.compose.ui.graphics.Color, String> {
-    return when (this) {
-        ToastType.Success -> SemanticColors.Success to "✓"
-        ToastType.Error -> SemanticColors.Error to "✕"
-        ToastType.Warning -> SemanticColors.Warning to "⚠"
-        ToastType.Info -> SemanticColors.Info to "ℹ"
-    }
+private fun ToastType.getColorAndSymbol(): Pair<androidx.compose.ui.graphics.Color, String> = when (this) {
+    ToastType.Success -> SemanticColors.Success to "✓"
+    ToastType.Error -> SemanticColors.Error to "✕"
+    ToastType.Warning -> SemanticColors.Warning to "⚠"
+    ToastType.Info -> SemanticColors.Info to "ℹ"
 }
 
 /**
