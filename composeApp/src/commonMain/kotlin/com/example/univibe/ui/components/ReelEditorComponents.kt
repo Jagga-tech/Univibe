@@ -179,7 +179,7 @@ private fun FilterButton(
                 if (isSelected) {
                     Spacer(modifier = Modifier.width(4.dp))
                     Icon(
-                        PlatformPlatformIcons.Check,
+                        PlatformIcons.Check,
                         contentDescription = "Selected",
                         tint = Color.White,
                         modifier = Modifier.size(16.dp)

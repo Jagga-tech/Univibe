@@ -108,7 +108,7 @@ fun NavigationSettingsItem(
         }
 
         Icon(
-            imageVector = PlatformIcons.AutoMirrored.Filled.ArrowForward,
+            imageVector = PlatformIcons.ChevronRight,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(Dimensions.IconSize.medium)

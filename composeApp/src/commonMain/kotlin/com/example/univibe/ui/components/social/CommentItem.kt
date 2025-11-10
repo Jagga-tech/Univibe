@@ -75,7 +75,7 @@ fun CommentItem(
     ) {
         // User avatar
         UserAvatar(
-            initial = comment.author.fullName.firstOrNull()?.toString() ?: "?",
+            name = comment.author.fullName,
             size = Dimensions.AvatarSize.small,
             modifier = Modifier.clickable { onUserClick(comment.authorId) }
         )

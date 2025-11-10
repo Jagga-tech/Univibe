@@ -87,4 +87,12 @@ actual object PlatformIcons {
     actual val DarkMode: ImageVector = Icons.Default.DarkMode
     actual val ViewCompact: ImageVector = Icons.Default.ViewAgenda
     actual val Videocam: ImageVector = Icons.Default.Videocam
+    
+    // Additional icons
+    actual val Person: ImageVector = Icons.Default.Person
+    actual val Check: ImageVector = Icons.Default.Check
+    actual val Close: ImageVector = Icons.Default.Close
+    actual val ChatBubble: ImageVector = Icons.Default.ChatBubble
+    actual val Tag: ImageVector = Icons.Default.Tag
+    actual val Star: ImageVector = Icons.Default.Star
 }

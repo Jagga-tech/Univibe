@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -175,7 +176,7 @@ private fun AvatarImageContent(
         // )
         
         Icon(
-            imageVector = PlatformPlatformIcons.Person,
+            imageVector = PlatformIcons.Person,
             contentDescription = "User avatar",
             modifier = Modifier.size(size * 0.6f),
             tint = MaterialTheme.colorScheme.primary
@@ -280,9 +281,7 @@ fun AnimatedLikeButton(
             modifier = Modifier.scale(scale)
         ) {
             Icon(
-                imageVector = if (isLiked) {
-                } else {
-                },
+                imageVector = if (isLiked) PlatformIcons.Favorite else PlatformIcons.FavoriteBorder,
                 contentDescription = "Like",
                 tint = if (isLiked) {
                     MaterialTheme.colorScheme.primary

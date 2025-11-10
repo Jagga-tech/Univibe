@@ -52,4 +52,12 @@ expect object PlatformIcons {
     val DarkMode: ImageVector
     val ViewCompact: ImageVector
     val Videocam: ImageVector
+    
+    // Additional icons
+    val Person: ImageVector
+    val Check: ImageVector
+    val Close: ImageVector
+    val ChatBubble: ImageVector
+    val Tag: ImageVector
+    val Star: ImageVector
 }
