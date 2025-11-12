@@ -166,6 +166,6 @@ actual object PlatformIcons {
     // Media
     actual val MusicNote: ImageVector = Icons.Default.MusicNote
     actual val Camera: ImageVector = Icons.Default.PhotoCamera
-    actual val Image: ImageVector = Icons.Default.Image
+    actual val Image: ImageVector = Icons.Default.PhotoLibrary
     actual val TextFields: ImageVector = Icons.Default.TextFields
 }

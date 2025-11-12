@@ -204,7 +204,7 @@ private fun MarketplaceItemDetailScreenContent(itemId: String) {
                         }
                     ) {
                         Surface(
-                            modifier = Modifier.size(Dimensions.AvatarSize.sm),
+                            modifier = Modifier.size(Dimensions.Spacing.lg),
                             color = MaterialTheme.colorScheme.primaryContainer,
                             shape = MaterialTheme.shapes.extraLarge
                         ) {
@@ -251,7 +251,7 @@ private fun MarketplaceItemDetailScreenContent(itemId: String) {
                     )
                     
                     ItemDetailRow(
-                        icon = PlatformIcons.Category,
+                        icon = PlatformIcons.Tag,
                         label = "Category",
                         value = item.category.displayName
                     )

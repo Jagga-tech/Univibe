@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import kotlin.jvm.JvmName
 import com.example.univibe.ui.components.UserAvatar
 import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
@@ -40,6 +41,7 @@ data class StoryItem(
  * @param onAddStoryClick Callback when "Add Story" button is clicked
  */
 @Composable
+@JvmName("StoriesRowItems")
 fun StoriesRow(
     stories: List<StoryItem> = emptyList(),
     onStoryClick: (String) -> Unit = {},
@@ -171,6 +173,7 @@ private fun StoryItemView(
  * @param onAddStoryClick Callback when "Add Story" button is clicked
  */
 @Composable
+@JvmName("StoriesRowGroups")
 fun StoriesRow(
     storyGroups: List<StoryGroup> = emptyList(),
     onStoryClick: (StoryGroup) -> Unit = {},

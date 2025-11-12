@@ -1,5 +1,7 @@
 package com.example.univibe.domain.models
 
+import kotlinx.serialization.Serializable
+
 /**
  * Enumeration of supported story types.
  */
@@ -41,6 +43,7 @@ enum class StoryReaction(val emoji: String) {
  * - `reactions`: List of reactions from other users (emoji + user who reacted)
  * - `replyCount`: Number of replies/messages received
  */
+@Serializable
 data class Story(
     val id: String,
     val userId: String,

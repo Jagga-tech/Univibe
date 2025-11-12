@@ -26,12 +26,11 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import coil3.compose.AsyncImage
 import com.example.univibe.domain.models.*
 import com.example.univibe.data.mock.MockStories
 import com.example.univibe.data.mock.MockUsers
 import com.example.univibe.ui.components.UserAvatar
-import com.example.univibe.ui.theme.Colors
+import com.example.univibe.ui.theme.BrandColors
 import com.example.univibe.ui.theme.PlatformIcons
 import kotlinx.coroutines.delay
 
@@ -329,13 +328,12 @@ private fun StoryContentDisplay(story: Story) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         when (story.type) {
             StoryType.IMAGE -> {
-                // Image story with AsyncImage
+                // Image story placeholder (AsyncImage would require Coil3)
                 if (!story.imageUrl.isNullOrEmpty()) {
-                    AsyncImage(
-                        model = story.imageUrl,
-                        contentDescription = "Story image",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                     )
                 } else {
                     PlaceholderContent()
@@ -345,12 +343,10 @@ private fun StoryContentDisplay(story: Story) {
             StoryType.VIDEO -> {
                 // Video story (placeholder)
                 if (!story.imageUrl.isNullOrEmpty()) {
-                    AsyncImage(
-                        model = story.imageUrl,
-                        contentDescription = "Video thumbnail",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                        alpha = 0.7f
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                     )
                 }
                 Icon(
@@ -387,14 +383,12 @@ private fun StoryContentDisplay(story: Story) {
             }
             
             StoryType.LINK -> {
-                // Link story with image and link preview
+                // Link story with image and link preview placeholder
                 if (!story.imageUrl.isNullOrEmpty()) {
-                    AsyncImage(
-                        model = story.imageUrl,
-                        contentDescription = "Link preview",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                        alpha = 0.6f
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))
                     )
                 }
                 // Link preview overlay

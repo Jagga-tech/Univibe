@@ -90,10 +90,13 @@ private fun NotificationsScreenContent() {
                     }
                     filteredNotifications.isEmpty() -> {
                         EmptyState(
-                            message = if (selectedTab == NotificationFilterTab.UNREAD)
-                                "All caught up! No unread notifications." else
-                                "No notifications yet. When you get activity, it will show up here.",
                             icon = PlatformIcons.NotificationsNone,
+                            title = if (selectedTab == NotificationFilterTab.UNREAD)
+                                "All caught up!" else
+                                "No notifications",
+                            description = if (selectedTab == NotificationFilterTab.UNREAD)
+                                "No unread notifications." else
+                                "When you get activity, it will show up here.",
                             modifier = Modifier.fillMaxSize()
                         )
                     }

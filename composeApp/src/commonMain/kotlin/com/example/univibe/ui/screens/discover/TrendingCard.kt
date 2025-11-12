@@ -2,15 +2,18 @@ package com.example.univibe.ui.screens.discover
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.univibe.ui.components.UniVibeCard
 import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.theme.Dimensions
+import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.ui.utils.UISymbols
 
 /**
@@ -58,7 +61,7 @@ fun TrendingCard(
                 .fillMaxWidth()
                 .padding(Dimensions.Spacing.md),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Center
+            verticalAlignment = Alignment.CenterVertically
         ) {
             // Icon and left content
             Row(
@@ -81,11 +84,10 @@ fun TrendingCard(
                             ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector = item.icon,
-                            contentDescription = item.title,
-                            modifier = Modifier.size(Dimensions.IconSize.medium),
-                            tint = MaterialTheme.colorScheme.primary
+                        Text(
+                            text = item.icon ?: "📌",
+                            fontSize = 24.sp,
+                            modifier = Modifier.size(Dimensions.IconSize.medium)
                         )
                     }
                 }

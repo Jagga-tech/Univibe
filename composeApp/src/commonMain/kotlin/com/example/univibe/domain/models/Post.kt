@@ -1,5 +1,7 @@
 package com.example.univibe.domain.models
 
+import kotlinx.serialization.Serializable
+
 enum class PostType {
     TEXT,           // Regular text post
     IMAGE,          // Post with images
@@ -9,6 +11,7 @@ enum class PostType {
     QUESTION        // Question post
 }
 
+@Serializable
 data class Post(
     val id: String,
     val authorId: String,
@@ -27,6 +30,7 @@ data class Post(
     val tags: List<String> = emptyList()
 )
 
+@Serializable
 data class Achievement(
     val type: AchievementType,
     val title: String,

@@ -34,14 +34,24 @@ enum class WindowSize {
  */
 @Composable
 fun VoyagerMainScaffold() {
-    // TODO: Implement actual window size detection using WindowSizeClass
-    val windowSize = WindowSize.Compact // For now, default to phone
-    
-    TabNavigator(HomeTab) { navigator ->
-        when (windowSize) {
-            WindowSize.Compact -> navigator.CompactScaffold()
-            WindowSize.Medium -> navigator.MediumScaffold()
-            WindowSize.Expanded -> navigator.ExpandedScaffold()
+    // Cross-platform window size detection using BoxWithConstraints
+    // Breakpoints follow common Material guidance: 0-599 (Compact), 600-839 (Medium), 840+ (Expanded)
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val widthDp = maxWidth
+        val windowSize = remember(widthDp) {
+            when {
+                widthDp < 600.dp -> WindowSize.Compact
+                widthDp < 840.dp -> WindowSize.Medium
+                else -> WindowSize.Expanded
+            }
+        }
+
+        TabNavigator(HomeTab) { navigator ->
+            when (windowSize) {
+                WindowSize.Compact -> navigator.CompactScaffold()
+                WindowSize.Medium -> navigator.MediumScaffold()
+                WindowSize.Expanded -> navigator.ExpandedScaffold()
+            }
         }
     }
 }

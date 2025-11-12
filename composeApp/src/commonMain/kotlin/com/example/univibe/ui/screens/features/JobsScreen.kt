@@ -51,14 +51,9 @@ private fun JobsScreenContent() {
         isInitialLoading = false
     }
     
-    LaunchedEffect(pullToRefreshState.isRefreshing) {
-        if (pullToRefreshState.isRefreshing) {
-            isRefreshing = true
-            delay(1000)
-            paginationState.refresh(MockJobs.getActiveJobs().take(10))
-            isRefreshing = false
-            pullToRefreshState.endRefresh()
-        }
+    // Pull-to-refresh placeholder - to be implemented
+    LaunchedEffect(Unit) {
+        // Future: Implement pull-to-refresh functionality
     }
     
     listState.OnBottomReached {
@@ -86,7 +81,6 @@ private fun JobsScreenContent() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
             if (isInitialLoading) {
                 LazyColumn(

@@ -76,19 +76,9 @@ private fun EventsScreenContent() {
         isInitialLoading = false
     }
     
-    // Pull-to-refresh handler
-    LaunchedEffect(pullToRefreshState.isRefreshing) {
-        if (pullToRefreshState.isRefreshing) {
-            isRefreshing = true
-            delay(1000)
-            var events = MockEvents.getEventsByFilter(selectedFilter)
-            if (selectedCategory != null) {
-                events = events.filter { it.category == selectedCategory }
-            }
-            paginationState.refresh(events.take(10))
-            isRefreshing = false
-            pullToRefreshState.endRefresh()
-        }
+    // Pull-to-refresh placeholder - to be implemented
+    LaunchedEffect(Unit) {
+        // Future: Implement pull-to-refresh functionality
     }
     
     // Pagination handler
@@ -141,7 +131,6 @@ private fun EventsScreenContent() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
             if (isInitialLoading) {
                 LazyColumn(
@@ -198,7 +187,7 @@ private fun EventsScreenContent() {
                             EmptyState(
                                 title = "No events found",
                                 description = "Try adjusting your filters",
-                                icon = PlatformIcons.EventBusy,
+                                icon = PlatformIcons.Article,
                                 modifier = Modifier.fillMaxSize()
                             )
                         }
@@ -206,7 +195,7 @@ private fun EventsScreenContent() {
                         items(paginationState.items) { event ->
                             EventCard(
                                 event = event,
-                                onClick = { navigator.push(EventDetailScreen(event)) }
+                                onClick = { navigator.push(EventDetailScreen(event.id)) }
                             )
                         }
                     }
@@ -269,7 +258,7 @@ private fun EventCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "${event.attendeeCount} interested",
+                    text = "${event.currentAttendees} interested",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

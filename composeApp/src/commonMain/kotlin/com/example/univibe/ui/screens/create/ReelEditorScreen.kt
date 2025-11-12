@@ -481,7 +481,7 @@ private fun ReelTextElement(textOverlay: ReelTextOverlay) {
     ) {
         Text(
             text = textOverlay.text,
-            color = Color(android.graphics.Color.parseColor(textOverlay.color)),
+            color = parseHexColor(textOverlay.color),
             fontSize = MaterialTheme.typography.displaySmall.fontSize,
             fontWeight = when (textOverlay.style) {
                 TextStyle.BOLD -> FontWeight.Bold
@@ -556,9 +556,32 @@ private fun TextInputDialog(
 private fun formatTime(seconds: Int): String {
     val mins = seconds / 60
     val secs = seconds % 60
-    return if (mins > 0) {
-        String.format("%d:%02d", mins, secs)
-    } else {
-        String.format("0:%02d", secs)
+    val secsPadded = secs.toString().padStart(2, '0')
+    return if (mins > 0) "$mins:$secsPadded" else "0:$secsPadded"
+}
+
+// KMP-safe HEX color parser supporting #RRGGBB and #AARRGGBB. Falls back to white on invalid input.
+private fun parseHexColor(hex: String?): Color {
+    if (hex.isNullOrBlank()) return Color.White
+    val clean = hex.trim().removePrefix("#")
+    return try {
+        when (clean.length) {
+            6 -> {
+                val r = clean.substring(0, 2).toInt(16)
+                val g = clean.substring(2, 4).toInt(16)
+                val b = clean.substring(4, 6).toInt(16)
+                Color(red = r / 255f, green = g / 255f, blue = b / 255f)
+            }
+            8 -> {
+                val a = clean.substring(0, 2).toInt(16)
+                val r = clean.substring(2, 4).toInt(16)
+                val g = clean.substring(4, 6).toInt(16)
+                val b = clean.substring(6, 8).toInt(16)
+                Color(red = r / 255f, green = g / 255f, blue = b / 255f, alpha = a / 255f)
+            }
+            else -> Color.White
+        }
+    } catch (_: Throwable) {
+        Color.White
     }
 }

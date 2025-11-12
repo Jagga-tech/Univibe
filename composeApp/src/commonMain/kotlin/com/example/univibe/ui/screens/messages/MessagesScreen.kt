@@ -21,6 +21,7 @@ import com.example.univibe.domain.models.Conversation
 import com.example.univibe.ui.components.*
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessagesScreen(
     onConversationClick: (String) -> Unit = {},
