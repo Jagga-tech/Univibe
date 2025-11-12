@@ -251,7 +251,7 @@ private fun DetailsSection(session: com.example.univibe.domain.models.StudySessi
         
         // Date and Time
         DetailRow(
-            icon = PlatformIcons.EventNote,
+            icon = PlatformIcons.Article,
             label = "Date & Time",
             value = formatDateTime(session.startTime, session.endTime)
         )
@@ -488,7 +488,7 @@ private fun ParticipantItem(participant: com.example.univibe.domain.models.User)
         
         if (participant.isVerified) {
             Icon(
-                PlatformIcons.VerifiedUser,
+                PlatformIcons.Verified,
                 contentDescription = "Verified",
                 modifier = Modifier.size(16.dp),
                 tint = MaterialTheme.colorScheme.primary
@@ -502,7 +502,7 @@ private fun ParticipantItem(participant: com.example.univibe.domain.models.User)
  */
 @Composable
 private fun DetailRow(
-    icon: androidx.compose.material.icons.materialIcon,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     label: String,
     value: String
 ) {

@@ -33,17 +33,6 @@ import kotlinx.coroutines.launch
 /**
  * Data class representing a post in the feed.
  */
-data class PostItem(
-    val id: String,
-    val userName: String,
-    val userAvatarUrl: String? = null,
-    val timestamp: String,
-    val content: String,
-    val likeCount: Int = 0,
-    val commentCount: Int = 0,
-    val isLiked: Boolean = false
-)
-
 /**
  * Home screen composable - main feed for UniVibe app.
  * Features:
@@ -55,7 +44,7 @@ data class PostItem(
  */
 @Composable
 fun HomeScreen(
-    posts: List<PostItem> = emptyList(),
+    posts: List<Post> = emptyList(),
     stories: List<StoryItem> = emptyList(),
     quickAccessItems: List<QuickAccessItem> = getDefaultQuickAccessItems(),
     onPostLikeClick: (String) -> Unit = {},
@@ -92,15 +81,9 @@ fun HomeScreen(
         isInitialLoading = false
     }
     
-    // Pull-to-refresh handler
-    LaunchedEffect(pullToRefreshState.isRefreshing) {
-        if (pullToRefreshState.isRefreshing) {
-            isRefreshing = true
-            delay(1000) // Simulate network call
-            paginationState.refresh(MockPosts.posts.take(10))
-            isRefreshing = false
-            pullToRefreshState.endRefresh()
-        }
+    // Pull-to-refresh will be implemented in future
+    LaunchedEffect(Unit) {
+        // placeholder
     }
     
     // Pagination handler
@@ -117,7 +100,6 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .nestedScroll(pullToRefreshState.nestedScrollConnection)
     ) {
         if (isInitialLoading) {
             // Skeleton loading state
@@ -187,9 +169,7 @@ fun HomeScreen(
                             
                             IconButton(
                                 onClick = { 
-                                    scope.launch {
-                                        pullToRefreshState.startRefresh()
-                                    }
+                                    // Refresh functionality will be implemented
                                 }
                             ) {
                                 Icon(
@@ -213,7 +193,7 @@ fun HomeScreen(
                     }
                 } else {
                     items(paginationState.items) { post ->
-                        PostCard(
+                        HomePostCard(
                             post = post,
                             onLikeClick = { onPostLikeClick(post.id) },
                             onCommentClick = { onPostCommentClick(post.id) },
@@ -248,8 +228,8 @@ fun HomeScreen(
 }
 
 @Composable
-private fun PostCard(
-    post: PostItem,
+private fun HomePostCard(
+    post: Post,
     onLikeClick: () -> Unit = {},
     onCommentClick: () -> Unit = {},
     onShareClick: () -> Unit = {},
@@ -279,11 +259,11 @@ private fun PostCard(
                 Spacer(modifier = Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = post.userName,
+                        text = post.author.fullName,
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
-                        text = post.timestamp,
+                        text = "Just now",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -384,19 +364,7 @@ private fun ActionButton(
     }
 }
 
-data class StoryItem(
-    val id: String,
-    val userName: String,
-    val avatarUrl: String? = null
-)
 
-data class QuickAccessItem(
-    val id: String,
-    val label: String,
-    val icon: String
-)
-
-fun getDefaultQuickAccessItems() = emptyList<QuickAccessItem>()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

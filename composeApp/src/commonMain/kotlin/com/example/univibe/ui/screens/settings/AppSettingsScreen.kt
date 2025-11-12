@@ -317,7 +317,7 @@ private fun SettingsSectionHeader(
 private fun SettingMenuCard(
     title: String,
     description: String = "",
-    icon: androidx.compose.material.icons.materialIcon,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     onClick: () -> Unit
 ) {
     Card(
@@ -376,7 +376,7 @@ private fun SettingMenuCard(
 private fun SettingToggleCard(
     title: String,
     description: String = "",
-    icon: androidx.compose.material.icons.materialIcon,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     isEnabled: Boolean,
     onToggle: (Boolean) -> Unit
 ) {

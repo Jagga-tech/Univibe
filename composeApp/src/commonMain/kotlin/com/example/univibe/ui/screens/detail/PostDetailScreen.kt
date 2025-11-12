@@ -286,7 +286,7 @@ private fun CommentInputBar(
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(
-                    imageVector = PlatformIcons.Send,
+                    imageVector = PlatformIcons.Share,
                     contentDescription = "Send comment",
                     tint = if (enabled && value.isNotBlank())
                         MaterialTheme.colorScheme.primary

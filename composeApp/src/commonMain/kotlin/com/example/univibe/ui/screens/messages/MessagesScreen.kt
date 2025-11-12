@@ -110,7 +110,7 @@ fun MessagesScreen(
 
 @Composable
 private fun ConversationCardItem(conversation: Conversation) {
-    val participantName = conversation.participants.firstOrNull()?.name ?: "Unknown"
+    val participantName = conversation.participants.firstOrNull()?.fullName ?: "Unknown"
     val lastMessageText = conversation.lastMessage?.content ?: "No messages yet"
     val lastMessageTime = formatMessageTime(conversation.lastMessageTime)
     

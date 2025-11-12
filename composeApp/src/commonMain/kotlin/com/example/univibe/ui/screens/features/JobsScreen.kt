@@ -126,7 +126,7 @@ private fun JobsScreenContent() {
                             EmptyState(
                                 title = "No jobs available",
                                 description = "Check back soon for new opportunities",
-                                icon = PlatformIcons.WorkOff,
+                                icon = PlatformIcons.Work,
                                 modifier = Modifier.fillMaxSize()
                             )
                         }

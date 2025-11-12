@@ -23,15 +23,9 @@ object HomeTab : Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val isSelected = LocalTabNavigator.current.current == this
-            val icon = if (isSelected) UISymbols.HOME_FILLED else UISymbols.HOME_OUTLINED
-
             return TabOptions(
                 index = 0u,
-                title = "Home",
-                icon = {
-                    TextIcon(symbol = icon)
-                }
+                title = "Home"
             )
         }
 

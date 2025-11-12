@@ -63,7 +63,7 @@ private fun NotificationsScreenContent() {
                                 notifications = MockNotifications.getAllNotifications()
                             }
                         ) {
-                            Icon(PlatformIcons.DoneAll, "Mark all as read")
+                            Icon(PlatformIcons.Check, "Mark all as read")
                         }
                     }
                 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -273,7 +274,7 @@ private fun SearchHeader(
                 }
             },
             singleLine = true,
-            shape = RoundedCornerShape(Dimensions.CornerRadius.md),
+            shape = RoundedCornerShape(Dimensions.CornerRadius.medium),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -300,7 +301,7 @@ private fun FilterChip(
             .background(
                 color = if (isSelected) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.surfaceVariant,
-                shape = RoundedCornerShape(Dimensions.CornerRadius.lg)
+                shape = RoundedCornerShape(Dimensions.CornerRadius.large)
             )
             .padding(horizontal = Dimensions.Spacing.md, vertical = Dimensions.Spacing.sm),
         contentAlignment = Alignment.Center

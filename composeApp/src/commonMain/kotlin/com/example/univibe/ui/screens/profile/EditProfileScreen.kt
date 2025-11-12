@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -246,7 +247,7 @@ private fun EditProfileContent(currentUser: User) {
                         shadowElevation = 2.dp
                     ) {
                         Icon(
-                            PlatformIcons.CameraAlt,
+                            PlatformIcons.Camera,
                             contentDescription = "Change photo",
                             modifier = Modifier.padding(8.dp),
                             tint = MaterialTheme.colorScheme.onPrimary
@@ -303,14 +304,13 @@ private fun EditProfileContent(currentUser: User) {
                         usernameError = null
                     },
                     label = { Text("Username") },
-                    placeholder = { Text("username") },
+                    placeholder = { Text("@username") },
                     modifier = Modifier.fillMaxWidth(),
                     isError = usernameError != null,
                     supportingText = usernameError?.let { { Text(it) } },
                     singleLine = true,
-                    prefix = { Text("@") },
                     leadingIcon = {
-                        Icon(PlatformIcons.AlternateEmail, contentDescription = null)
+                        Icon(PlatformIcons.Email, contentDescription = null)
                     }
                 )
                 
@@ -327,7 +327,7 @@ private fun EditProfileContent(currentUser: User) {
                     isError = emailError != null,
                     supportingText = emailError?.let { { Text(it) } },
                     singleLine = true,
-                    keyboardType = KeyboardType.Email,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     leadingIcon = {
                         Icon(PlatformIcons.Email, contentDescription = null)
                     }
@@ -343,7 +343,7 @@ private fun EditProfileContent(currentUser: User) {
                     maxLines = 4,
                     supportingText = { Text("${bio.length}/150") },
                     leadingIcon = {
-                        Icon(PlatformIcons.Description, contentDescription = null)
+                        Icon(PlatformIcons.Article, contentDescription = null)
                     }
                 )
                 
@@ -365,7 +365,7 @@ private fun EditProfileContent(currentUser: User) {
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     leadingIcon = {
-                        Icon(PlatformIcons.School, contentDescription = null)
+                        Icon(PlatformIcons.Laptop, contentDescription = null)
                     }
                 )
                 
@@ -427,9 +427,9 @@ private fun EditProfileContent(currentUser: User) {
                     placeholder = { Text("+1 (555) 000-0000") },
                     modifier = Modifier.fillMaxWidth(),
                     isError = phoneError != null,
-                    supportingText = phoneError?.let { { Text(it) } },
+                    supportingText = if (phoneError != null) { { Text(phoneError!!) } } else null,
                     singleLine = true,
-                    keyboardType = KeyboardType.Phone,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                     leadingIcon = {
                         Icon(PlatformIcons.Phone, contentDescription = null)
                     }
@@ -446,9 +446,9 @@ private fun EditProfileContent(currentUser: User) {
                     placeholder = { Text("https://example.com") },
                     modifier = Modifier.fillMaxWidth(),
                     isError = websiteError != null,
-                    supportingText = websiteError?.let { { Text(it) } },
+                    supportingText = if (websiteError != null) { { Text(websiteError!!) } } else null,
                     singleLine = true,
-                    keyboardType = KeyboardType.Uri,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                     leadingIcon = {
                         Icon(PlatformIcons.Language, contentDescription = null)
                     }

@@ -103,7 +103,7 @@ private fun MarketplaceItemDetailScreenContent(itemId: String) {
                     )
                 ) {
                     Icon(
-                        PlatformIcons.Chat,
+                        PlatformIcons.ChatBubble,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp),
                         tint = MaterialTheme.colorScheme.onPrimary

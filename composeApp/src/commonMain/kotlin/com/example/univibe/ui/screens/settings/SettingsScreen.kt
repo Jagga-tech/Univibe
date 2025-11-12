@@ -481,8 +481,7 @@ fun SettingsScreen(
                         .fillMaxWidth()
                         .height(44.dp)
                         .padding(horizontal = Dimensions.Spacing.md)
-                        .padding(top = Dimensions.Spacing.md),
-                    containerColor = MaterialTheme.colorScheme.error
+                        .padding(top = Dimensions.Spacing.md)
                 )
             }
 

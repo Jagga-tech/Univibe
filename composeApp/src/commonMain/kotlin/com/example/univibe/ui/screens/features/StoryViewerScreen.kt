@@ -354,7 +354,7 @@ private fun StoryContentDisplay(story: Story) {
                     )
                 }
                 Icon(
-                    imageVector = PlatformIcons.PlayArrow,
+                    imageVector = PlatformIcons.PlayCircleFilled,
                     contentDescription = "Video",
                     tint = Color.White.copy(alpha = 0.8f),
                     modifier = Modifier.size(80.dp)
@@ -428,7 +428,7 @@ private fun StoryContentDisplay(story: Story) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
-                            imageVector = PlatformIcons.KeyboardArrowUp,
+                            imageVector = PlatformIcons.ChevronRight,
                             contentDescription = "Swipe up",
                             tint = Color.White,
                             modifier = Modifier.size(20.dp)
@@ -595,7 +595,7 @@ private fun StoryBottomBar(
             
             // Reply button
             StoryActionButton(
-                icon = PlatformIcons.Message,
+                icon = PlatformIcons.ChatBubble,
                 label = if (story.replyCount == 0) "Reply" else story.replyCount.toString(),
                 onClick = onReply
             )
@@ -658,7 +658,7 @@ private fun StoryBottomBar(
  */
 @Composable
 private fun StoryActionButton(
-    icon: androidx.compose.material.icons.Icons.Filled,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     label: String,
     onClick: () -> Unit
 ) {
@@ -791,7 +791,7 @@ private fun ReplyInputOverlay(
                         modifier = Modifier.size(36.dp)
                     ) {
                         Icon(
-                            imageVector = PlatformIcons.Send,
+                            imageVector = PlatformIcons.Share,
                             contentDescription = "Send",
                             tint = Color.Red,
                             modifier = Modifier.size(20.dp)

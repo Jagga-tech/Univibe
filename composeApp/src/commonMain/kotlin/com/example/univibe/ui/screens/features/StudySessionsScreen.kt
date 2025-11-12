@@ -22,7 +22,6 @@ import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.ui.theme.PlatformIcons
 import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.utils.UISymbols
-import kotlin.system.getTimeMillis
 
 /**
  * Browse and filter study sessions screen.
@@ -421,7 +420,7 @@ private fun EmptyState() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            PlatformIcons.EventBusy,
+            PlatformIcons.Article,
             contentDescription = null,
             modifier = Modifier
                 .size(64.dp)

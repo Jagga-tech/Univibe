@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -468,8 +469,7 @@ private fun MembersSection(
                     onClick = onViewAllClick,
                     modifier = Modifier
                         .height(32.dp)
-                        .padding(0.dp),
-                    textStyle = MaterialTheme.typography.labelSmall
+                        .padding(0.dp)
                 )
             }
         }

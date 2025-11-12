@@ -19,6 +19,7 @@ import com.example.univibe.domain.models.Notification
 import com.example.univibe.ui.components.*
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationsScreen(
     onBackClick: () -> Unit = {}

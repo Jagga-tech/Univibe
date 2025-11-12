@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -93,7 +94,7 @@ fun PostCard(
                     UserAvatar(
                         imageUrl = userAvatarUrl,
                         size = Dimensions.AvatarSize.small,
-                        userName = userName
+                        name = userName
                     )
 
                     Column(modifier = Modifier.weight(1f)) {
@@ -192,7 +193,7 @@ fun PostCard(
                 )
 
                 ActionButton(
-                    icon = PlatformIcons.ShareOutlined,
+                    icon = PlatformIcons.Share,
                     label = "Share",
                     onClick = { onShareClick(id) }
                 )
@@ -266,7 +267,7 @@ fun PostCard(
                     UserAvatar(
                         imageUrl = post.author.avatarUrl,
                         size = Dimensions.AvatarSize.small,
-                        userName = post.author.fullName
+                        name = post.author.fullName
                     )
 
                     Column(modifier = Modifier.weight(1f)) {
@@ -438,7 +439,7 @@ fun PostCard(
                 )
 
                 ActionButton(
-                    icon = PlatformIcons.ShareOutlined,
+                    icon = PlatformIcons.Share,
                     label = "Share",
                     onClick = { onShareClick(post) }
                 )

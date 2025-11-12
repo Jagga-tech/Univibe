@@ -16,6 +16,8 @@ import com.example.univibe.data.mock.*
 import com.example.univibe.ui.components.PrimaryButton
 import com.example.univibe.ui.components.TextIcon
 import com.example.univibe.ui.components.profile.ProfileStatsCard
+import com.example.univibe.ui.screens.settings.AppSettingsScreen
+import com.example.univibe.domain.models.User
 import com.example.univibe.ui.theme.Dimensions
 import com.example.univibe.ui.utils.UISymbols
 
@@ -76,7 +78,24 @@ private fun MyProfileScreenContent() {
                 ) {
                     PrimaryButton(
                         text = "Edit Profile",
-                        onClick = { navigator.push(EditProfileScreen) },
+                        onClick = {
+                            val userObj = User(
+                                id = profile.value.id,
+                                username = profile.value.username,
+                                fullName = profile.value.fullName,
+                                email = profile.value.email,
+                                avatarUrl = profile.value.avatarUrl,
+                                bio = profile.value.bio,
+                                major = profile.value.major,
+                                graduationYear = profile.value.graduationYear,
+                                interests = profile.value.interests,
+                                followersCount = profile.value.followersCount,
+                                followingCount = profile.value.followingCount,
+                                isVerified = profile.value.isVerified,
+                                joinedDate = profile.value.joinedDate
+                            )
+                            navigator.push(EditProfileScreenData(user = userObj))
+                        },
                         modifier = Modifier.weight(1f)
                     )
 
@@ -414,7 +433,7 @@ private fun AchievementsSection(achievements: List<com.example.univibe.domain.mo
             
             androidx.compose.foundation.layout.FlowRow(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrange.spacedBy(Dimensions.Spacing.md)
+                horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.md)
             ) {
                 achievements.forEach { achievement ->
                     AchievementBadge(achievement)

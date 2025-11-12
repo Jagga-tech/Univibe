@@ -18,9 +18,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.MockDepartments
 import com.example.univibe.domain.models.Department
-import com.example.univibe.ui.animations.fadeInAnimation
-import com.example.univibe.ui.animations.scaleInAnimation
-import com.example.univibe.ui.animations.slideInFromBottom
 import com.example.univibe.ui.components.*
 import com.example.univibe.ui.utils.OnBottomReached
 import com.example.univibe.ui.utils.rememberPaginationState
@@ -54,14 +51,8 @@ private fun DepartmentsScreenContent() {
         isInitialLoading = false
     }
     
-    LaunchedEffect(pullToRefreshState.isRefreshing) {
-        if (pullToRefreshState.isRefreshing) {
-            isRefreshing = true
-            delay(1000)
-            paginationState.refresh(MockDepartments.departments.take(10))
-            isRefreshing = false
-            pullToRefreshState.endRefresh()
-        }
+    LaunchedEffect(Unit) {
+        // Pull-to-refresh will be implemented in future
     }
     
     listState.OnBottomReached {
@@ -77,17 +68,13 @@ private fun DepartmentsScreenContent() {
         topBar = {
             TopAppBar(
                 title = { 
-                    Text(
-                        "Departments",
-                        modifier = Modifier.fadeInAnimation()
-                    ) 
+                    Text("Departments") 
                 },
                 navigationIcon = {
                     IconButton(onClick = { navigator.pop() }) {
                         Icon(
                             PlatformIcons.ArrowBack, 
-                            contentDescription = "Back",
-                            modifier = Modifier.scaleInAnimation()
+                            contentDescription = "Back"
                         )
                     }
                 }
@@ -98,14 +85,12 @@ private fun DepartmentsScreenContent() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
             if (isInitialLoading) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp)
-                        .fadeInAnimation(),
+                        .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(4) {
@@ -126,13 +111,11 @@ private fun DepartmentsScreenContent() {
                     modifier = Modifier
                         .fillMaxSize()
                         .align(Alignment.Center)
-                        .scaleInAnimation()
                 )
             } else {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .fadeInAnimation(),
+                        .fillMaxSize(),
                     state = listState,
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -142,10 +125,8 @@ private fun DepartmentsScreenContent() {
                             EmptyState(
                                 title = "No departments",
                                 description = "No departments to display",
-                                icon = PlatformIcons.SchoolOff,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .scaleInAnimation()
+                                icon = PlatformIcons.Laptop,
+                                modifier = Modifier.fillMaxSize()
                             )
                         }
                     } else {
@@ -159,17 +140,13 @@ private fun DepartmentsScreenContent() {
                     
                     if (paginationState.isLoading && paginationState.items.isNotEmpty()) {
                         item {
-                            PaginationLoadingIndicator(
-                                modifier = Modifier.slideInFromBottom()
-                            )
+                            PaginationLoadingIndicator()
                         }
                     }
                     
                     if (!paginationState.hasMorePages && paginationState.items.isNotEmpty()) {
                         item {
-                            EndOfListIndicator(
-                                modifier = Modifier.slideInFromBottom()
-                            )
+                            EndOfListIndicator()
                         }
                     }
                 }
@@ -185,10 +162,7 @@ private fun DepartmentsScreenContent() {
 @Composable
 private fun DepartmentCardWithAnimation(department: Department) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .scaleInAnimation()
-            .slideInFromBottom(),
+        modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -200,7 +174,7 @@ private fun DepartmentCardWithAnimation(department: Department) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Chair: ${department.chairName}",
+                text = "Department",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

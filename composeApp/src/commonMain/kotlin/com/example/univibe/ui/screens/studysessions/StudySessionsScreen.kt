@@ -101,7 +101,7 @@ fun StudySessionsScreen(
                     }
                 },
                 placeholder = "Search sessions...",
-                leadingIcon = PlatformIcons.Search,
+                leadingIcon = UISymbols.SEARCH,
                 modifier = Modifier.fillMaxWidth()
             )
         }

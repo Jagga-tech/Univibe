@@ -99,7 +99,7 @@ private fun ReelsScreenContent() {
                     modifier = Modifier.padding(32.dp)
                 ) {
                     Icon(
-                        PlatformIcons.VideoLibrary,
+                        PlatformIcons.PhotoLibrary,
                         contentDescription = null,
                         modifier = Modifier.size(64.dp),
                         tint = Color.White.copy(alpha = 0.6f)
@@ -220,7 +220,7 @@ private fun ReelPlayer(
         // Play/Pause Indicator (center)
         if (!isPlaying) {
             Icon(
-                imageVector = PlatformIcons.PlayArrow,
+                imageVector = PlatformIcons.PlayCircleFilled,
                 contentDescription = "Play",
                 modifier = Modifier
                     .size(80.dp)
@@ -237,7 +237,7 @@ private fun ReelPlayer(
                 .padding(16.dp)
         ) {
             Icon(
-                imageVector = if (isMuted) PlatformIcons.VolumeOff else PlatformIcons.VolumeUp,
+                imageVector = PlatformIcons.MusicNote,
                 contentDescription = if (isMuted) "Unmute" else "Mute",
                 tint = Color.White,
                 modifier = Modifier.size(24.dp)
@@ -387,7 +387,7 @@ private fun ReelPlayer(
 
             // Save Button
             ReelActionButton(
-                icon = if (isSaved) PlatformIcons.Bookmark else PlatformIcons.BookmarkBorder,
+                icon = if (isSaved) PlatformIcons.BookmarkFilled else PlatformIcons.BookmarkBorder,
                 count = 0,
                 tint = if (isSaved) Color.Yellow else Color.White,
                 showCount = false,
@@ -428,7 +428,7 @@ private fun ReelPlayer(
 
 @Composable
 private fun ReelActionButton(
-    icon: androidx.compose.material.icons.Icons,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     count: Int,
     tint: Color = Color.White,
     showCount: Boolean = true,
