@@ -1,5 +1,9 @@
 package com.example.univibe.util
 
-import kotlin.system.getTimeMillis
+import platform.posix.time
 
-actual fun getCurrentTimeMillis(): Long = System.currentTimeMillis()
+@OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
+actual fun getCurrentTimeMillis(): Long {
+    val seconds = time(null)
+    return seconds.toLong() * 1000L
+}

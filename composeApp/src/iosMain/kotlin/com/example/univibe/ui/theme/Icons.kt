@@ -51,6 +51,54 @@ actual object PlatformIcons {
         }
     }.build()
 
+    // Add minimal placeholders for missing expected icons to satisfy expect/actual mapping
+    private fun placeholderSimple(name: String): ImageVector = ImageVector.Builder(
+        name = name,
+        defaultWidth = 24.dp,
+        defaultHeight = 24.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f
+    ).apply {
+        path(
+            fill = SolidColor(Color.Black),
+            stroke = null,
+            pathFillType = androidx.compose.ui.graphics.PathFillType.NonZero
+        ) {
+            moveTo(4f, 4f)
+            lineTo(20f, 4f)
+            lineTo(20f, 20f)
+            lineTo(4f, 20f)
+            close()
+        }
+    }.build()
+
+    // Missing members provided as placeholders or aliases
+    actual val ArrowBack: ImageVector = placeholderSimple("arrow_back")
+    actual val Share: ImageVector = placeholderSimple("share")
+    actual val ChevronRight: ImageVector = placeholderSimple("chevron_right")
+    actual val BookmarkFilled: ImageVector = placeholderSimple("bookmark_filled")
+    actual val BookmarkBorder: ImageVector = placeholderSimple("bookmark_border")
+    actual val AccessTime: ImageVector = placeholderSimple("access_time")
+    actual val LocationOn: ImageVector = placeholderSimple("location_on")
+    actual val People: ImageVector = placeholderSimple("people")
+    actual val PersonAdd: ImageVector = placeholderSimple("person_add")
+    actual val Info: ImageVector = placeholderSimple("info")
+    actual val Settings: ImageVector = placeholderSimple("settings")
+    actual val PrivacyTip: ImageVector = placeholderSimple("privacy_tip")
+    actual val Help: ImageVector = placeholderSimple("help")
+    actual val Logout: ImageVector = placeholderSimple("logout")
+    actual val Article: ImageVector = placeholderSimple("article")
+    actual val Mail: ImageVector = placeholderSimple("mail")
+    actual val Comment: ImageVector = placeholderSimple("comment")
+    actual val Event: ImageVector = placeholderSimple("event")
+    actual val Timeline: ImageVector = placeholderSimple("timeline")
+    actual val Groups: ImageVector = placeholderSimple("groups")
+    actual val PhotoLibrary: ImageVector = placeholderSimple("photo_library")
+    actual val Search: ImageVector = placeholderSimple("search")
+    actual val DarkMode: ImageVector = placeholderSimple("dark_mode")
+    actual val ViewCompact: ImageVector = placeholderSimple("view_compact")
+    actual val Videocam: ImageVector = placeholderSimple("videocam")
+
     actual val Refresh: ImageVector = ImageVector.Builder(
         name = "refresh",
         defaultWidth = 24.dp,

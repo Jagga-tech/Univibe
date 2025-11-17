@@ -31,9 +31,14 @@ fun AppNavigationGraph(
         // MAIN ROUTES (Bottom Navigation Visible)
         currentRoute == NavigationRoute.Home.route -> {
             HomeScreen(
-                onSearchClick = { navigationState.navigate(NavigationRoute.SearchResults.route) },
-                onNotificationClick = { navigationState.navigate(NavigationRoute.Notifications.route) },
-                onSettingsClick = { navigationState.navigate(NavigationRoute.Settings.route) }
+                onNavigate = { route ->
+                    when (route) {
+                        "search" -> navigationState.navigate(NavigationRoute.SearchResults.route)
+                        "notifications" -> navigationState.navigate(NavigationRoute.Notifications.route)
+                        "settings" -> navigationState.navigate(NavigationRoute.Settings.route)
+                        else -> navigationState.navigate(route)
+                    }
+                }
             )
         }
         
@@ -131,9 +136,14 @@ fun AppNavigationGraph(
         else -> {
             navigationState.navigateToMainRoute(NavigationRoute.Home.route)
             HomeScreen(
-                onSearchClick = { navigationState.navigate(NavigationRoute.SearchResults.route) },
-                onNotificationClick = { navigationState.navigate(NavigationRoute.Notifications.route) },
-                onSettingsClick = { navigationState.navigate(NavigationRoute.Settings.route) }
+                onNavigate = { route ->
+                    when (route) {
+                        "search" -> navigationState.navigate(NavigationRoute.SearchResults.route)
+                        "notifications" -> navigationState.navigate(NavigationRoute.Notifications.route)
+                        "settings" -> navigationState.navigate(NavigationRoute.Settings.route)
+                        else -> navigationState.navigate(route)
+                    }
+                }
             )
         }
     }

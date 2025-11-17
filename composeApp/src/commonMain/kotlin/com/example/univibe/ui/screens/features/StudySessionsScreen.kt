@@ -1,31 +1,37 @@
 package com.example.univibe.ui.screens.features
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.univibe.data.mock.MockStudySessions
-import com.example.univibe.domain.models.SessionFilter
-import com.example.univibe.domain.models.LocationType
+import com.example.univibe.domain.models.*
+import com.example.univibe.ui.design.UniVibeDesign
+import com.example.univibe.ui.templates.ListScreen
+import com.example.univibe.ui.templates.ListScreenConfig
 import com.example.univibe.ui.screens.detail.StudySessionDetailScreen
-import com.example.univibe.ui.theme.Dimensions
-import com.example.univibe.ui.theme.PlatformIcons
-import com.example.univibe.ui.components.TextIcon
-import com.example.univibe.ui.utils.UISymbols
+import com.example.univibe.ui.screens.create.CreateStudySessionScreen
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
- * Browse and filter study sessions screen.
- * Shows upcoming study sessions with filtering by various criteria.
+ * Modern Study Sessions Screen using UniVibe Design System
+ * Professional study session discovery with filters, time slots, and beautiful cards
  */
 object StudySessionsScreen : Screen {
     @Composable
@@ -34,374 +40,524 @@ object StudySessionsScreen : Screen {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+// Study session filter types
+enum class StudySessionFilter(val displayName: String, val icon: ImageVector) {
+    ALL("All Sessions", Icons.Default.MenuBook),
+    TODAY("Today", Icons.Default.Today),
+    THIS_WEEK("This Week", Icons.Default.DateRange),
+    MY_SESSIONS("My Sessions", Icons.Default.BookmarkBorder),
+    AVAILABLE("Available", Icons.Default.EventAvailable),
+    POPULAR("Popular", Icons.Default.Trending)
+}
+
 @Composable
 private fun StudySessionsScreenContent() {
     val navigator = LocalNavigator.currentOrThrow
+    val scope = rememberCoroutineScope()
     
-    var selectedFilter by remember { mutableStateOf(SessionFilter.ALL) }
-    var searchQuery by remember { mutableStateOf("") }
-    var showFilters by remember { mutableStateOf(false) }
+    var studySessions by remember { mutableStateOf<List<StudySession>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var selectedFilter by remember { mutableStateOf(StudySessionFilter.ALL) }
+    var selectedSubject by remember { mutableStateOf<String?>(null) }
     
-    // Get filtered sessions
-    var displayedSessions by remember {
-        mutableStateOf(MockStudySessions.getUpcomingSessions())
+    // Load study sessions
+    LaunchedEffect(selectedFilter, selectedSubject) {
+        isLoading = true
+        delay(500) // Simulate network call
+        
+        studySessions = when (selectedFilter) {
+            StudySessionFilter.ALL -> MockStudySessions.getSessionsByFilter(selectedFilter)
+            StudySessionFilter.TODAY -> MockStudySessions.getSessionsByFilter(selectedFilter).filter { 
+                // Mock: show sessions as "today" for demo
+                true
+            }
+            StudySessionFilter.THIS_WEEK -> MockStudySessions.getSessionsByFilter(selectedFilter)
+            StudySessionFilter.MY_SESSIONS -> MockStudySessions.getSessionsByFilter(selectedFilter).filter { it.isJoined }
+            StudySessionFilter.AVAILABLE -> MockStudySessions.getSessionsByFilter(selectedFilter).filter { !it.isFull }
+            StudySessionFilter.POPULAR -> MockStudySessions.getSessionsByFilter(selectedFilter).sortedByDescending { it.currentParticipants }
+        }.let { filtered ->
+            selectedSubject?.let { subject ->
+                filtered.filter { it.subject == subject }
+            } ?: filtered
+        }
+        
+        isLoading = false
     }
     
-    // Update displayed sessions when filter or search changes
-    LaunchedEffect(selectedFilter, searchQuery) {
-        displayedSessions = if (searchQuery.isNotEmpty()) {
-            MockStudySessions.searchSessions(searchQuery)
-        } else {
-            MockStudySessions.getSessionsByFilter(selectedFilter)
-        }
-    }
-    
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Study Sessions") },
-                navigationIcon = {
-                    IconButton(onClick = { navigator.pop() }) {
-                        TextIcon(
-                            symbol = UISymbols.BACK,
-                            contentDescription = "Back",
-                            fontSize = 20
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { showFilters = !showFilters }) {
-                        TextIcon(
-                            symbol = UISymbols.FILTER_LIST,
-                            contentDescription = "Filters",
-                            fontSize = 20
-                        )
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(paddingValues),
-            contentPadding = PaddingValues(vertical = Dimensions.Spacing.md)
-        ) {
-            // Search Bar
-            item {
-                SearchBar(
-                    query = searchQuery,
-                    onQueryChange = { searchQuery = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Dimensions.Spacing.md)
-                )
-            }
-            
-            // Filter Pills
-            if (showFilters) {
-                item {
-                    FilterPills(
-                        selectedFilter = selectedFilter,
-                        onFilterSelected = { 
-                            selectedFilter = it
-                            showFilters = false
-                        }
-                    )
-                }
-            }
-            
-            // Sessions List
-            if (displayedSessions.isEmpty()) {
-                item {
-                    EmptyState()
-                }
-            } else {
-                items(displayedSessions) { session ->
-                    StudySessionCard(
-                        session = session,
-                        onClick = {
-                            navigator.push(StudySessionDetailScreen(sessionId = session.id))
-                        }
-                    )
-                }
-            }
-            
-            item {
-                Spacer(modifier = Modifier.height(Dimensions.Spacing.lg))
-            }
-        }
-    }
-}
-
-/**
- * Search bar component for session search.
- */
-@Composable
-private fun SearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    TextField(
-        value = query,
-        onValueChange = onQueryChange,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        placeholder = { Text("Search sessions...") },
-        leadingIcon = { 
-            TextIcon(
-                symbol = UISymbols.SEARCH,
-                fontSize = 16
-            )
-        },
-        trailingIcon = {
-            if (query.isNotEmpty()) {
-                IconButton(onClick = { onQueryChange("") }) {
-                    TextIcon(
-                        symbol = UISymbols.CLOSE,
-                        fontSize = 16
-                    )
-                }
-            }
-        },
-        singleLine = true,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-            unfocusedIndicatorColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
-        )
+    val config = ListScreenConfig(
+        title = "Study Sessions",
+        items = studySessions,
+        searchPlaceholder = "Search sessions...",
+        emptyStateTitle = "No study sessions found",
+        emptyStateDescription = "Try adjusting your filters or create a new session",
+        showSearch = true,
+        showFilters = true
     )
-}
-
-/**
- * Filter pill selection component.
- */
-@Composable
-private fun FilterPills(
-    selectedFilter: SessionFilter,
-    onFilterSelected: (SessionFilter) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(Dimensions.Spacing.md)
-    ) {
-        Text(
-            "Filters",
-            style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier.padding(bottom = Dimensions.Spacing.sm)
+    
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Custom header with stats
+        StudySessionsHeader(
+            totalSessions = studySessions.size,
+            activeSessions = studySessions.count { !it.isFull },
+            onBack = { navigator.pop() },
+            onCreateSession = { navigator.push(CreateStudySessionScreen) }
         )
         
-        Wrap {
-            SessionFilter.entries.forEach { filter ->
-                FilterChip(
-                    selected = selectedFilter == filter,
-                    onClick = { onFilterSelected(filter) },
-                    label = { Text(filter.name.replace("_", " ")) },
-                    modifier = Modifier.padding(end = Dimensions.Spacing.sm, bottom = Dimensions.Spacing.sm)
-                )
-            }
+        // Filter tabs
+        StudySessionFilterTabs(
+            selectedFilter = selectedFilter,
+            onFilterSelected = { selectedFilter = it },
+            modifier = Modifier.padding(horizontal = UniVibeDesign.Spacing.md)
+        )
+        
+        // Subject chips
+        if (selectedFilter == StudySessionFilter.ALL) {
+            SubjectChips(
+                selectedSubject = selectedSubject,
+                onSubjectSelected = { selectedSubject = it },
+                modifier = Modifier.padding(horizontal = UniVibeDesign.Spacing.md)
+            )
+        }
+        
+        // Study sessions content
+        if (isLoading) {
+            UniVibeDesign.LoadingState(
+                modifier = Modifier.weight(1f),
+                message = "Loading study sessions..."
+            )
+        } else {
+            ListScreen(
+                config = config,
+                onItemClick = { session -> navigator.push(StudySessionDetailScreen(sessionId = session.id)) },
+                itemContent = { session ->
+                    StudySessionCard(
+                        session = session,
+                        onClick = { navigator.push(StudySessionDetailScreen(sessionId = session.id)) }
+                    )
+                },
+                floatingActionButton = {
+                    FloatingActionButton(
+                        onClick = { navigator.push(CreateStudySessionScreen) },
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ) {
+                        Icon(Icons.Default.Add, "Create Session")
+                    }
+                }
+            )
         }
     }
 }
 
 /**
- * Wrapper component for chip layout since FlowRow might not be available.
+ * Custom study sessions header with stats and actions
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Wrap(content: @Composable () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        content()
-    }
-}
-
-/**
- * Study Session card for list display.
- */
-@Composable
-private fun StudySessionCard(
-    session: com.example.univibe.domain.models.StudySession,
-    onClick: () -> Unit
+private fun StudySessionsHeader(
+    totalSessions: Int,
+    activeSessions: Int,
+    onBack: () -> Unit,
+    onCreateSession: () -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = Dimensions.Spacing.md, vertical = Dimensions.Spacing.sm)
-            .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    Surface(
+        tonalElevation = 3.dp
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimensions.Spacing.md)
+                .padding(UniVibeDesign.Spacing.md)
         ) {
-            // Header: Title and Status Badge
+            // Top row with navigation and action
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = session.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.weight(1f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.sm),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    
+                    Text(
+                        text = "Study Sessions",
+                        style = UniVibeDesign.Text.screenTitle()
+                    )
+                }
+                
+                IconButton(onClick = onCreateSession) {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = "Create Session",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+            
+            // Stats row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = UniVibeDesign.Spacing.xl),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                StudySessionStat(
+                    number = totalSessions.toString(),
+                    label = "Total Sessions",
+                    icon = Icons.Default.MenuBook
                 )
                 
-                // Capacity badge
+                StudySessionStat(
+                    number = activeSessions.toString(),
+                    label = "Available",
+                    icon = Icons.Default.EventAvailable
+                )
+                
+                StudySessionStat(
+                    number = "${(totalSessions * 1.8).toInt()}",
+                    label = "Participants",
+                    icon = Icons.Default.People
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Study session statistic component
+ */
+@Composable
+private fun StudySessionStat(
+    number: String,
+    label: String,
+    icon: ImageVector
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.xs)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(20.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = number,
+            style = UniVibeDesign.Text.cardTitle().copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = label,
+            style = UniVibeDesign.Text.caption()
+        )
+    }
+}
+
+/**
+ * Study session filter tabs
+ */
+@Composable
+private fun StudySessionFilterTabs(
+    selectedFilter: StudySessionFilter,
+    onFilterSelected: (StudySessionFilter) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyRow(
+        modifier = modifier.padding(vertical = UniVibeDesign.Spacing.sm),
+        horizontalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.xs),
+        contentPadding = PaddingValues(horizontal = UniVibeDesign.Spacing.sm)
+    ) {
+        items(StudySessionFilter.entries) { filter ->
+            FilterChip(
+                selected = selectedFilter == filter,
+                onClick = { onFilterSelected(filter) },
+                label = { 
+                    Text(
+                        text = filter.displayName,
+                        style = UniVibeDesign.Text.caption().copy(
+                            fontWeight = FontWeight.Medium
+                        )
+                    ) 
+                },
+                leadingIcon = {
+                    Icon(
+                        filter.icon,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                },
+                shape = UniVibeDesign.Buttons.pillShape
+            )
+        }
+    }
+}
+
+/**
+ * Subject filter chips
+ */
+@Composable
+private fun SubjectChips(
+    selectedSubject: String?,
+    onSubjectSelected: (String?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val subjects = listOf("Mathematics", "Computer Science", "Physics", "Chemistry", "Biology", "Economics")
+    
+    LazyRow(
+        modifier = modifier.padding(bottom = UniVibeDesign.Spacing.sm),
+        horizontalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.xs),
+        contentPadding = PaddingValues(horizontal = UniVibeDesign.Spacing.sm)
+    ) {
+        // All subjects option
+        item {
+            FilterChip(
+                selected = selectedSubject == null,
+                onClick = { onSubjectSelected(null) },
+                label = { Text("All Subjects") }
+            )
+        }
+        
+        items(subjects) { subject ->
+            FilterChip(
+                selected = selectedSubject == subject,
+                onClick = { onSubjectSelected(subject) },
+                label = { Text(subject) }
+            )
+        }
+    }
+}
+
+
+/**
+ * Enhanced study session card with professional design
+ */
+@Composable
+private fun StudySessionCard(
+    session: StudySession,
+    onClick: () -> Unit
+) {
+    UniVibeDesign.StandardCard(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.sm)
+        ) {
+            // Session header with status and time
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Surface(
+                    shape = UniVibeDesign.Buttons.pillShape,
                     color = if (session.isFull) 
                         MaterialTheme.colorScheme.errorContainer 
                     else 
-                        MaterialTheme.colorScheme.primaryContainer,
-                    shape = MaterialTheme.shapes.small
+                        MaterialTheme.colorScheme.primaryContainer
                 ) {
                     Text(
-                        "${session.currentParticipants}/${session.maxParticipants}",
-                        style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.padding(
-                            horizontal = Dimensions.Spacing.sm,
-                            vertical = Dimensions.Spacing.xs
+                        text = "${session.currentParticipants}/${session.maxParticipants} spots",
+                        style = UniVibeDesign.Text.caption().copy(
+                            fontWeight = FontWeight.Medium
                         ),
                         color = if (session.isFull)
                             MaterialTheme.colorScheme.onErrorContainer
                         else
-                            MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(Dimensions.Spacing.sm))
-            
-            // Course and Subject
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    session.course,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    "•",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    session.subject,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(Dimensions.Spacing.sm))
-            
-            // Description
-            Text(
-                session.description,
-                style = MaterialTheme.typography.bodySmall,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            
-            Spacer(modifier = Modifier.height(Dimensions.Spacing.md))
-            
-            // Location and Time Info
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.md),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Location
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.xs),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    TextIcon(
-                        symbol = UISymbols.LOCATION,
-                        fontSize = 14,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        session.location.name,
-                        style = MaterialTheme.typography.labelSmall,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                            MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(
+                            horizontal = UniVibeDesign.Spacing.sm,
+                            vertical = UniVibeDesign.Spacing.xs
+                        )
                     )
                 }
                 
-                // Time
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.xs),
-                    verticalAlignment = Alignment.CenterVertically
+                Text(
+                    text = formatSessionTime(session.startDate),
+                    style = UniVibeDesign.Text.caption(),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            
+            // Subject icon placeholder
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp),
+                shape = UniVibeDesign.Cards.smallShape,
+                color = MaterialTheme.colorScheme.surfaceVariant
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center
                 ) {
-                    TextIcon(
-                        symbol = UISymbols.ACCESS_TIME,
-                        fontSize = 14,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        session.getDurationString(),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    Icon(
+                        getSubjectIcon(session.subject),
+                        contentDescription = null,
+                        modifier = Modifier.size(40.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                     )
                 }
             }
             
-            // Host info
-            Spacer(modifier = Modifier.height(Dimensions.Spacing.md))
+            // Session details
+            Text(
+                text = session.title,
+                style = UniVibeDesign.Text.cardTitle(),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            
             Row(
-                horizontalArrangement = Arrangement.spacedBy(Dimensions.Spacing.sm),
+                horizontalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.sm),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Surface(
-                    shape = MaterialTheme.shapes.extraSmall,
-                    color = MaterialTheme.colorScheme.primaryContainer
+                Text(
+                    text = session.course,
+                    style = UniVibeDesign.Text.bodySecondary().copy(
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                )
+                Text(
+                    text = "•",
+                    style = UniVibeDesign.Text.bodySecondary()
+                )
+                Text(
+                    text = session.subject,
+                    style = UniVibeDesign.Text.bodySecondary()
+                )
+            }
+            
+            Text(
+                text = session.description,
+                style = UniVibeDesign.Text.bodySecondary(),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            
+            // Session metadata
+            Column(
+                verticalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.xs)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.xs),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Icon(
+                        Icons.Default.LocationOn,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                     Text(
-                        session.host.fullName.split(" ").mapNotNull { it.firstOrNull() }
-                            .take(2).joinToString(""),
-                        style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.padding(4.dp),
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        text = session.location.name,
+                        style = UniVibeDesign.Text.caption()
                     )
                 }
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        "Hosted by",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.xs),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Default.Schedule,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        session.host.fullName,
-                        style = MaterialTheme.typography.labelMedium
+                        text = session.getDurationString(),
+                        style = UniVibeDesign.Text.caption()
                     )
                 }
+            }
+            
+            // Host and join section
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.sm),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(
+                        modifier = Modifier.size(32.dp),
+                        shape = MaterialTheme.shapes.extraSmall,
+                        color = MaterialTheme.colorScheme.primaryContainer
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(
+                                session.host.fullName.split(" ").mapNotNull { it.firstOrNull() }
+                                    .take(2).joinToString(""),
+                                style = UniVibeDesign.Text.caption().copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                    }
+                    
+                    Column {
+                        Text(
+                            text = "Hosted by",
+                            style = UniVibeDesign.Text.caption()
+                        )
+                        Text(
+                            text = session.host.fullName,
+                            style = UniVibeDesign.Text.caption().copy(
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+                    }
+                }
+                
+                // Join button
                 Button(
-                    onClick = { /* Join action */ },
-                    modifier = Modifier.height(32.dp),
+                    onClick = { /* TODO: Handle join */ },
+                    modifier = Modifier.height(36.dp),
                     enabled = !session.isFull,
-                    contentPadding = PaddingValues(horizontal = Dimensions.Spacing.md)
+                    colors = if (session.isJoined) {
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    } else {
+                        UniVibeDesign.Buttons.primaryColors()
+                    },
+                    contentPadding = PaddingValues(
+                        horizontal = UniVibeDesign.Spacing.md,
+                        vertical = UniVibeDesign.Spacing.xs
+                    )
                 ) {
-                    Text(if (session.isJoined) "Joined" else "Join", style = MaterialTheme.typography.labelSmall)
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.xs),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            if (session.isJoined) Icons.Default.Check else if (session.isFull) Icons.Default.Block else Icons.Default.Add,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            when {
+                                session.isFull -> "Full"
+                                session.isJoined -> "Joined"
+                                else -> "Join"
+                            },
+                            style = UniVibeDesign.Text.caption().copy(
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -409,33 +565,22 @@ private fun StudySessionCard(
 }
 
 /**
- * Empty state when no sessions found.
+ * Helper functions for study sessions
  */
-@Composable
-private fun EmptyState() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Dimensions.Spacing.lg),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            PlatformIcons.Article,
-            contentDescription = null,
-            modifier = Modifier
-                .size(64.dp)
-                .padding(bottom = Dimensions.Spacing.md),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Text(
-            "No Sessions Found",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Text(
-            "Try adjusting your filters or search",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+private fun getSubjectIcon(subject: String) = when {
+    subject.contains("Math") -> Icons.Default.Functions
+    subject.contains("Computer") || subject.contains("Programming") -> Icons.Default.Computer
+    subject.contains("Physics") -> Icons.Default.Science
+    subject.contains("Chemistry") -> Icons.Default.Science
+    subject.contains("Biology") -> Icons.Default.Biotech
+    subject.contains("Economics") || subject.contains("Business") -> Icons.Default.TrendingUp
+    subject.contains("History") -> Icons.Default.HistoryEdu
+    subject.contains("English") || subject.contains("Literature") -> Icons.Default.MenuBook
+    else -> Icons.Default.School
 }
+
+private fun formatSessionTime(timestamp: Long): String {
+    // Mock implementation - replace with actual time formatting
+    return "Today, 3:00 PM"
+}
+

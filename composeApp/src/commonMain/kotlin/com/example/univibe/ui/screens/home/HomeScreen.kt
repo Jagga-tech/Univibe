@@ -1,373 +1,315 @@
 package com.example.univibe.ui.screens.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import com.example.univibe.data.mock.MockPosts
-import com.example.univibe.data.mock.MockStories
 import com.example.univibe.domain.models.Post
-import com.example.univibe.ui.components.*
-import com.example.univibe.ui.screens.create.*
-import com.example.univibe.ui.screens.detail.*
-import com.example.univibe.ui.screens.features.*
-import com.example.univibe.ui.theme.Dimensions
-import com.example.univibe.ui.theme.PlatformIcons
-import com.example.univibe.util.ShareHelper
-import com.example.univibe.ui.utils.OnBottomReached
-import com.example.univibe.ui.utils.PaginationState
-import com.example.univibe.ui.utils.rememberPaginationState
+import com.example.univibe.ui.design.UniVibeDesign
+import com.example.univibe.ui.templates.FeedScreen
+import com.example.univibe.ui.components.UserAvatar
+import com.example.univibe.data.mock.MockPosts
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
- * Data class representing a post in the feed.
- */
-/**
- * Home screen composable - main feed for UniVibe app.
- * Features:
- * - Pull-to-refresh for manual refresh
- * - Infinite scroll/pagination
- * - Skeleton loading for initial load
- * - Error state with retry
- * - Empty state when no posts
+ * Modern Home Screen using UniVibe Design System
+ * Professional, clean, and consistent with the app's design language
  */
 @Composable
 fun HomeScreen(
-    posts: List<Post> = emptyList(),
-    stories: List<StoryItem> = emptyList(),
-    quickAccessItems: List<QuickAccessItem> = getDefaultQuickAccessItems(),
-    onPostLikeClick: (String) -> Unit = {},
-    onPostCommentClick: (String) -> Unit = {},
-    onPostShareClick: (String) -> Unit = {},
-    onPostMoreClick: (String) -> Unit = {},
-    onStoryClick: (String) -> Unit = {},
-    onAddStoryClick: () -> Unit = {},
-    onQuickAccessClick: (String) -> Unit = {},
-    onSearchClick: () -> Unit = {},
-    onNotificationClick: () -> Unit = {},
-    onSettingsClick: () -> Unit = {}
+    onNavigate: (String) -> Unit = {}
 ) {
-    val navigator = LocalNavigator.currentOrThrow
-    var searchQuery by remember { mutableStateOf("") }
+    var posts by remember { mutableStateOf<List<Post>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
     
-    // Pagination state
-    val paginationState = rememberPaginationState(
-        initialItems = MockPosts.posts.take(10)
-    )
-    
-    // Pull-to-refresh state
     val scope = rememberCoroutineScope()
-    var isRefreshing by remember { mutableStateOf(false) }
-    val pullToRefreshState = rememberPullToRefreshState()
     
-    val listState = rememberLazyListState()
-    
-    // Initial loading
-    var isInitialLoading by remember { mutableStateOf(true) }
-    
+    // Load initial data
     LaunchedEffect(Unit) {
-        delay(500) // Simulate network call
-        isInitialLoading = false
+        delay(1000) // Simulate network call
+        posts = MockPosts.posts
+        isLoading = false
     }
     
-    // Pull-to-refresh will be implemented in future
-    LaunchedEffect(Unit) {
-        // placeholder
-    }
-    
-    // Pagination handler
-    listState.OnBottomReached {
+    val refreshData: () -> Unit = {
         scope.launch {
-            paginationState.loadNextPage { page ->
-                delay(1000) // Simulate network call
-                MockPosts.posts.drop((page + 1) * 10).take(10)
-            }
+            isLoading = true
+            delay(1000)
+            posts = MockPosts.posts.shuffled() // Simulate new content
+            isLoading = false
         }
+        Unit
     }
     
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        if (isInitialLoading) {
-            // Skeleton loading state
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                items(3) {
-                    PostCardSkeleton()
-                    Spacer(modifier = Modifier.height(8.dp))
+    if (isLoading) {
+        UniVibeDesign.LoadingState(
+            modifier = Modifier.fillMaxSize(),
+            message = "Loading your feed..."
+        )
+    } else {
+        FeedScreen(
+            items = posts,
+            onRefresh = refreshData,
+            itemContent = { post ->
+                PostCard(
+                    post = post,
+                    onLikeClick = { /* Handle like */ },
+                    onCommentClick = { onNavigate("post/${post.id}") },
+                    onShareClick = { /* Handle share */ },
+                    onProfileClick = { onNavigate("profile/${post.author.id}") }
+                )
+            },
+            emptyStateContent = {
+                UniVibeDesign.EmptyState(
+                    icon = { 
+                        Icon(
+                            Icons.Outlined.Feed, 
+                            null, 
+                            modifier = Modifier.size(64.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        ) 
+                    },
+                    title = "Welcome to UniVibe!",
+                    description = "Your campus feed will appear here. Follow some people to get started!"
+                )
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { onNavigate("create/post") },
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(Icons.Default.Add, "Create post")
                 }
             }
-        } else if (paginationState.error != null) {
-            // Error state
-            ErrorState(
-                error = paginationState.error ?: "Unknown error",
-                onRetry = {
-                    scope.launch {
-                        paginationState.retry { page ->
-                            delay(1000)
-                            MockPosts.posts.drop((page + 1) * 10).take(10)
-                        }
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.Center)
-            )
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-                state = listState,
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                // Top section with search bar
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp)
-                    ) {
-                        Text(
-                            text = "Home",
-                            style = MaterialTheme.typography.headlineLarge,
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
-                        
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            UniVibeTextField(
-                                value = searchQuery,
-                                onValueChange = { searchQuery = it },
-                                placeholder = "What's on your mind?",
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .height(48.dp)
-                            )
-                            
-                            IconButton(
-                                onClick = { 
-                                    // Refresh functionality will be implemented
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = PlatformIcons.Refresh,
-                                    contentDescription = "Refresh"
-                                )
-                            }
-                        }
-                    }
-                }
-                
-                // Posts list
-                if (paginationState.items.isEmpty()) {
-                    item {
-                        EmptyState(
-                            title = "No posts yet",
-                            description = "Be the first to share something with your campus!",
-                            icon = PlatformIcons.SearchOff,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
-                } else {
-                    items(paginationState.items) { post ->
-                        HomePostCard(
-                            post = post,
-                            onLikeClick = { onPostLikeClick(post.id) },
-                            onCommentClick = { onPostCommentClick(post.id) },
-                            onShareClick = { onPostShareClick(post.id) },
-                            onMoreClick = { onPostMoreClick(post.id) }
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-                }
-                
-                // Loading indicator at bottom
-                if (paginationState.isLoading && paginationState.items.isNotEmpty()) {
-                    item {
-                        PaginationLoadingIndicator()
-                    }
-                }
-                
-                // End of list message
-                if (!paginationState.hasMorePages && paginationState.items.isNotEmpty()) {
-                    item {
-                        EndOfListIndicator()
-                    }
-                }
-            }
-        }
-        
-        // Pull-to-refresh indicator
-            //         PullToRefreshContainer(
-            //             state = pullToRefreshState,
-            //             modifier = Modifier.align(Alignment.TopCenter)
+        )
     }
 }
 
+/**
+ * Modern Post Card with consistent design system styling
+ */
 @Composable
-private fun HomePostCard(
+private fun PostCard(
     post: Post,
     onLikeClick: () -> Unit = {},
     onCommentClick: () -> Unit = {},
     onShareClick: () -> Unit = {},
-    onMoreClick: () -> Unit = {}
+    onProfileClick: () -> Unit = {}
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    UniVibeDesign.StandardCard(
+        onClick = onCommentClick
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            // User header
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                // Avatar placeholder
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(
-                            MaterialTheme.colorScheme.surfaceVariant,
-                            shape = androidx.compose.foundation.shape.CircleShape
-                        )
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = post.author.fullName,
-                        style = MaterialTheme.typography.titleSmall
-                    )
-                    Text(
-                        text = "Just now",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                IconButton(onClick = onMoreClick) {
-                    Icon(PlatformIcons.MoreVert, contentDescription = "More")
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(12.dp))
-            
-            // Content text
-            Text(
-                text = post.content,
-                style = MaterialTheme.typography.bodyMedium
+        // Post header with user info
+        PostHeader(
+            authorName = post.author.fullName,
+            authorHandle = "@${post.author.username}",
+            timestamp = "2h ago", // TODO: Calculate from post.createdAt
+            onProfileClick = onProfileClick,
+            onMoreClick = { /* Handle more menu */ }
+        )
+        
+        // Post content
+        Text(
+            text = post.content,
+            style = UniVibeDesign.Text.body(),
+            modifier = Modifier.padding(top = UniVibeDesign.Spacing.sm)
+        )
+        
+        // Engagement stats
+        if (post.likeCount > 0 || post.commentCount > 0) {
+            PostStats(
+                likeCount = post.likeCount,
+                commentCount = post.commentCount,
+                modifier = Modifier.padding(top = UniVibeDesign.Spacing.sm)
             )
-            
-            Spacer(modifier = Modifier.height(12.dp))
-            
-            // Engagement stats
+        }
+        
+        // Action buttons
+        PostActions(
+            isLiked = post.isLiked,
+            onLikeClick = onLikeClick,
+            onCommentClick = onCommentClick,
+            onShareClick = onShareClick,
+            modifier = Modifier.padding(top = UniVibeDesign.Spacing.sm)
+        )
+    }
+}
+
+/**
+ * Post header with user avatar, name, and metadata
+ */
+@Composable
+private fun PostHeader(
+    authorName: String,
+    authorHandle: String,
+    timestamp: String,
+    onProfileClick: () -> Unit,
+    onMoreClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.sm)
+    ) {
+        // User avatar
+        UserAvatar(
+            imageUrl = null, // TODO: Get from author.avatarUrl
+            size = 40.dp,
+            modifier = Modifier.clickable { onProfileClick() }
+        )
+        
+        // User info
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = authorName,
+                style = UniVibeDesign.Text.cardTitle(),
+                modifier = Modifier.clickable { onProfileClick() }
+            )
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.xs),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "${post.likeCount} likes",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = authorHandle,
+                    style = UniVibeDesign.Text.caption()
                 )
                 Text(
-                    text = "${post.commentCount} comments",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = "•",
+                    style = UniVibeDesign.Text.caption()
+                )
+                Text(
+                    text = timestamp,
+                    style = UniVibeDesign.Text.caption()
                 )
             }
-            
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
-            
-            // Action buttons
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                ActionButton(
-                    icon = if (post.isLiked) PlatformIcons.Favorite else PlatformIcons.FavoriteBorder,
-                    label = "Like",
-                    onClick = onLikeClick,
-                    modifier = Modifier.weight(1f)
-                )
-                ActionButton(
-                    icon = PlatformIcons.ChatBubbleOutline,
-                    label = "Comment",
-                    onClick = onCommentClick,
-                    modifier = Modifier.weight(1f)
-                )
-                ActionButton(
-                    icon = PlatformIcons.IosShare,
-                    label = "Share",
-                    onClick = onShareClick,
-                    modifier = Modifier.weight(1f)
-                )
-            }
+        }
+        
+        // More menu
+        IconButton(onClick = onMoreClick) {
+            Icon(
+                Icons.Default.MoreVert,
+                contentDescription = "More options",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
 
+/**
+ * Post engagement statistics
+ */
 @Composable
-private fun ActionButton(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    label: String,
-    onClick: () -> Unit,
+private fun PostStats(
+    likeCount: Int,
+    commentCount: Int,
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier
-            .height(36.dp)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 8.dp),
-        horizontalArrangement = Arrangement.Center,
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.md)
+    ) {
+        if (likeCount > 0) {
+            Text(
+                text = "$likeCount ${if (likeCount == 1) "like" else "likes"}",
+                style = UniVibeDesign.Text.caption()
+            )
+        }
+        if (commentCount > 0) {
+            Text(
+                text = "$commentCount ${if (commentCount == 1) "comment" else "comments"}",
+                style = UniVibeDesign.Text.caption()
+            )
+        }
+    }
+}
+
+/**
+ * Post interaction buttons
+ */
+@Composable
+private fun PostActions(
+    isLiked: Boolean,
+    onLikeClick: () -> Unit,
+    onCommentClick: () -> Unit,
+    onShareClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // Divider
+    HorizontalDivider(
+        modifier = Modifier.padding(vertical = UniVibeDesign.Spacing.sm),
+        color = MaterialTheme.colorScheme.outlineVariant
+    )
+    
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        PostActionButton(
+            icon = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+            label = "Like",
+            onClick = onLikeClick,
+            tint = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        
+        PostActionButton(
+            icon = Icons.Outlined.ChatBubbleOutline,
+            label = "Comment",
+            onClick = onCommentClick
+        )
+        
+        PostActionButton(
+            icon = Icons.Outlined.Share,
+            label = "Share",
+            onClick = onShareClick
+        )
+    }
+}
+
+/**
+ * Individual post action button
+ */
+@Composable
+private fun PostActionButton(
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit,
+    tint: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurfaceVariant
+) {
+    Row(
+        modifier = Modifier
+            .clip(UniVibeDesign.Cards.smallShape)
+            .clickable { onClick() }
+            .padding(
+                horizontal = UniVibeDesign.Spacing.md,
+                vertical = UniVibeDesign.Spacing.sm
+            ),
+        horizontalArrangement = Arrangement.spacedBy(UniVibeDesign.Spacing.xs),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = icon,
             contentDescription = label,
             modifier = Modifier.size(20.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
+            tint = tint
         )
-        Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = UniVibeDesign.Text.caption().copy(
+                color = tint,
+                fontWeight = FontWeight.Medium
+            )
         )
     }
-}
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun rememberPullToRefreshState(): androidx.compose.material3.pulltorefresh.PullToRefreshState {
-    return androidx.compose.material3.pulltorefresh.rememberPullToRefreshState()
 }

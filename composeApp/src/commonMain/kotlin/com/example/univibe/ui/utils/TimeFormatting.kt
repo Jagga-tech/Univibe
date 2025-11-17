@@ -6,7 +6,8 @@ package com.example.univibe.ui.utils
 fun formatTime(seconds: Int): String {
     val mins = seconds / 60
     val secs = seconds % 60
-    return String.format("%d:%02d", mins, secs)
+    val secsPadded = secs.toString().padStart(2, '0')
+    return "$mins:$secsPadded"
 }
 
 /**
@@ -15,9 +16,10 @@ fun formatTime(seconds: Int): String {
 fun formatDuration(seconds: Int): String {
     val mins = seconds / 60
     val secs = seconds % 60
+    val secsPadded = secs.toString().padStart(2, '0')
     return if (mins > 0) {
-        String.format("%d:%02d", mins, secs)
+        "$mins:$secsPadded"
     } else {
-        String.format("0:%02d", secs)
+        "0:$secsPadded"
     }
 }

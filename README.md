@@ -39,3 +39,15 @@ Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-mu
 Project overview and architecture: see docs/PROJECT_OVERVIEW.md
 
 Runbook (build, test, CI, troubleshooting): see docs/RUNBOOK.md
+
+### Are there two project files?
+
+Short answer: Yes, there are two primary "project" definitions because this is a Kotlin Multiplatform repo targeting Android and iOS.
+
+- Gradle project (Android/KMP):
+  - Root build files: `settings.gradle.kts` and `build.gradle.kts`
+  - Modules: `:composeApp` (shared KMP module)
+- Xcode project (iOS host app):
+  - Located at `iosApp/iosApp.xcodeproj`
+
+Use Android Studio/IntelliJ to work with the Gradle project and Xcode to open/run the iOS host app when needed. The shared code lives in `composeApp` and is built by Gradle for both platforms.

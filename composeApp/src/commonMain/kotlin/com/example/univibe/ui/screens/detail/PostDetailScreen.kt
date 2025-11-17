@@ -22,7 +22,7 @@ import com.example.univibe.data.mock.*
 import com.example.univibe.domain.models.*
 import com.example.univibe.util.ShareHelper
 import com.example.univibe.ui.utils.UISymbols
-import java.util.UUID
+// KMP-safe ID generator fallback (avoid java.util.UUID in commonMain)
 
 data class PostDetailScreen(val postId: String) : Screen {
     @Composable
@@ -100,7 +100,7 @@ private fun PostDetailScreenContent(postId: String) {
                         
                         // Create new comment
                         val newComment = Comment(
-                            id = UUID.randomUUID().toString(),
+                            id = "c_" + getCurrentTimeMillis().toString(),
                             postId = postId,
                             authorId = "1", // Current user
                             author = MockUsers.users[0], // Current user

@@ -5,22 +5,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import com.example.univibe.ui.theme.UniVibeTheme
-import com.example.univibe.ui.navigation.VoyagerMainScaffold
+import com.example.univibe.ui.screens.auth.SplashScreen
+import cafe.adriel.voyager.navigator.Navigator
 
 /**
  * Main App composable that sets up the complete navigation structure for UniVibe.
  * 
  * This is the root composable that:
  * - Initializes the theme
- * - Sets up Voyager-based navigation with tabs
- * - Renders the main scaffold with responsive navigation (bottom nav, rail, or drawer)
- * - Manages state across tab navigation
+ * - Starts with beautiful authentication flow
+ * - Sets up Voyager-based navigation
+ * - Manages app-wide navigation state
  */
 @Composable
 @Preview
 fun App() {
     UniVibeTheme {
-        // Main scaffold with responsive navigation (bottom bar for phone, rail for tablet, drawer for desktop)
-        VoyagerMainScaffold()
+        // Start with authentication flow using Voyager Navigator
+        // The SplashScreen will handle navigation to subsequent auth screens
+        Navigator(SplashScreen)
     }
 }
